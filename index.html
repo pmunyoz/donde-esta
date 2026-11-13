@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Cada día, una capital de provincia española. Adivínala en 6 intentos.">
+<title>Dónde Está</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Archivo:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: una columna estrecha tipo hoja de ruta; el mapa es la pieza central, los intentos debajo como un cuaderno de bitácora */
+:root{
+  --sea:#D7E3EA; --land:#FFFFFF; --ink:#1B2F45; --muted:#5F7286; --line:#B9C9D4;
+  --signal:#E3A21A; --signal-ink:#3A2600; --bg:#EEF3F6; --card:#FFFFFF;
+  --hot:#2E8B57; --warm:#D4A017; --cold:#9AAAB8; --bad:#C2453B;
+  --f-display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --f-body:"Archivo",ui-sans-serif,system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --sea:#13212F; --land:#22364A; --ink:#E6EEF4; --muted:#93A6B8; --line:#35506A;
+  --signal:#F0B43A; --signal-ink:#2A1B00; --bg:#0D1823; --card:#172636;
+  --hot:#4CC18A; --warm:#E8BE45; --cold:#5E7489; --bad:#E06A5F; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --sea:#13212F; --land:#22364A; --ink:#E6EEF4; --muted:#93A6B8; --line:#35506A;
+  --signal:#F0B43A; --signal-ink:#2A1B00; --bg:#0D1823; --card:#172636;
+  --hot:#4CC18A; --warm:#E8BE45; --cold:#5E7489; --bad:#E06A5F; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 40px}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+header{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+h1{font-family:var(--f-display);font-weight:800;font-size:2.1rem;line-height:1;margin:0;letter-spacing:-.02em}
+h1 span{color:var(--signal)}
+.num{font-family:var(--f-mono);font-size:.8rem;color:var(--muted);text-align:right}
+.map{background:var(--sea);border-radius:14px;overflow:hidden;border:1px solid var(--line)}
+.map svg{display:block;width:100%;height:auto}
+.clues{display:flex;flex-direction:column;gap:8px}
+.clue{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.clue .k{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding-top:2px;min-width:5.5em}
+.clue.locked{background:transparent;border-style:dashed;color:var(--muted)}
+.clue.new{animation:pop .35s ease-out}
+@keyframes pop{from{transform:translateY(4px);opacity:.4}to{transform:none;opacity:1}}
+.guessbox{position:relative}
+.row{display:flex;gap:8px}
+input#guess{flex:1;min-width:0;font:inherit;font-size:16px;padding:12px 14px;border-radius:10px;border:1.5px solid var(--line);background:var(--card);color:var(--ink)}
+input#guess:focus{outline:none;border-color:var(--signal)}
+button{font:inherit;cursor:pointer;border:0;border-radius:10px}
+.btn{background:var(--signal);color:var(--signal-ink);font-weight:600;padding:12px 18px}
+.btn:focus-visible,.sugg button:focus-visible,.ghost:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line);padding:10px 14px;font-weight:500}
+.sugg{position:absolute;left:0;right:0;top:calc(100% + 4px);background:var(--card);border:1px solid var(--line);border-radius:10px;z-index:5;overflow:hidden;box-shadow:0 8px 24px rgb(0 0 0 / .12)}
+.sugg button{display:block;width:100%;text-align:left;background:transparent;color:var(--ink);padding:10px 14px;border-radius:0}
+.sugg button:hover,.sugg button.on{background:var(--sea)}
+.msg{min-height:1.2em;font-size:.88rem;color:var(--bad)}
+.guesses{display:flex;flex-direction:column;gap:6px}
+.g{display:grid;grid-template-columns:1.6em 1fr auto 2em 3.4em;gap:8px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-variant-numeric:tabular-nums}
+.g .i{font-family:var(--f-mono);font-size:.75rem;color:var(--muted)}
+.g .n{font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.g .d,.g .p{font-family:var(--f-mono);font-size:.85rem;text-align:right}
+.g .a svg{display:block;margin:auto}
+.g.win{border-color:var(--hot);border-width:2px}
+.g.empty{background:transparent;border-style:dashed;height:42px}
+.end{background:var(--card);border:2px solid var(--ink);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.end h2{font-family:var(--f-display);font-weight:800;font-size:1.5rem;margin:0;line-height:1.1;text-wrap:balance}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center}
+.stats b{display:block;font-family:var(--f-display);font-size:1.5rem;font-variant-numeric:tabular-nums}
+.stats small{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.end .row{flex-wrap:wrap;align-items:center}
+.next{font-family:var(--f-mono);font-size:.85rem;color:var(--muted)}
+pre.share{margin:0;white-space:pre-wrap;font-family:var(--f-mono);font-size:.8rem;background:var(--sea);padding:10px;border-radius:8px}
+.how{font-size:.85rem;color:var(--muted)}
+.liga{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.liga h3{font-family:var(--f-display);font-weight:800;font-size:1.25rem;margin:0}
+.liga h4{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:6px 0 0;font-weight:500}
+.liga p{margin:0}
+.liga input{font:inherit;font-size:16px;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);flex:1;min-width:0}
+.liga .row input{flex:1}
+.lbl{font-size:.8rem;color:var(--muted)}
+.lhead{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.who{font-size:.85rem;color:var(--muted)}
+.code{font-family:var(--f-mono);letter-spacing:.08em;color:var(--ink);background:var(--sea);padding:1px 6px;border-radius:5px}
+.wrapr{flex-wrap:wrap}
+.lmsg{font-size:.85rem;color:var(--bad);min-height:0}
+.lmsg:empty{display:none}
+.hint{font-size:.82rem;color:var(--muted)}
+.tbl{overflow-x:auto}
+.liga table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:.92rem}
+.liga th{text-align:left;font-weight:500;font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;padding:4px 6px;border-bottom:1px solid var(--line)}
+.liga td{padding:7px 6px;border-bottom:1px solid var(--line)}
+.liga td:first-child,.liga th:first-child{width:2em;color:var(--muted)}
+.liga tr.me td{font-weight:600;background:var(--sea)}
+.kofi{display:flex;align-items:center;justify-content:center;gap:8px;padding:11px 14px;border-radius:10px;border:1.5px dashed var(--line);color:var(--ink);text-decoration:none;font-weight:500;font-size:.92rem}
+.kofi:hover{border-color:var(--signal);border-style:solid}
+.kofi:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.sub{color:var(--muted);font-weight:400;font-size:.8em}
+.osm{font-size:.72rem;color:var(--muted);text-align:center}
+.osm a{color:inherit}
+.how a{color:var(--ink);font-weight:600}
+@media (prefers-reduced-motion:reduce){.clue.new{animation:none}}
+.photo{margin:0;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.photo .img{aspect-ratio:16/10;max-width:100%;background:var(--sea);display:grid;place-items:center;color:var(--muted);font-size:.85rem}
+.photo img{width:100%;height:100%;object-fit:cover;display:block}
+.photo figcaption{font-size:.72rem;color:var(--muted);padding:6px 10px;overflow-wrap:anywhere}
+.photo figcaption a{color:inherit}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <h1>¿Dónde<br><span>está?</span></h1>
+    <div class="num" id="num"></div>
+  </header>
+  <p class="how">Cada día, una capital de provincia. Mira la foto: tienes 6 intentos; cada fallo destapa una pista nueva y te dice a cuántos km estás y hacia dónde mirar. <a href="dificil.html">¿Demasiado fácil? Prueba el modo difícil</a></p>
+
+  <figure class="photo" id="photo">
+    <div class="img" id="photoimg">Cargando la foto del día…</div>
+    <figcaption id="credit"></figcaption>
+  </figure>
+
+  <div class="map" id="map"></div>
+
+  <div class="clues" id="clues"></div>
+
+  <div class="guessbox" id="guessbox">
+    <form class="row" id="form" autocomplete="off">
+      <input id="guess" placeholder="Escribe una capital…" aria-label="Tu respuesta">
+      <button class="btn" type="submit">Probar</button>
+    </form>
+    <div class="sugg" id="sugg" hidden></div>
+  </div>
+  <div class="msg" id="msg" role="status"></div>
+
+  <div class="guesses" id="guesses"></div>
+  <div id="end"></div>
+  <section class="liga" id="liga" hidden></section>
+  <p class="osm">Búsqueda de lugares: datos © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">colaboradores de OpenStreetMap</a>, vía Photon. Fotos: Wikimedia Commons. · <a href="https://ko-fi.com/pascualmunoz" target="_blank" rel="noopener">Invítame a un café</a></p>
+</div>
+
+<script>
+// [nombre, lat, lon, comunidad, pista1, pista2, alias]
+const C=[
+["A Coruña",43.362,-8.411,"Galicia","Tiene el faro romano más antiguo del mundo que sigue funcionando.","Sus galerías acristaladas frente al puerto le dan el apodo de «ciudad de cristal».",["coruna","la coruna"]],
+["Lugo",43.012,-7.556,"Galicia","Conserva entera su muralla romana, y se puede recorrer por arriba.","El río Miño pasa junto a la ciudad.",[]],
+["Ourense",42.336,-7.864,"Galicia","Tiene manantiales de agua caliente en pleno centro, As Burgas.","Un puente romano medieval cruza el Miño a su paso.",["orense"]],
+["Pontevedra",42.431,-8.645,"Galicia","Casco histórico casi sin coches, premiado por su urbanismo.","Su iglesia de la Peregrina tiene planta en forma de concha de vieira.",[]],
+["Oviedo",43.361,-5.849,"Principado de Asturias","Santa María del Naranco, joya del prerrománico, está en sus afueras.","Clarín la disfrazó de «Vetusta» en La Regenta.",["uviéu"]],
+["Santander",43.462,-3.810,"Cantabria","El Palacio de la Magdalena fue residencia de verano de Alfonso XIII.","Frente a su bahía está el Centro Botín, obra de Renzo Piano.",[]],
+["Bilbao",43.263,-2.935,"País Vasco","El Museo Guggenheim cambió su imagen en los años 90.","La ría del Nervión atraviesa la ciudad.",["bilbo"]],
+["San Sebastián",43.318,-1.981,"País Vasco","La playa de La Concha es su postal más famosa.","Cada septiembre acoge un gran festival internacional de cine.",["donostia"]],
+["Vitoria-Gasteiz",42.847,-2.672,"País Vasco","En sus fiestas, el muñeco Celedón baja volando desde una torre.","Fue Capital Verde Europea en 2012.",["vitoria","gasteiz"]],
+["Pamplona",42.812,-1.645,"Navarra","Sus encierros de julio son conocidos en medio mundo.","Hemingway la hizo famosa en una de sus novelas.",["iruna"]],
+["Logroño",42.465,-2.445,"La Rioja","La calle Laurel es su ruta de pinchos más famosa.","El Ebro pasa por la ciudad y el Camino de Santiago la cruza.",[]],
+["Huesca",42.136,-0.408,"Aragón","Es famosa por la leyenda medieval de «la campana».","Desde ella se ve el Salto de Roldán, a las puertas del Pirineo.",["uesca"]],
+["Zaragoza",41.649,-0.889,"Aragón","La Basílica del Pilar se asoma al Ebro.","Celebró una Exposición Internacional en 2008.",[]],
+["Teruel",40.345,-1.106,"Aragón","Su arquitectura mudéjar es Patrimonio de la Humanidad.","Es la ciudad de los Amantes más famosos de España.",[]],
+["Lleida",41.617,0.620,"Cataluña","La Seu Vella vigila la ciudad desde lo alto de una colina.","El río Segre la atraviesa.",["lerida"]],
+["Girona",41.979,2.821,"Cataluña","Sus casas de colores se asoman al río Onyar.","Tiene uno de los barrios judíos medievales mejor conservados de Europa.",["gerona"]],
+["Barcelona",41.385,2.173,"Cataluña","La Sagrada Família sigue en obras desde el siglo XIX.","Organizó los Juegos Olímpicos de 1992.",[]],
+["Tarragona",41.119,1.245,"Cataluña","Su anfiteatro romano mira directamente al mar.","Fue Tarraco, una de las grandes ciudades de la Hispania romana.",[]],
+["Castellón de la Plana",39.986,-0.051,"Comunidad Valenciana","En sus fiestas de la Magdalena desfilan las gaiatas iluminadas.","Las islas Columbretes pertenecen a su término municipal.",["castellon","castello","castello de la plana"]],
+["Valencia",39.470,-0.376,"Comunidad Valenciana","En marzo arden las Fallas.","Tiene la Ciudad de las Artes y las Ciencias en el antiguo cauce del Turia.",["valencia"]],
+["Alicante",38.345,-0.481,"Comunidad Valenciana","El castillo de Santa Bárbara corona el monte Benacantil.","En junio celebra las Hogueras de San Juan.",["alacant"]],
+["Murcia",37.992,-1.131,"Región de Murcia","Su catedral tiene una gran fachada barroca.","Rodeada de huerta, el río Segura la cruza.",[]],
+["Palma",39.570,2.650,"Islas Baleares","Su catedral gótica, La Seu, se alza frente al mar.","Es la única capital de esta lista en una isla.",["palma de mallorca"]],
+["León",42.599,-5.567,"Castilla y León","Su catedral gótica es famosa por sus enormes vidrieras.","San Isidoro guarda un panteón de reyes con pinturas románicas.",[]],
+["Palencia",42.010,-4.528,"Castilla y León","Un Cristo de piedra de más de 20 metros vigila desde el cerro del Otero.","A su catedral la llaman «la Bella Desconocida».",[]],
+["Burgos",42.344,-3.697,"Castilla y León","Su catedral gótica fue declarada Patrimonio de la Humanidad.","Tiene el Museo de la Evolución Humana, ligado a Atapuerca.",[]],
+["Soria",41.766,-2.479,"Castilla y León","Antonio Machado vivió y dio clase aquí.","La ermita de San Saturio se cuelga sobre el Duero.",[]],
+["Zamora",41.503,-5.745,"Castilla y León","Tiene más de veinte templos románicos.","El Duero pasa a sus pies.",[]],
+["Valladolid",41.652,-4.724,"Castilla y León","Su Museo Nacional de Escultura reúne tallas de Semana Santa.","El Pisuerga pasa por la ciudad y Cervantes vivió en ella.",[]],
+["Segovia",40.948,-4.118,"Castilla y León","Un acueducto romano atraviesa su centro.","Su Alcázar y su cochinillo asado son famosos.",[]],
+["Ávila",40.656,-4.700,"Castilla y León","Está rodeada por una muralla medieval completa.","Es la ciudad de Santa Teresa, y de sus yemas.",["avila"]],
+["Salamanca",40.970,-5.663,"Castilla y León","Hay que buscar una rana en la fachada de su universidad.","Su Plaza Mayor barroca es de las más bonitas de España.",[]],
+["Madrid",40.417,-3.704,"Comunidad de Madrid","Alberga el Museo del Prado.","En la Puerta del Sol está el kilómetro cero.",[]],
+["Guadalajara",40.633,-3.167,"Castilla-La Mancha","El Palacio del Infantado es su gran joya.","El río Henares pasa junto a ella.",[]],
+["Cuenca",40.070,-2.137,"Castilla-La Mancha","Sus casas cuelgan sobre una hoz.","Está entre los ríos Júcar y Huécar.",[]],
+["Toledo",39.863,-4.027,"Castilla-La Mancha","La llaman la ciudad de las tres culturas.","El Tajo la rodea casi por completo; famosa por su mazapán.",[]],
+["Ciudad Real",38.986,-3.927,"Castilla-La Mancha","Alfonso X la fundó en 1255 como Villa Real.","Está en el corazón de La Mancha.",[]],
+["Albacete",38.994,-1.858,"Castilla-La Mancha","Es famosa por sus navajas y cuchillos.","Su Feria de septiembre es su gran fiesta.",[]],
+["Cáceres",39.475,-6.372,"Extremadura","Su ciudad monumental es Patrimonio de la Humanidad desde 1986.","La Torta del Casar se hace muy cerca.",[]],
+["Badajoz",38.879,-6.970,"Extremadura","Tiene una de las alcazabas árabes más grandes.","Está junto al Guadiana y a un paso de Portugal.",[]],
+["Huelva",37.261,-6.945,"Andalucía","Su club de fútbol es el más antiguo de España.","Colón zarpó desde un puerto muy cercano.",[]],
+["Sevilla",37.389,-5.984,"Andalucía","La Giralda es su torre más famosa.","En primavera celebra la Feria de Abril.",[]],
+["Córdoba",37.888,-4.779,"Andalucía","Tiene una mezquita con una catedral dentro.","En mayo abre sus patios llenos de flores.",[]],
+["Jaén",37.779,-3.785,"Andalucía","Se presenta como capital mundial del aceite de oliva.","El castillo de Santa Catalina domina la ciudad.",[]],
+["Granada",37.177,-3.599,"Andalucía","La Alhambra está en lo alto de la ciudad.","Tiene pistas de esquí en Sierra Nevada a menos de una hora.",[]],
+["Almería",36.834,-2.464,"Andalucía","Su Alcazaba domina el puerto.","Cerca se rodaron muchos westerns, en el desierto de Tabernas.",[]],
+["Málaga",36.721,-4.421,"Andalucía","Picasso nació aquí.","Tiene una alcazaba y un teatro romano uno junto al otro.",[]],
+["Cádiz",36.527,-6.288,"Andalucía","Presume de ser la ciudad más antigua de Occidente.","Su Carnaval es famoso por las chirigotas.",[]]
+];
+const norm=s=>s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-zñ ]/g," ").replace(/\s+/g," ").trim();
+const IDX=C.map((c,i)=>({i,keys:[norm(c[0]),...c[6].map(norm)]}));
+function find(s){const n=norm(s);if(!n)return -1;const h=IDX.find(x=>x.keys.includes(n));return h?h.i:-1}
+
+// Selección diaria determinista
+function mulberry(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const ORDER=(()=>{const r=mulberry(1492),o=C.map((_,i)=>i);for(let i=o.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[o[i],o[j]]=[o[j],o[i]]}return o})();
+const now=new Date();const key=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}-${String(now.getDate()).padStart(2,"0")}`;
+const DAY=Math.round((Date.UTC(now.getFullYear(),now.getMonth(),now.getDate())-Date.UTC(2026,0,1))/864e5);
+const T=ORDER[((DAY%C.length)+C.length)%C.length];const TC=C[T];
+document.getElementById("num").innerHTML=`Reto nº ${DAY+1}<br>${now.toLocaleDateString("es-ES",{day:"numeric",month:"long"})}`;
+
+// Geometría
+const R=6371,rad=d=>d*Math.PI/180;
+function dist(a,b){const dl=rad(b[1]-a[1]),dg=rad(b[2]-a[2]);const h=Math.sin(dl/2)**2+Math.cos(rad(a[1]))*Math.cos(rad(b[1]))*Math.sin(dg/2)**2;return 2*R*Math.asin(Math.sqrt(h))}
+function bearing(a,b){const y=Math.sin(rad(b[2]-a[2]))*Math.cos(rad(b[1]));const x=Math.cos(rad(a[1]))*Math.sin(rad(b[1]))-Math.sin(rad(a[1]))*Math.cos(rad(b[1]))*Math.cos(rad(b[2]-a[2]));return(Math.atan2(y,x)*180/Math.PI+360)%360}
+const MAXD=1100;
+const G=g=>typeof g==="number"?C[g]:[g.n,g.lat,g.lon];
+const fmt=d=>d<1?Math.round(d*1000)+" m":Math.round(d).toLocaleString("es-ES")+" km";const prox=d=>Math.max(0,Math.round(100*(1-d/MAXD)));
+
+// Estado
+const MAX=6;const MODE="normal";let st={guesses:[],done:false,won:false};let stats={played:0,wins:0,streak:0,best:0,last:null};
+try{const s=JSON.parse(localStorage.getItem("de-"+key));if(s)st=s}catch(e){}
+try{const s=JSON.parse(localStorage.getItem("de-stats"));if(s)stats=s}catch(e){}
+const save=()=>{try{localStorage.setItem("de-"+key,JSON.stringify(st));localStorage.setItem("de-stats",JSON.stringify(stats))}catch(e){}};
+
+// Mapa
+const OUT=[[43.78,-7.69],[43.55,-6.2],[43.47,-5.0],[43.46,-3.8],[43.4,-3.0],[43.36,-1.79],[43.05,-1.3],[42.82,-0.6],[42.7,0.4],[42.6,1.4],[42.45,2.2],[42.43,3.17],[42.3,3.3],[41.9,3.2],[41.4,2.25],[41.1,1.2],[40.75,0.9],[40.5,0.5],[39.9,0.02],[39.4,-0.3],[38.8,0.22],[38.3,-0.5],[37.9,-0.75],[37.6,-0.7],[37.4,-1.6],[36.9,-1.9],[36.72,-2.2],[36.75,-3.0],[36.72,-4.4],[36.42,-5.2],[36.01,-5.61],[36.3,-6.2],[36.8,-6.4],[37.2,-7.4],[37.9,-7.3],[38.5,-7.1],[38.9,-7.05],[39.4,-7.3],[39.7,-7.0],[40.1,-6.9],[40.6,-6.8],[41.0,-6.9],[41.6,-6.35],[41.95,-6.6],[41.88,-8.1],[42.1,-8.85],[42.5,-8.95],[42.9,-9.27],[43.2,-9.0],[43.4,-8.4]];
+const ISL=[[[39.95,2.4],[39.85,3.1],[39.6,3.45],[39.3,3.05],[39.45,2.5],[39.65,2.35]],[[40.05,3.8],[40.0,4.3],[39.85,4.25],[39.9,3.85]],[[39.08,1.35],[39.0,1.6],[38.87,1.4],[38.95,1.2]]];
+const W=400,LON0=-9.6,LAT1=44.0,K=W/((4.6-LON0)*Math.cos(rad(40)));
+const px=(la,lo)=>[((lo-LON0)*Math.cos(rad(40))*K).toFixed(1),((LAT1-la)*K).toFixed(1)];
+const H=Math.round((LAT1-35.8)*K);
+const poly=p=>p.map(q=>px(q[0],q[1]).join(",")).join(" ");
+function colorFor(p){return p>=90?"var(--hot)":p>=65?"var(--warm)":"var(--cold)"}
+function drawMap(){
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Mapa de España con tus intentos"><polygon points="${poly(OUT)}" fill="var(--land)" stroke="var(--line)" stroke-width="1.5" stroke-linejoin="round"/>`;
+  ISL.forEach(i=>s+=`<polygon points="${poly(i)}" fill="var(--land)" stroke="var(--line)" stroke-width="1.5" stroke-linejoin="round"/>`);
+  C.forEach(c=>{const[x,y]=px(c[1],c[2]);s+=`<circle cx="${x}" cy="${y}" r="1.8" fill="var(--line)"/>`});
+  if(st.done){const[x,y]=px(TC[1],TC[2]);s+=`<circle cx="${x}" cy="${y}" r="14" fill="none" stroke="var(--signal)" stroke-width="2.5"/><circle cx="${x}" cy="${y}" r="5" fill="var(--signal)"/><text x="${x}" y="${+y-20}" text-anchor="middle" font-family="Bricolage Grotesque,sans-serif" font-weight="800" font-size="14" fill="var(--ink)">${TC[0]}</text>`}
+  st.guesses.forEach((g,k)=>{if(g===T)return;const c=G(g);if(c[1]<35.8||c[2]<-9.6)return;const[x,y]=px(c[1],c[2]);const p=prox(dist(c,TC));s+=`<circle cx="${x}" cy="${y}" r="9" fill="${colorFor(p)}" stroke="var(--land)" stroke-width="2"/><text x="${x}" y="${+y+3.5}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="var(--land)" font-weight="500">${k+1}</text>`});
+  document.getElementById("map").innerHTML=s+"</svg>";
+}
+
+// Pistas
+function clues(){const l=TC[0].replace(/[^A-Za-zÁÉÍÓÚÜÑáéíóúüñ]/g,"").length;
+  return[["Pista",TC[4]],["Pista",TC[5]],["Comunidad",TC[3]],["Nombre",`Empieza por «${TC[0][0]}» y tiene ${l} letras.`]]}
+let shown=0;
+function drawClues(){const cl=clues();const n=st.done?cl.length:Math.min(cl.length,1+st.guesses.length);
+  document.getElementById("clues").innerHTML=cl.map((c,i)=>i<n?`<div class="clue${i>=shown&&i>0?" new":""}"><span class="k">${c[0]} ${i+1}</span><span>${c[1]}</span></div>`:`<div class="clue locked"><span class="k">Pista ${i+1}</span><span>Se destapa con el fallo ${i}</span></div>`).join("");shown=n}
+
+const arrow=b=>`<svg width="20" height="20" viewBox="0 0 20 20" style="transform:rotate(${b}deg)"><path d="M10 2 L16 12 H12 V18 H8 V12 H4 Z" fill="var(--ink)"/></svg>`;
+const EM=["⬆️","↗️","➡️","↘️","⬇️","↙️","⬅️","↖️"];const em=b=>EM[Math.round(b/45)%8];
+function drawGuesses(){let h="";for(let k=0;k<MAX;k++){const g=st.guesses[k];
+  if(g===undefined){h+=`<div class="g empty"></div>`;continue}
+  const c=G(g);if(g===T){h+=`<div class="g win"><span class="i">${k+1}</span><span class="n">${c[0]}</span><span class="d">0 km</span><span class="a">🎯</span><span class="p" style="color:var(--hot)">100%</span></div>`;continue}
+  const d=dist(c,TC),p=prox(d);h+=`<div class="g"><span class="i">${k+1}</span><span class="n" title="${c[0]}">${c[0]}${typeof g==="number"?"":`<small class="sub"> · fuera de la lista</small>`}</span><span class="d">${fmt(d)}</span><span class="a">${arrow(bearing(c,TC))}</span><span class="p" style="color:${colorFor(p)}">${p}%</span></div>`}
+  document.getElementById("guesses").innerHTML=h}
+
+function shareText(){const rows=st.guesses.map(g=>{if(g===T)return"🟩🟩🟩🟩🟩🎯";const p=prox(dist(G(g),TC));const f=Math.floor(p/20);return"🟩".repeat(f)+(p%20>=10?"🟨":"")+"⬜".repeat(5-f-(p%20>=10?1:0))+em(bearing(G(g),TC))});
+  return`¿Dónde está? nº ${DAY+1} — ${st.won?st.guesses.length:"X"}/${MAX}\n${rows.join("\n")}`}
+function drawEnd(){const e=document.getElementById("end");if(!st.done){e.innerHTML="";return}
+  document.getElementById("guessbox").hidden=true;
+  const pct=stats.played?Math.round(100*stats.wins/stats.played):0;
+  e.innerHTML=`<div class="end"><h2>${st.won?`¡Era ${TC[0]}! Lo sacaste en ${st.guesses.length}.`:`Era ${TC[0]}. Mañana más.`}</h2>
+  <div class="stats"><div><b>${stats.played}</b><small>Jugados</small></div><div><b>${pct}%</b><small>Aciertos</small></div><div><b>${stats.streak}</b><small>Racha</small></div><div><b>${stats.best}</b><small>Mejor</small></div></div>
+  <pre class="share" id="sharetxt">${shareText()}</pre>
+  <div class="row"><button class="btn" id="copy">Copiar resultado</button><span class="next" id="next"></span></div>
+  <a class="kofi" href="https://ko-fi.com/pascualmunoz" target="_blank" rel="noopener"><span aria-hidden="true">☕</span> ¿Te gusta el juego? Invítame a un café</a></div>`;
+  document.getElementById("copy").onclick=async ev=>{try{await navigator.clipboard.writeText(shareText());ev.target.textContent="Copiado"}catch(_){const r=document.createRange();r.selectNodeContents(document.getElementById("sharetxt"));const s=getSelection();s.removeAllRanges();s.addRange(r);ev.target.textContent="Selecciónalo y cópialo"}};
+  tick()}
+function tick(){const el=document.getElementById("next");if(!el)return;const n=new Date(),m=new Date(n);m.setHours(24,0,0,0);let s=Math.max(0,Math.floor((m-n)/1000));
+  el.textContent=`Siguiente en ${String(Math.floor(s/3600)).padStart(2,"0")}:${String(Math.floor(s/60)%60).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`}
+setInterval(tick,1000);
+
+function render(){drawMap();drawClues();drawGuesses();drawEnd();drawCredit()}
+
+// Foto del día desde Wikipedia / Wikimedia Commons (mismo orden que C)
+const PH=["Torre de Hércules","Muralla de Lugo","As Burgas","Santuario de la Virgen Peregrina","Santa María del Naranco","Palacio de la Magdalena","Museo Guggenheim Bilbao","Playa de La Concha","Catedral de Santa María (Vitoria)","Plaza del Castillo (Pamplona)","Concatedral de Santa María de la Redonda","Catedral de Huesca","Basílica del Pilar","Torre de El Salvador","Seu Vella de Lérida","Catedral de Gerona","Templo Expiatorio de la Sagrada Familia","Anfiteatro de Tarragona","Castellón de la Plana","Ciudad de las Artes y las Ciencias","Castillo de Santa Bárbara (Alicante)","Catedral de Murcia","Catedral de Santa María de Palma de Mallorca","Catedral de León","Cristo del Otero","Catedral de Burgos","Ermita de San Saturio","Catedral de Zamora","Plaza Mayor de Valladolid","Acueducto de Segovia","Muralla de Ávila","Plaza Mayor de Salamanca","Puerta de Alcalá","Palacio del Infantado","Casas Colgadas","Alcázar de Toledo","Puerta de Toledo (Ciudad Real)","Pasaje de Lodares","Ciudad monumental de Cáceres","Alcazaba de Badajoz","Huelva","Giralda","Mezquita-catedral de Córdoba","Catedral de Jaén","Alhambra","Alcazaba de Almería","Alcazaba de Málaga","Catedral de Cádiz"];
+let photo=null;
+const BAD=/\.svg$|escudo|bandera|mapa|flag|map|coat|localizaci|location|logo/i;
+async function wiki(title){
+  const u="https://es.wikipedia.org/w/api.php?action=query&prop=pageimages&piprop=name|thumbnail&pithumbsize=1200&redirects=1&format=json&origin=*&titles="+encodeURIComponent(title);
+  const j=await (await fetch(u)).json();const p=Object.values(j.query.pages)[0];
+  return p&&p.thumbnail&&p.pageimage&&!BAD.test(p.pageimage)?{src:p.thumbnail.source,file:p.pageimage}:null}
+async function credit(file){
+  try{const u="https://commons.wikimedia.org/w/api.php?action=query&prop=imageinfo&iiprop=extmetadata&format=json&origin=*&titles="+encodeURIComponent("File:"+file);
+    const j=await (await fetch(u)).json();const m=Object.values(j.query.pages)[0].imageinfo[0].extmetadata;
+    const strip=h=>{const d=document.createElement("div");d.innerHTML=h||"";return d.textContent.trim()};
+    return{artist:strip(m.Artist&&m.Artist.value)||"autor desconocido",lic:strip(m.LicenseShortName&&m.LicenseShortName.value)}}
+  catch(e){return{artist:"",lic:""}}}
+async function loadPhoto(){
+  const box=document.getElementById("photoimg");
+  for(const t of [PH[T],TC[0]]){try{const r=await wiki(t);if(r){photo=r;Object.assign(photo,await credit(r.file));
+    box.innerHTML="";const im=new Image();im.alt="Foto de la ciudad del día";im.src=r.src;box.appendChild(im);drawCredit();return}}catch(e){}}
+  document.getElementById("photo").hidden=true}
+function drawCredit(){if(!photo)return;const c=document.getElementById("credit");
+  const who=[photo.artist&&("Foto: "+photo.artist),photo.lic].filter(Boolean).join(" · ");
+  // El enlace incluye el nombre del archivo (puede delatar la respuesta), así que se muestra al terminar
+  c.innerHTML="";c.append(who||"Foto: Wikimedia Commons");
+  if(st.done){const a=document.createElement("a");a.href="https://commons.wikimedia.org/wiki/File:"+encodeURIComponent(photo.file);a.target="_blank";a.rel="noopener";a.textContent="Ver en Wikimedia Commons";c.append(" · ",a)}}
+loadPhoto();
+
+// Entrada y sugerencias: primero la lista del juego; si no está, cualquier población de España (OpenStreetMap vía Photon)
+const inp=document.getElementById("guess"),sg=document.getElementById("sugg"),msg=document.getElementById("msg");let sel=-1,list=[],tmr=null,req=0;
+const PLACES=["city","town","village","municipality","hamlet","suburb","neighbourhood","locality"];
+async function geo(q,limit){
+  const u="https://photon.komoot.io/api/?limit="+limit+"&bbox=-18.3,27.6,4.4,43.9&q="+encodeURIComponent(q);
+  const j=await (await fetch(u)).json();const seen=new Set();
+  return j.features.filter(f=>f.properties&&f.properties.countrycode==="ES"&&f.properties.osm_key==="place"&&PLACES.includes(f.properties.osm_value)&&f.properties.name)
+    .map(f=>({n:f.properties.name,s:f.properties.county||f.properties.state||"",lat:+f.geometry.coordinates[1].toFixed(4),lon:+f.geometry.coordinates[0].toFixed(4)}))
+    .filter(o=>{const k=norm(o.n)+"|"+o.s;if(seen.has(k)||find(o.n)>=0)return false;seen.add(k);return true})}
+function label(it){return it.i!==undefined?C[it.i][0]:it.o.n}
+function drawSugg(){if(!list.length){sg.hidden=true;return}sel=-1;sg.innerHTML="";
+  list.forEach((it,k)=>{const b=document.createElement("button");b.type="button";b.dataset.k=k;b.textContent=label(it);
+    if(it.o&&it.o.s){const sm=document.createElement("small");sm.className="sub";sm.textContent=" · "+it.o.s;b.append(sm)}sg.append(b)});sg.hidden=false}
+function showSugg(){const raw=inp.value,n=norm(raw);clearTimeout(tmr);if(!n){list=[];sg.hidden=true;return}
+  list=IDX.filter(x=>x.keys.some(k=>k.startsWith(n)||k.split(" ").some(w=>w.startsWith(n)))).slice(0,5).map(x=>({i:x.i}));drawSugg();
+  if(n.length<3||list.length>=5)return;const id=++req;
+  tmr=setTimeout(async()=>{try{const r=await geo(raw,10);if(id!==req)return;list=list.concat(r.slice(0,6-list.length).map(o=>({o})));drawSugg()}catch(e){}},300)}
+inp.addEventListener("input",()=>{msg.textContent="";showSugg()});
+inp.addEventListener("keydown",e=>{if(sg.hidden)return;const b=[...sg.querySelectorAll("button")];
+  if(e.key==="ArrowDown"||e.key==="ArrowUp"){e.preventDefault();sel=(sel+(e.key==="ArrowDown"?1:-1)+b.length)%b.length;b.forEach((x,k)=>x.classList.toggle("on",k===sel))}
+  else if(e.key==="Enter"&&sel>=0){e.preventDefault();pick(list[sel])}
+  else if(e.key==="Escape")sg.hidden=true});
+sg.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;pick(list[+b.dataset.k])});
+document.addEventListener("click",e=>{if(!e.target.closest("#guessbox"))sg.hidden=true});
+document.getElementById("form").addEventListener("submit",e=>{e.preventDefault();submit()});
+function pick(it){sg.hidden=true;req++;clearTimeout(tmr);guess(it.i!==undefined?it.i:it.o)}
+async function submit(){if(st.done)return;sg.hidden=true;req++;clearTimeout(tmr);const q=inp.value.trim();if(!q)return;
+  const i=find(q);if(i>=0)return guess(i);
+  msg.textContent="Buscando "+q+"…";
+  try{const r=await geo(q,10);if(!r.length){msg.textContent="No encuentro «"+q+"» en España. Revisa cómo se escribe o elige una sugerencia.";return}
+    guess(r.find(o=>norm(o.n)===norm(q))||r[0])}
+  catch(e){msg.textContent="Ahora mismo no puedo comprobar lugares fuera de la lista. Elige una de las sugerencias."}}
+function guess(g){if(st.done)return;const nm=G(g)[0];
+  if(st.guesses.some(x=>norm(G(x)[0])===norm(nm))){msg.textContent=`Ya probaste ${nm}.`;return}
+  st.guesses.push(g);inp.value="";msg.textContent="";
+  if(g===T||st.guesses.length>=MAX){st.done=true;st.won=g===T;st.t1=Date.now();stats.played++;
+    const y=new Date(now);y.setDate(y.getDate()-1);const yk=`${y.getFullYear()}-${String(y.getMonth()+1).padStart(2,"0")}-${String(y.getDate()).padStart(2,"0")}`;
+    if(st.won){stats.wins++;stats.streak=stats.last===yk?stats.streak+1:1;stats.best=Math.max(stats.best,stats.streak)}else stats.streak=0;
+    stats.last=st.won?key:stats.last}
+  save();render();if(st.done)sendResult();else inp.focus()}
+render();
+
+// ===== Liga de amigos (Supabase) =====
+// Pega aquí la URL de tu proyecto y su clave pública (anon o publishable). Mientras estén vacías, la liga no aparece.
+const SUPA={url:"",key:""};
+let liga={code:"",nick:""},rows=[],ligaErr="";
+try{const l=JSON.parse(localStorage.getItem("liga"));if(l&&l.code)liga=l}catch(e){}
+const urlLiga=(new URLSearchParams(location.search).get("liga")||"").toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,12);
+const saveLiga=()=>{try{localStorage.setItem("liga",JSON.stringify(liga))}catch(e){}};
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const dkey=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+const mmss=s=>s==null?"–":`${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`;
+const invite=()=>location.origin+location.pathname+"?liga="+liga.code;
+async function api(path,opt={}){
+  const h={apikey:SUPA.key,"Content-Type":"application/json",...(opt.headers||{})};
+  if(SUPA.key.startsWith("eyJ"))h.Authorization="Bearer "+SUPA.key;
+  const r=await fetch(SUPA.url.replace(/\/$/,"")+"/rest/v1/"+path,{...opt,headers:h});
+  if(r.status===409)return null;if(!r.ok)throw new Error("HTTP "+r.status);
+  const t=await r.text();return t?JSON.parse(t):null}
+async function sendResult(){
+  if(!SUPA.url||!liga.code||!st.done||st.sent===liga.code)return;
+  const seg=st.t0&&st.t1?Math.max(0,Math.round((st.t1-st.t0)/1000)):null;
+  try{await api("resultados",{method:"POST",headers:{Prefer:"return=minimal"},body:JSON.stringify({liga:liga.code,apodo:liga.nick,modo:MODE,fecha:key,intentos:st.won?st.guesses.length:7,ganado:st.won,segundos:seg})});
+    st.sent=liga.code;save();ligaErr=""}
+  catch(e){ligaErr="No se pudo enviar tu resultado. Se reintentará al volver a abrir la página."}
+  loadRank()}
+async function loadRank(){
+  if(!SUPA.url||!liga.code)return;const f=new Date(now);f.setDate(f.getDate()-6);
+  try{rows=await api(`resultados?liga=eq.${liga.code}&modo=eq.${MODE}&fecha=gte.${dkey(f)}&select=apodo,fecha,intentos,ganado,segundos`)||[]}
+  catch(e){ligaErr="No se pudo cargar la clasificación."}
+  drawLiga(true)}
+function drawLiga(force){
+  const el=document.getElementById("liga");if(!SUPA.url){el.hidden=true;return}el.hidden=false;
+  if(!liga.code){if(el.dataset.v==="form"&&!force)return;el.dataset.v="form";
+    el.innerHTML=`<h3>Liga de amigos</h3>
+    ${urlLiga?`<p>Te han invitado a la liga <b class="code">${esc(urlLiga)}</b>. Elige un apodo para entrar.</p>`:`<p>Compite con tus amigos: crea una liga y pásales el enlace, o únete con su código.</p>`}
+    <label class="lbl" for="nick">Tu apodo</label>
+    <input id="nick" maxlength="20" placeholder="Por ejemplo, Paco" value="${esc(liga.nick||"")}">
+    ${urlLiga?`<button class="btn" data-act="join" data-code="${esc(urlLiga)}">Entrar en la liga</button>`:
+    `<div class="row"><button class="btn" data-act="create">Crear liga</button></div>
+     <label class="lbl" for="code">¿Ya tienes un código?</label>
+     <div class="row"><input id="code" maxlength="12" placeholder="Código" autocapitalize="characters"><button class="ghost" data-act="join">Unirme</button></div>`}
+    <p class="lmsg" id="lmsg">${esc(ligaErr)}</p>`;return}
+  el.dataset.v="liga";
+  const today=rows.filter(r=>r.fecha===key).sort((a,b)=>(b.ganado-a.ganado)||(a.intentos-b.intentos)||((a.segundos??1e9)-(b.segundos??1e9)));
+  const week={};rows.forEach(r=>{const w=week[r.apodo]||(week[r.apodo]={a:r.apodo,p:0,d:0,v:0});w.p+=r.ganado?7-r.intentos:0;w.d++;w.v+=r.ganado?1:0});
+  const wk=Object.values(week).sort((a,b)=>b.p-a.p||b.v-a.v);
+  const me=a=>a===liga.nick?' class="me"':"";
+  el.innerHTML=`<div class="lhead"><h3>Liga <span class="code">${esc(liga.code)}</span></h3><span class="who">Juegas como <b>${esc(liga.nick)}</b></span></div>
+  <div class="row wrapr"><button class="ghost" data-act="invite">Copiar invitación</button><button class="ghost" data-act="refresh">Actualizar</button><button class="ghost" data-act="leave">Salir</button></div>
+  <p class="lmsg" id="lmsg">${esc(ligaErr)}</p>
+  <h4>Hoy</h4>
+  ${!st.done?`<p class="hint">Termina el reto para ver cómo han quedado los demás.</p>`:
+    today.length?`<div class="tbl"><table><thead><tr><th>#</th><th>Apodo</th><th>Intentos</th><th>Tiempo</th></tr></thead><tbody>${today.map((r,i)=>`<tr${me(r.apodo)}><td>${i+1}</td><td>${esc(r.apodo)}</td><td>${r.ganado?r.intentos+"/6":"X/6"}</td><td>${mmss(r.segundos)}</td></tr>`).join("")}</tbody></table></div>`:`<p class="hint">Aún no hay resultados de hoy.</p>`}
+  <h4>Últimos 7 días</h4>
+  ${wk.length?`<div class="tbl"><table><thead><tr><th>#</th><th>Apodo</th><th>Puntos</th><th>Aciertos</th></tr></thead><tbody>${wk.map((w,i)=>`<tr${me(w.a)}><td>${i+1}</td><td>${esc(w.a)}</td><td>${w.p}</td><td>${w.v}/${w.d}</td></tr>`).join("")}</tbody></table></div>
+  <p class="hint">Acertar en 1 intento da 6 puntos, en 6 da 1 punto; fallar da 0. El tiempo cuenta desde que abres el reto del día.</p>`:`<p class="hint">Todavía nadie ha jugado esta semana.</p>`}`}
+document.getElementById("liga").addEventListener("click",async e=>{
+  const b=e.target.closest("[data-act]");if(!b)return;const act=b.dataset.act,m=document.getElementById("lmsg");
+  if(act==="create"||act==="join"){
+    const nick=(document.getElementById("nick").value||"").trim().slice(0,20);
+    if(!nick){m.textContent="Escribe un apodo para que tus amigos te reconozcan.";return}
+    let code=act==="create"?Array.from({length:6},()=>"ABCDEFGHJKLMNPQRSTUVWXYZ23456789"[Math.floor(Math.random()*32)]).join(""):
+      (b.dataset.code||(document.getElementById("code").value||"")).toUpperCase().replace(/[^A-Z0-9]/g,"");
+    if(code.length<4){m.textContent="El código de liga tiene al menos 4 letras o números.";return}
+    liga={code,nick};saveLiga();ligaErr="";drawLiga(true);
+    if(st.done)sendResult();else loadRank()}
+  else if(act==="invite"){const t=`Únete a mi liga de ¿Dónde está?: ${invite()}`;
+    try{await navigator.clipboard.writeText(t);b.textContent="Enlace copiado"}catch(_){prompt("Copia este enlace:",t);b.textContent="Copia el enlace"}}
+  else if(act==="refresh"){b.textContent="Actualizando…";await loadRank()}
+  else if(act==="leave"){liga={code:"",nick:liga.nick};saveLiga();rows=[];drawLiga(true)}});
+if(!st.t0&&!st.done){st.t0=Date.now();save()}
+if(liga.code&&urlLiga&&urlLiga!==liga.code){/* invitación a otra liga: se muestra para que decida */}
+drawLiga(true);if(st.done)sendResult();else loadRank();
+</script>
+
+</body>
+</html>
