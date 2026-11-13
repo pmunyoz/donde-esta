@@ -337,7 +337,7 @@ render();
 
 // ===== Liga de amigos (Supabase) =====
 // Pega aquí la URL de tu proyecto y su clave pública (anon o publishable). Mientras estén vacías, la liga no aparece.
-const SUPA={url:"",key:""};
+const SUPA={url:"https://lnqigozwqraprajvaoiv.supabase.co",key:"sb_publishable_T2XYHn31Yyt5cwPQ_q_JNQ_7ZgMXqPN"};
 let liga={code:"",nick:""},rows=[],ligaErr="";
 try{const l=JSON.parse(localStorage.getItem("liga"));if(l&&l.code)liga=l}catch(e){}
 const urlLiga=(new URLSearchParams(location.search).get("liga")||"").toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,12);
