@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Cada día, cinco palabras con las letras mezcladas. Un minuto para cada una.">
+<title>Letras del Día</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Archivo:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: una columna estrecha como ¿Dónde está?; el atril de letras es la pieza central, con el reloj de 5 tramos encima */
+:root{
+  --sea:#D7E3EA; --land:#FFFFFF; --ink:#1B2F45; --muted:#5F7286; --line:#B9C9D4;
+  --signal:#E3A21A; --signal-ink:#3A2600; --bg:#EEF3F6; --card:#FFFFFF;
+  --hot:#2E8B57; --warm:#D4A017; --cold:#9AAAB8; --bad:#C2453B; --on-sem:#FFFFFF;
+  --f-display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --f-body:"Archivo",ui-sans-serif,system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --sea:#13212F; --land:#22364A; --ink:#E6EEF4; --muted:#93A6B8; --line:#35506A;
+  --signal:#F0B43A; --signal-ink:#2A1B00; --bg:#0D1823; --card:#172636;
+  --hot:#4CC18A; --warm:#E8BE45; --cold:#5E7489; --bad:#E06A5F; --on-sem:#0D1823; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --sea:#13212F; --land:#22364A; --ink:#E6EEF4; --muted:#93A6B8; --line:#35506A;
+  --signal:#F0B43A; --signal-ink:#2A1B00; --bg:#0D1823; --card:#172636;
+  --hot:#4CC18A; --warm:#E8BE45; --cold:#5E7489; --bad:#E06A5F; --on-sem:#0D1823; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 40px}
+.wrap{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+header{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+h1{font-family:var(--f-display);font-weight:800;font-size:2.1rem;line-height:1;margin:0;letter-spacing:-.02em}
+h1 span{color:var(--signal)}
+.num{font-family:var(--f-mono);font-size:.8rem;color:var(--muted);text-align:right}
+.how{font-size:.85rem;color:var(--muted);margin:0}
+.how a,.osm a{color:var(--ink);font-weight:600}
+button{font:inherit;cursor:pointer;border:0;border-radius:10px}
+.btn{background:var(--signal);color:var(--signal-ink);font-weight:600;padding:12px 18px}
+.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line);padding:10px 14px;font-weight:500}
+.btn:focus-visible,.ghost:focus-visible,.tile:focus-visible,.slot:focus-visible,.kofi:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+button:disabled{opacity:.45;cursor:default}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+
+/* Progreso de las 5 palabras */
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.steps li{border:1.5px solid var(--line);border-radius:10px;padding:6px 4px;text-align:center;font-variant-numeric:tabular-nums;display:flex;flex-direction:column;gap:0}
+.steps b{font-family:var(--f-display);font-weight:800;font-size:1.1rem;line-height:1.2}
+.steps small{font-family:var(--f-mono);font-size:.66rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.steps li.cur{border-color:var(--signal);border-width:2px;background:var(--card)}
+.steps li.ok{background:var(--hot);border-color:var(--hot);color:var(--on-sem)}
+.steps li.ko{background:transparent;border-color:var(--bad);color:var(--bad)}
+.steps li.ok small,.steps li.ko small{color:inherit;opacity:.85}
+
+/* Tablero */
+.board{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:14px}
+.segs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}
+.seg{height:30px;border-radius:6px;background:var(--sea);position:relative;overflow:hidden}
+.seg i{position:absolute;inset:0;background:var(--signal);transform-origin:left center;transform:scaleX(var(--f,1))}
+.seg b{position:relative;display:grid;place-items:center;height:100%;font-family:var(--f-mono);font-size:.78rem;font-weight:500;color:var(--signal-ink)}
+.seg.gone b{color:var(--muted)}
+.tinfo{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-variant-numeric:tabular-nums}
+.worth{font-weight:600}
+.left{font-family:var(--f-mono);font-size:1.1rem}
+.left.low{color:var(--bad)}
+.label{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:center}
+.slots,.tiles{display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:5px;width:100%;max-width:calc(var(--n) * 54px);margin-inline:auto}
+.tile,.slot{aspect-ratio:1;max-width:100%;display:grid;place-items:center;padding:0;font-family:var(--f-display);font-weight:800;
+  font-size:min(1.6rem,calc((100vw - 64px) / var(--n) * .55));line-height:1;border-radius:8px}
+.tile{background:var(--bg);color:var(--ink);border:1.5px solid var(--line);border-bottom-width:4px;transition:transform .08s}
+.tile:active{transform:translateY(2px)}
+.tile.used{opacity:.22}
+.slot{background:transparent;border:1.5px dashed var(--line);color:var(--ink)}
+.slot.f{background:var(--ink);border:1.5px solid var(--ink);color:var(--bg)}
+.slot.ok{background:var(--hot);border:1.5px solid var(--hot);color:var(--on-sem)}
+.slot.ko{background:var(--bad);border:1.5px solid var(--bad);color:var(--on-sem)}
+.slots.shake{animation:shake .35s}
+@keyframes shake{20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+.actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.msg{min-height:1.3em;margin:0;text-align:center;font-size:.88rem;color:var(--muted)}
+.msg.bad{color:var(--bad)}.msg.good{color:var(--hot);font-weight:600}
+.start{display:flex;flex-direction:column;gap:12px;align-items:flex-start}
+.start h2{font-family:var(--f-display);font-weight:800;font-size:1.4rem;margin:0;line-height:1.15;text-wrap:balance}
+.start ul{margin:0;padding-left:1.1em;display:flex;flex-direction:column;gap:4px}
+.tabla{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;width:100%;text-align:center;font-variant-numeric:tabular-nums}
+.tabla div{background:var(--sea);border-radius:6px;padding:4px 2px;font-size:.78rem}
+.tabla b{display:block;font-family:var(--f-display);font-size:1.05rem}
+
+/* Final */
+.end{background:var(--card);border:2px solid var(--ink);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.end h2{font-family:var(--f-display);font-weight:800;font-size:1.6rem;margin:0;line-height:1.1;text-wrap:balance}
+.end h2 span{color:var(--signal)}
+.words{display:flex;flex-direction:column;gap:6px}
+.w{display:grid;grid-template-columns:2.4em minmax(0,1fr) auto 3.2em;gap:8px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-variant-numeric:tabular-nums}
+.w .n{font-family:var(--f-mono);font-size:.72rem;color:var(--muted)}
+.w .p{font-family:var(--f-display);font-weight:800;text-align:right}
+.w .t{font-family:var(--f-mono);font-size:.8rem;color:var(--muted);text-align:right}
+.w .word{font-weight:600;letter-spacing:.06em;overflow-wrap:anywhere}
+.w.ko .word{color:var(--bad)}
+.w.ok .p{color:var(--hot)}.w.ko .p{color:var(--bad)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center}
+.stats b{display:block;font-family:var(--f-display);font-size:1.5rem;font-variant-numeric:tabular-nums}
+.stats small{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.next{font-family:var(--f-mono);font-size:.85rem;color:var(--muted)}
+pre.share{margin:0;white-space:pre-wrap;font-family:var(--f-mono);font-size:.8rem;background:var(--sea);padding:10px;border-radius:8px}
+.kofi,.also{display:flex;align-items:center;justify-content:center;gap:8px;padding:11px 14px;border-radius:10px;border:1.5px dashed var(--line);color:var(--ink);text-decoration:none;font-weight:500;font-size:.92rem;text-align:center}
+.kofi:hover,.also:hover{border-color:var(--signal);border-style:solid}
+.osm{font-size:.72rem;color:var(--muted);text-align:center;margin:0}
+
+/* Liga */
+.liga{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.liga h3{font-family:var(--f-display);font-weight:800;font-size:1.25rem;margin:0}
+.liga h4{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:6px 0 0;font-weight:500}
+.liga p{margin:0}
+.liga input{font:inherit;font-size:16px;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);flex:1;min-width:0}
+.lbl{font-size:.8rem;color:var(--muted)}
+.lhead{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.who{font-size:.85rem;color:var(--muted)}
+.code{font-family:var(--f-mono);letter-spacing:.08em;color:var(--ink);background:var(--sea);padding:1px 6px;border-radius:5px}
+.lmsg{font-size:.85rem;color:var(--bad)}
+.lmsg:empty{display:none}
+.hint{font-size:.82rem;color:var(--muted)}
+.tbl{overflow-x:auto}
+.liga table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:.92rem}
+.liga th{text-align:left;font-weight:500;font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;padding:4px 6px;border-bottom:1px solid var(--line)}
+.liga td{padding:7px 6px;border-bottom:1px solid var(--line)}
+.liga td:first-child,.liga th:first-child{width:2em;color:var(--muted)}
+.liga tr.me td{font-weight:600;background:var(--sea)}
+@media (prefers-reduced-motion:reduce){.slots.shake{animation:none}.tile{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Letras<br><span>del día</span></h1>
+    <div class="num" id="num"></div>
+  </header>
+  <p class="how">Cinco palabras con las letras mezcladas, de 5 a 10 letras. Un minuto para cada una y hasta 5 puntos por palabra.</p>
+  <ol class="steps" id="steps" aria-label="Progreso"></ol>
+  <section id="play"></section>
+  <div id="end"></div>
+  <section class="liga" id="liga" hidden></section>
+  <p class="osm">Más juegos: <a href="./">¿Dónde está?</a> · <a href="https://ko-fi.com/pascualmunoz" target="_blank" rel="noopener">Invítame a un café</a></p>
+</div>
+
+<script>
+const LISTS=[["CAMPO","CIELO","FUEGO","GLOBO","HUEVO","LIBRO","MUNDO","NIEVE","PLAYA","QUESO","RELOJ","SILLA","PERRO","LIMÓN","PIANO","BURRO","PLUMA","SUELO","CALLE","NOCHE","LECHE","PATIO","MANGO","HIELO","TORRE","VIAJE","DULCE","MARZO","JUNIO","JULIO","ZORRO","PULPO","GAFAS","FALDA","LÁPIZ","COCHE","BOMBA","NARIZ","BRAZO","OREJA","TECHO","CALDO","OVEJA","YOGUR","CUEVA","MONJA","BALÓN","FRUTA","HUESO","PIZZA","BUZÓN","JABÓN"],["JARDÍN","BOSQUE","CAMIÓN","PUEBLO","ABUELO","JIRAFA","SOMBRA","PUERTA","CEREZA","TURRÓN","FÚTBOL","ESPEJO","TOMATE","PATATA","ZAPATO","VERANO","CONEJO","PALOMA","CAMISA","GUANTE","NEVERA","ESCOBA","TOALLA","MÉDICO","DOCTOR","PINTOR","TAMBOR","VIOLÍN","MÚSICA","DIBUJO","CUENTO","NOVELA","TEATRO","COHETE","VOLCÁN","PLANTA","ABRIGO","DELFÍN","LLUVIA","TRUENO","PUENTE","CIUDAD","PARQUE","TIENDA","MALETA","AZÚCAR","HARINA","ACEITE"],["VENTANA","MANZANA","CUCHARA","NARANJA","BOTELLA","GALLINA","CABALLO","CORBATA","BUFANDA","PLÁTANO","CEBOLLA","LECHUGA","TENEDOR","CEPILLO","MOCHILA","PIZARRA","ESCUELA","MAESTRO","BOMBERO","POLICÍA","CARTERO","MONTAÑA","ARDILLA","TORTUGA","BALLENA","TIBURÓN","CANGURO","MAPACHE","GALLETA","DOMINGO","MERCADO","BILLETE","VINAGRE","ESPALDA","RODILLA","PESTAÑA","AUTOBÚS","TRACTOR","CHORIZO","CASTAÑA","LENTEJA","VESTIDO","ABANICO","ABOGADO","GIRASOL","AMAPOLA","HORMIGA","LECHUZA","JUGUETE","TOBOGÁN"],["CASTILLO","INVIERNO","CHAQUETA","PIMIENTO","CUCHILLO","CUADERNO","GUITARRA","TROMPETA","ESTRELLA","DESIERTO","PINGÜINO","ALMOHADA","ESCALERA","ASCENSOR","PARAGUAS","SEMÁFORO","AVIONETA","TORTILLA","GAZPACHO","CROQUETA","ALMENDRA","AVELLANA","CALABAZA","GUISANTE","GARBANZO","MEJILLÓN","CALCETÍN","PANTALÓN","SOMBRERO","CAMISETA","PANADERO","CAMARERO","ACEITUNA","MARIPOSA","COLUMPIO","CARAMELO","HOSPITAL","ELEFANTE","CANGREJO","FLAMENCO","LAVADORA","TELÉFONO","CHIMENEA","ALFOMBRA","BOMBILLA","ESTACIÓN","FARMACIA","ENSALADA","LIMONADA","NATACIÓN"],["MURCIÉLAGO","DINOSAURIO","CARPINTERO","CALENDARIO","AEROPUERTO","BIBLIOTECA","PASTELERÍA","BALONCESTO","ASTRONAUTA","TELESCOPIO","HIPOPÓTAMO","ESCARABAJO","LOCOMOTORA","AMBULANCIA","FERRETERÍA","PELUQUERÍA","CARNICERÍA","JUGUETERÍA","CUMPLEAÑOS","VACACIONES","CAMPAMENTO","AVENTURERO","EXPLORADOR","FOTOGRAFÍA","PERIODISTA","FUTBOLISTA","ARQUITECTO","CIENTÍFICO","PRESIDENTE","CONTENEDOR","ALBÓNDIGAS","POLVORONES","CHUCHERÍAS","MONTAÑISMO","SENDERISMO","EQUITACIÓN","ESCAPARATE","CREMALLERA","PARACAÍDAS","CAMPEONATO","MAQUINISTA","ARQUEÓLOGO","GOLONDRINA","SALAMANDRA","NUBARRONES","ACANTILADO","CORDILLERA","MEDIANOCHE","NOCHEVIEJA","CARNAVALES"]];
+const LENS=[5,6,7,8,10],SEG=12,WORD_T=60,REVEAL=1600;
+const norm=s=>s.toUpperCase().replace(/Ñ/g,"\u0001").normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/\u0001/g,"Ñ");
+function mulberry(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function shuffled(arr,seed){const r=mulberry(seed),o=arr.slice();for(let i=o.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[o[i],o[j]]=[o[j],o[i]]}return o}
+
+// Palabras del día: mismo resultado para todos según la fecha local
+const now=new Date();
+const dkey=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+const key=dkey(now);
+const DAY=Math.round((Date.UTC(now.getFullYear(),now.getMonth(),now.getDate())-Date.UTC(2026,10,14))/864e5);
+const pick=(L,k)=>{const o=shuffled(L,4100+k);return o[((DAY%o.length)+o.length)%o.length]};
+const DISP=LISTS.map(pick),WORDS=DISP.map(norm);
+function scramble(w,seed){const a=[...w];
+  for(let t=0;t<60;t++){const s=shuffled(a,seed+t*977);const same=s.filter((c,i)=>c===a[i]).length;if(s.join("")!==w&&same<=Math.floor(a.length/4))return s}
+  return a.slice().reverse()}
+const LET=WORDS.map((w,k)=>scramble([...w].join(""),DAY*31+k*7+1));
+document.getElementById("num").innerHTML=`Reto nº ${DAY+1}<br>${now.toLocaleDateString("es-ES",{day:"numeric",month:"long"})}`;
+
+// Estado guardado
+let st={started:false,idx:0,start:0,res:[],done:false,t0:0,t1:0,sent:""};
+let stats={played:0,total:0,best:0,streak:0,maxStreak:0,last:null};
+try{const s=JSON.parse(localStorage.getItem("lt-"+key));if(s)st=s}catch(e){}
+try{const s=JSON.parse(localStorage.getItem("lt-stats"));if(s)stats=s}catch(e){}
+const save=()=>{try{localStorage.setItem("lt-"+key,JSON.stringify(st));localStorage.setItem("lt-stats",JSON.stringify(stats))}catch(e){}};
+let picked=[],order=null,orderIdx=-1,msgText="",msgCls="",showingReveal=false,endHold=0;
+const score=()=>st.res.reduce((a,r)=>a+r.pts,0);
+const solved=()=>st.res.filter(r=>r.ok).length;
+const usedSecs=()=>st.res.reduce((a,r)=>a+r.s,0);
+const mmss=s=>s==null?"–":`${Math.floor(s/60)}:${String(Math.round(s)%60).padStart(2,"0")}`;
+const worthAt=el=>Math.max(1,5-Math.floor(el/SEG));
+
+// Progreso
+function drawSteps(){
+  document.getElementById("steps").innerHTML=LENS.map((n,k)=>{const r=st.res[k];
+    if(r)return`<li class="${r.ok?"ok":"ko"}"><b>${r.ok?"+"+r.pts:"✕"}</b><small>${n} letras</small></li>`;
+    const cur=st.started&&!st.done&&k===st.idx;
+    return`<li class="${cur?"cur":""}"><b>${n}</b><small>letras</small></li>`}).join("")}
+
+// Tablero
+function drawPlay(){
+  const el=document.getElementById("play");
+  if(st.done){el.innerHTML="";return}
+  if(!st.started){
+    el.innerHTML=`<div class="board start"><h2>Cinco palabras, cinco minutos</h2>
+      <ul><li>Ordena las letras para formar la palabra. Puedes tocar las fichas o escribir con el teclado.</li>
+      <li>Cada palabra tiene un minuto. Si se acaba, pasa a la siguiente y cuenta como fallada.</li>
+      <li>Cuanto antes la saques, más vale:</li></ul>
+      <div class="tabla">${[5,4,3,2,1].map((p,i)=>`<div><b>${p}</b>${i*SEG}–${(i+1)*SEG} s</div>`).join("")}</div>
+      <button class="btn" id="go">Empezar</button>
+      <p class="hint">El reloj se pone en marcha al pulsar y no se detiene si recargas la página.</p></div>`;
+    document.getElementById("go").onclick=()=>{st.started=true;st.t0=Date.now();st.start=Date.now();save();render()};return}
+  const k=st.idx,n=WORDS[k].length;
+  if(orderIdx!==k){order=LET[k].map((_,i)=>i);orderIdx=k;picked=[]}
+  const reveal=Date.now()<st.start&&k>0?k-1:-1;showingReveal=reveal>=0;
+  const showK=reveal>=0?reveal:k,showN=WORDS[showK].length;
+  let slots="";
+  if(reveal>=0){const r=st.res[reveal];slots=[...WORDS[reveal]].map(c=>`<div class="slot ${r.ok?"ok":"ko"}">${c}</div>`).join("")}
+  else for(let i=0;i<n;i++){const t=picked[i];slots+=t===undefined?`<div class="slot" aria-hidden="true"></div>`:`<button class="slot f" data-s="${i}" aria-label="Quitar ${LET[k][t]}">${LET[k][t]}</button>`}
+  const tiles=reveal>=0?"":order.map(i=>`<button class="tile${picked.includes(i)?" used":""}" data-t="${i}" aria-label="Letra ${LET[k][i]}">${LET[k][i]}</button>`).join("");
+  const rmsg=reveal>=0?(st.res[reveal].ok?`¡Bien! +${st.res[reveal].pts} puntos`:`Era ${DISP[reveal].toUpperCase()}`):msgText;
+  const rcls=reveal>=0?(st.res[reveal].ok?"good":"bad"):msgCls;
+  el.innerHTML=`<div class="board">
+    <div><div class="segs" id="segs">${[5,4,3,2,1].map(p=>`<div class="seg"><i></i><b>${p}</b></div>`).join("")}</div>
+      <div class="tinfo"><span class="worth" id="worth">Vale 5 puntos</span><span class="left" id="left">1:00</span></div></div>
+    <div class="label">${reveal>=0?`Palabra ${showK+1} de 5`:`Palabra ${k+1} de 5 · ${n} letras`}</div>
+    <div class="slots" id="slots" style="--n:${showN}">${slots}</div>
+    ${reveal>=0?"":`<div class="tiles" id="tiles" style="--n:${n}">${tiles}</div>
+    <div class="actions"><button class="ghost" id="clear">Borrar</button><button class="ghost" id="mix">Mezclar</button><button class="ghost" id="skip">Pasar</button></div>`}
+    <p class="msg ${rcls}" id="msg" role="status">${rmsg}</p></div>`;
+  if(reveal<0){
+    document.getElementById("tiles").onclick=e=>{const b=e.target.closest("[data-t]");if(!b)return;const t=+b.dataset.t;
+      if(picked.includes(t))picked.splice(picked.indexOf(t),1);else picked.push(t);after()};
+    document.getElementById("slots").onclick=e=>{const b=e.target.closest("[data-s]");if(!b)return;picked.splice(+b.dataset.s,1);after()};
+    document.getElementById("clear").onclick=()=>{picked=[];after()};
+    document.getElementById("mix").onclick=()=>{order=shuffled(order,Date.now()%1e9);drawPlay()};
+    document.getElementById("skip").onclick=()=>finish(false);
+  }
+  tick()}
+function setMsg(t,c){msgText=t;msgCls=c||"";const m=document.getElementById("msg");if(m){m.textContent=t;m.className="msg "+msgCls}}
+function after(){const k=st.idx,n=WORDS[k].length;msgText="";msgCls="";
+  if(picked.length===n){const w=picked.map(i=>LET[k][i]).join("");
+    if(w===WORDS[k])return finish(true);
+    drawPlay();setMsg("Esa no es. Sigue probando.","bad");const s=document.getElementById("slots");s.classList.remove("shake");void s.offsetWidth;s.classList.add("shake");return}
+  drawPlay()}
+function finish(ok){if(st.done||Date.now()<st.start)return;
+  const el=Math.min(WORD_T,(Date.now()-st.start)/1000);
+  st.res.push({ok,pts:ok?worthAt(el):0,s:ok?Math.round(el):WORD_T});
+  st.idx++;picked=[];msgText="";msgCls="";
+  if(st.idx>=5){st.done=true;st.t1=Date.now();endStats();save();
+    // Muestra la última palabra antes del resumen
+    endHold=Date.now()+REVEAL;drawSteps();showLastReveal();setTimeout(()=>{render();sendResult()},REVEAL);return}
+  st.start=Date.now()+REVEAL;save();render()}
+function showLastReveal(){const r=st.res[4],el=document.getElementById("play");
+  el.innerHTML=`<div class="board"><div class="label">Palabra 5 de 5</div><div class="slots" style="--n:${WORDS[4].length}">${[...WORDS[4]].map(c=>`<div class="slot ${r.ok?"ok":"ko"}">${c}</div>`).join("")}</div>
+  <p class="msg ${r.ok?"good":"bad"}">${r.ok?`¡Bien! +${r.pts} puntos`:`Era ${DISP[4].toUpperCase()}`}</p></div>`}
+function endStats(){const y=new Date(now);y.setDate(y.getDate()-1);
+  stats.played++;stats.total+=score();stats.best=Math.max(stats.best,score());
+  stats.streak=stats.last===dkey(y)?stats.streak+1:1;stats.maxStreak=Math.max(stats.maxStreak||0,stats.streak);stats.last=key}
+
+// Reloj
+function tick(){
+  if(!st.started||st.done)return;
+  const t=Date.now();if(t<st.start)return;
+  if(showingReveal){drawSteps();drawPlay();return}
+  const el=(t-st.start)/1000;
+  if(el>=WORD_T){finish(false);return}
+  const segs=document.querySelectorAll("#segs .seg");
+  segs.forEach((s,i)=>{const f=Math.max(0,Math.min(1,((i+1)*SEG-el)/SEG));s.style.setProperty("--f",f.toFixed(3));s.classList.toggle("gone",f===0)});
+  const w=document.getElementById("worth"),l=document.getElementById("left");
+  if(w){const v=worthAt(el);w.textContent=`Vale ${v} punto${v>1?"s":""}`}
+  if(l){const left=Math.ceil(WORD_T-el);l.textContent=mmss(left);l.classList.toggle("low",left<=10)}}
+setInterval(tick,100);
+
+// Teclado físico
+document.addEventListener("keydown",e=>{
+  if(!st.started||st.done||Date.now()<st.start||e.target.closest("input,textarea")||e.metaKey||e.ctrlKey||e.altKey)return;
+  const k=st.idx;
+  if(e.key==="Backspace"){e.preventDefault();picked.pop();after();return}
+  if(e.key==="Escape"){picked=[];after();return}
+  const L=norm(e.key);if(L.length!==1||!/[A-ZÑ]/.test(L))return;
+  const i=order.find(i=>LET[k][i]===L&&!picked.includes(i));
+  if(i===undefined){setMsg(`No queda ninguna ${L}.`,"bad");return}
+  picked.push(i);after()});
+
+// Final
+const KEY=["❌","1️⃣","2️⃣","3️⃣","4️⃣","5️⃣"];
+function shareText(){return`Letras del día nº ${DAY+1} — ${score()}/25\n${st.res.map(r=>KEY[r.pts]).join("")}\n⏱️ ${mmss(usedSecs())}`}
+function verdict(p){return p>=22?"Imbatible":p>=17?"Muy bien":p>=11?"Bien jugado":p>=5?"Se puede mejorar":"Mañana más"}
+function drawEnd(){const e=document.getElementById("end");if(!st.done||Date.now()<endHold){e.innerHTML="";return}
+  const avg=stats.played?(stats.total/stats.played).toFixed(1).replace(".",","):"0";
+  e.innerHTML=`<div class="end"><h2><span>${score()}</span> de 25 puntos. ${verdict(score())}.</h2>
+  <div class="words">${st.res.map((r,k)=>`<div class="w ${r.ok?"ok":"ko"}"><span class="n">${LENS[k]} l.</span><span class="word">${DISP[k].toUpperCase()}</span><span class="t">${r.ok?mmss(r.s):"–"}</span><span class="p">${r.ok?"+"+r.pts:"0"}</span></div>`).join("")}</div>
+  <div class="stats"><div><b>${stats.played}</b><small>Jugados</small></div><div><b>${avg}</b><small>Media</small></div><div><b>${stats.best}</b><small>Mejor</small></div><div><b>${stats.streak}</b><small>Racha</small></div></div>
+  <pre class="share" id="sharetxt">${shareText()}</pre>
+  <div class="row"><button class="btn" id="copy">Copiar resultado</button><span class="next" id="next"></span></div>
+  <a class="kofi" href="https://ko-fi.com/pascualmunoz" target="_blank" rel="noopener"><span aria-hidden="true">☕</span> ¿Te gusta el juego? Invítame a un café</a>
+  <a class="also" href="./"><span aria-hidden="true">📍</span> Juega también a ¿Dónde está?</a></div>`;
+  document.getElementById("copy").onclick=async ev=>{try{await navigator.clipboard.writeText(shareText());ev.target.textContent="Copiado"}catch(_){const r=document.createRange();r.selectNodeContents(document.getElementById("sharetxt"));const s=getSelection();s.removeAllRanges();s.addRange(r);ev.target.textContent="Selecciónalo y cópialo"}};
+  next()}
+function next(){const el=document.getElementById("next");if(!el)return;const n=new Date(),m=new Date(n);m.setHours(24,0,0,0);const s=Math.max(0,Math.floor((m-n)/1000));
+  el.textContent=`Siguiente en ${String(Math.floor(s/3600)).padStart(2,"0")}:${String(Math.floor(s/60)%60).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`}
+setInterval(next,1000);
+
+function render(){drawSteps();drawPlay();drawEnd();drawLiga(false)}
+
+// ===== Liga de amigos (Supabase), compartida con ¿Dónde está? =====
+const SUPA={url:"https://lnqigozwqraprajvaoiv.supabase.co",key:"sb_publishable_T2XYHn31Yyt5cwPQ_q_JNQ_7ZgMXqPN"};
+const MODE="letras";
+let liga={code:"",nick:""},rows=[],ligaErr="";
+try{const l=JSON.parse(localStorage.getItem("liga"));if(l&&l.code)liga=l}catch(e){}
+const urlLiga=(new URLSearchParams(location.search).get("liga")||"").toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,12);
+const saveLiga=()=>{try{localStorage.setItem("liga",JSON.stringify(liga))}catch(e){}};
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const invite=()=>location.origin+location.pathname+"?liga="+liga.code;
+async function api(path,opt={}){
+  const h={apikey:SUPA.key,"Content-Type":"application/json",...(opt.headers||{})};
+  if(SUPA.key.startsWith("eyJ"))h.Authorization="Bearer "+SUPA.key;
+  const r=await fetch(SUPA.url.replace(/\/$/,"")+"/rest/v1/"+path,{...opt,headers:h});
+  if(r.status===409)return null;if(!r.ok)throw new Error("HTTP "+r.status);
+  const t=await r.text();return t?JSON.parse(t):null}
+async function sendResult(){
+  if(!SUPA.url||!liga.code||!st.done||st.sent===liga.code)return;
+  try{await api("resultados",{method:"POST",headers:{Prefer:"return=minimal"},body:JSON.stringify({liga:liga.code,apodo:liga.nick,modo:MODE,fecha:key,intentos:null,ganado:solved()===5,segundos:usedSecs(),puntos:score(),aciertos:solved()})});
+    st.sent=liga.code;save();ligaErr=""}
+  catch(e){ligaErr="No se pudo enviar tu resultado. Se reintentará al volver a abrir la página."}
+  loadRank()}
+async function loadRank(){
+  if(!SUPA.url||!liga.code)return;const f=new Date(now);f.setDate(f.getDate()-6);
+  try{rows=await api(`resultados?liga=eq.${liga.code}&modo=eq.${MODE}&fecha=gte.${dkey(f)}&select=apodo,fecha,puntos,aciertos,segundos`)||[];ligaErr=ligaErr.startsWith("No se pudo cargar")?"":ligaErr}
+  catch(e){ligaErr="No se pudo cargar la clasificación."}
+  drawLiga(true)}
+function drawLiga(force){
+  const el=document.getElementById("liga");if(!SUPA.url){el.hidden=true;return}el.hidden=false;
+  if(!liga.code){if(el.dataset.v==="form"&&!force)return;el.dataset.v="form";
+    el.innerHTML=`<h3>Liga de amigos</h3>
+    ${urlLiga?`<p>Te han invitado a la liga <b class="code">${esc(urlLiga)}</b>. Elige un apodo para entrar.</p>`:`<p>Compite con tus amigos: crea una liga y pásales el enlace, o únete con su código. Es la misma liga que en ¿Dónde está?.</p>`}
+    <label class="lbl" for="nick">Tu apodo</label>
+    <input id="nick" maxlength="20" placeholder="Por ejemplo, Paco" value="${esc(liga.nick||"")}">
+    ${urlLiga?`<div class="row"><button class="btn" data-act="join" data-code="${esc(urlLiga)}">Entrar en la liga</button></div>`:
+    `<div class="row"><button class="btn" data-act="create">Crear liga</button></div>
+     <label class="lbl" for="code">¿Ya tienes un código?</label>
+     <div class="row"><input id="code" maxlength="12" placeholder="Código" autocapitalize="characters"><button class="ghost" data-act="join">Unirme</button></div>`}
+    <p class="lmsg" id="lmsg">${esc(ligaErr)}</p>`;return}
+  el.dataset.v="liga";
+  const today=rows.filter(r=>r.fecha===key).sort((a,b)=>((b.puntos||0)-(a.puntos||0))||((a.segundos??1e9)-(b.segundos??1e9)));
+  const week={};rows.forEach(r=>{const w=week[r.apodo]||(week[r.apodo]={a:r.apodo,p:0,d:0});w.p+=r.puntos||0;w.d++});
+  const wk=Object.values(week).sort((a,b)=>b.p-a.p||a.d-b.d);
+  const me=a=>a===liga.nick?' class="me"':"";
+  el.innerHTML=`<div class="lhead"><h3>Liga <span class="code">${esc(liga.code)}</span></h3><span class="who">Juegas como <b>${esc(liga.nick)}</b></span></div>
+  <div class="row"><button class="ghost" data-act="invite">Copiar invitación</button><button class="ghost" data-act="refresh">Actualizar</button><button class="ghost" data-act="leave">Salir</button></div>
+  <p class="lmsg" id="lmsg">${esc(ligaErr)}</p>
+  <h4>Hoy</h4>
+  ${!st.done?`<p class="hint">Termina el reto para ver cómo han quedado los demás.</p>`:
+    today.length?`<div class="tbl"><table><thead><tr><th>#</th><th>Apodo</th><th>Puntos</th><th>Aciertos</th><th>Tiempo</th></tr></thead><tbody>${today.map((r,i)=>`<tr${me(r.apodo)}><td>${i+1}</td><td>${esc(r.apodo)}</td><td>${r.puntos??0}</td><td>${r.aciertos??0}/5</td><td>${mmss(r.segundos)}</td></tr>`).join("")}</tbody></table></div>`:`<p class="hint">Aún no hay resultados de hoy.</p>`}
+  <h4>Últimos 7 días</h4>
+  ${wk.length?`<div class="tbl"><table><thead><tr><th>#</th><th>Apodo</th><th>Puntos</th><th>Días</th></tr></thead><tbody>${wk.map((w,i)=>`<tr${me(w.a)}><td>${i+1}</td><td>${esc(w.a)}</td><td>${w.p}</td><td>${w.d}</td></tr>`).join("")}</tbody></table></div>
+  <p class="hint">Se suman los puntos de cada día (máximo 25 por día). Si hay empate hoy, gana quien haya tardado menos.</p>`:`<p class="hint">Todavía nadie ha jugado esta semana.</p>`}`}
+document.getElementById("liga").addEventListener("click",async e=>{
+  const b=e.target.closest("[data-act]");if(!b)return;const act=b.dataset.act,m=document.getElementById("lmsg");
+  if(act==="create"||act==="join"){
+    const nick=(document.getElementById("nick").value||"").trim().slice(0,20);
+    if(!nick){m.textContent="Escribe un apodo para que tus amigos te reconozcan.";return}
+    const code=act==="create"?Array.from({length:6},()=>"ABCDEFGHJKLMNPQRSTUVWXYZ23456789"[Math.floor(Math.random()*32)]).join(""):
+      (b.dataset.code||(document.getElementById("code").value||"")).toUpperCase().replace(/[^A-Z0-9]/g,"");
+    if(code.length<4){m.textContent="El código de liga tiene al menos 4 letras o números.";return}
+    liga={code,nick};saveLiga();ligaErr="";drawLiga(true);
+    if(st.done)sendResult();else loadRank()}
+  else if(act==="invite"){const t=`Únete a mi liga de Letras del día: ${invite()}`;
+    try{await navigator.clipboard.writeText(t);b.textContent="Enlace copiado"}catch(_){m.textContent=t;b.textContent="Copia el enlace de arriba"}}
+  else if(act==="refresh"){b.textContent="Actualizando…";await loadRank()}
+  else if(act==="leave"){liga={code:"",nick:liga.nick};saveLiga();rows=[];drawLiga(true)}});
+
+render();
+if(st.done)sendResult();else loadRank();
+</script>
+</body>
+</html>
