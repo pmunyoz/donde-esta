@@ -116,7 +116,7 @@ pre.share{margin:0;white-space:pre-wrap;font-family:var(--f-mono);font-size:.8re
     <h1>¿Dónde<br><span>está?</span></h1>
     <div class="num" id="num"></div>
   </header>
-  <p class="how">Cada día, una capital de provincia. Mira la foto: tienes 6 intentos; cada fallo destapa una pista nueva y te dice a cuántos km estás y hacia dónde mirar. Acertar vale 10 puntos, y cada fallo resta 2. <a href="dificil.html">¿Demasiado fácil? Prueba el modo difícil</a></p>
+  <p class="how">Cada día, una capital de provincia. Mira la foto: tienes 6 intentos; cada fallo destapa una pista nueva y te dice a cuántos km estás y hacia dónde mirar. Acertar vale 10 puntos y cada fallo resta 2 (a la última, 1 punto). <a href="dificil.html">¿Demasiado fácil? Prueba el modo difícil</a></p>
 
   <figure class="photo" id="photo">
     <div class="img" id="photoimg">Cargando la foto del día…</div>
@@ -216,7 +216,7 @@ const G=g=>typeof g==="number"?C[g]:[g.n,g.lat,g.lon];
 const fmt=d=>d<1?Math.round(d*1000)+" m":Math.round(d).toLocaleString("es-ES")+" km";const prox=d=>Math.max(0,Math.round(100*(1-d/MAXD)));
 
 // Estado
-const MAX=6;const PTS=(won,n)=>won?Math.max(0,10-2*(n-1)):0;const MODE="normal";let st={guesses:[],done:false,won:false};let stats={played:0,wins:0,streak:0,best:0,last:null};
+const MAX=6;const PTS=(won,n)=>won?Math.max(1,10-2*(n-1)):0;const MODE="normal";let st={guesses:[],done:false,won:false};let stats={played:0,wins:0,streak:0,best:0,last:null};
 try{const s=JSON.parse(localStorage.getItem("de-"+key));if(s)st=s}catch(e){}
 try{const s=JSON.parse(localStorage.getItem("de-stats"));if(s)stats=s}catch(e){}
 const save=()=>{try{localStorage.setItem("de-"+key,JSON.stringify(st));localStorage.setItem("de-stats",JSON.stringify(stats))}catch(e){}};
@@ -255,7 +255,7 @@ function drawGuesses(){let h="";for(let k=0;k<MAX;k++){const g=st.guesses[k];
 
 function shareText(){const rows=st.guesses.map(g=>{if(g===T)return"🟩🟩🟩🟩🟩🎯";const p=prox(dist(G(g),TC));const f=Math.floor(p/20);return"🟩".repeat(f)+(p%20>=10?"🟨":"")+"⬜".repeat(5-f-(p%20>=10?1:0))+em(bearing(G(g),TC))});
   return`¿Dónde está? nº ${DAY+1} — ${PTS(st.won,st.guesses.length)}/10 puntos (${st.won?st.guesses.length:"X"}/${MAX})\n${rows.join("\n")}`}
-function drawWorth(){const w=document.getElementById("worth");if(st.done){w.hidden=true;return}w.hidden=false;const v=PTS(true,st.guesses.length+1);w.innerHTML=`Si aciertas ahora: <b>${v}</b> punto${v===1?"":"s"}${v===0?" (pero mantienes la racha)":""}`}
+function drawWorth(){const w=document.getElementById("worth");if(st.done){w.hidden=true;return}w.hidden=false;const v=PTS(true,st.guesses.length+1);w.innerHTML=`Si aciertas ahora: <b>${v}</b> punto${v===1?"":"s"}`}
 function drawEnd(){drawWorth();const e=document.getElementById("end");if(!st.done){e.innerHTML="";return}
   document.getElementById("guessbox").hidden=true;
   const pct=stats.played?Math.round(100*stats.wins/stats.played):0;const avg=stats.ptsN?(stats.pts/stats.ptsN).toFixed(1).replace(".",",").replace(",0",""):"–";
@@ -396,7 +396,7 @@ function drawLiga(force){
     today.length?`<div class="tbl"><table><thead><tr><th>#</th><th>Apodo</th><th>Puntos</th><th>Intentos</th><th>Tiempo</th></tr></thead><tbody>${today.map((r,i)=>`<tr${me(r.apodo)}><td>${i+1}</td><td>${esc(r.apodo)}</td><td>${rp(r)}</td><td>${r.ganado?r.intentos+"/6":"X/6"}</td><td>${mmss(r.segundos)}</td></tr>`).join("")}</tbody></table></div>`:`<p class="hint">Aún no hay resultados de hoy.</p>`}
   <h4>Últimos 7 días</h4>
   ${wk.length?`<div class="tbl"><table><thead><tr><th>#</th><th>Apodo</th><th>Puntos</th><th>Aciertos</th></tr></thead><tbody>${wk.map((w,i)=>`<tr${me(w.a)}><td>${i+1}</td><td>${esc(w.a)}</td><td>${w.p}</td><td>${w.v}/${w.d}</td></tr>`).join("")}</tbody></table></div>
-  <p class="hint">Acertar vale 10 puntos y cada fallo resta 2: a la primera son 10, a la sexta 0. Si no aciertas, 0. Si hay empate hoy, gana quien tarde menos. El tiempo cuenta desde que abres el reto del día.</p>`:`<p class="hint">Todavía nadie ha jugado esta semana.</p>`}`}
+  <p class="hint">Acertar vale 10 puntos y cada fallo resta 2: a la primera son 10, a la quinta 2 y a la sexta 1. Si no aciertas, 0. Si hay empate hoy, gana quien tarde menos. El tiempo cuenta desde que abres el reto del día.</p>`:`<p class="hint">Todavía nadie ha jugado esta semana.</p>`}`}
 document.getElementById("liga").addEventListener("click",async e=>{
   const b=e.target.closest("[data-act]");if(!b)return;const act=b.dataset.act,m=document.getElementById("lmsg");
   if(act==="create"||act==="join"){
