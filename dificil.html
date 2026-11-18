@@ -54,6 +54,8 @@ button{font:inherit;cursor:pointer;border:0;border-radius:10px}
 .sugg{position:absolute;left:0;right:0;top:calc(100% + 4px);background:var(--card);border:1px solid var(--line);border-radius:10px;z-index:5;overflow:hidden;box-shadow:0 8px 24px rgb(0 0 0 / .12)}
 .sugg button{display:block;width:100%;text-align:left;background:transparent;color:var(--ink);padding:10px 14px;border-radius:0}
 .sugg button:hover,.sugg button.on{background:var(--sea)}
+.worth{margin:0;font-size:.85rem;color:var(--muted)}
+.worth b{color:var(--ink);font-family:var(--f-display);font-size:1.05rem}
 .msg{min-height:1.2em;font-size:.88rem;color:var(--bad)}
 .guesses{display:flex;flex-direction:column;gap:6px}
 .g{display:grid;grid-template-columns:1.6em 1fr auto 2em 3.4em;gap:8px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-variant-numeric:tabular-nums}
@@ -116,7 +118,7 @@ pre.share{margin:0;white-space:pre-wrap;font-family:var(--f-mono);font-size:.8re
     <h1>¿Dónde<br><span>está?</span> <small class="tag">difícil</small></h1>
     <div class="num" id="num"></div>
   </header>
-  <p class="how">Cada día, una ciudad o pueblo de España que <b>no</b> es capital de provincia. Sin puntos de ayuda en el mapa: 6 intentos, pistas más escasas y la foto llega tarde. <a href="./">Modo normal</a></p>
+  <p class="how">Cada día, una ciudad o pueblo de España que <b>no</b> es capital de provincia. Sin puntos de ayuda en el mapa: 6 intentos, pistas más escasas y la foto llega tarde. Acertar vale 10 puntos, y cada fallo resta 2. <a href="./">Modo normal</a></p>
 
   <div class="map" id="map"></div>
 
@@ -135,6 +137,7 @@ pre.share{margin:0;white-space:pre-wrap;font-family:var(--f-mono);font-size:.8re
     <div class="sugg" id="sugg" hidden></div>
   </div>
   <div class="msg" id="msg" role="status"></div>
+  <p class="worth" id="worth"></p>
 
   <div class="guesses" id="guesses"></div>
   <div id="end"></div>
@@ -249,7 +252,7 @@ const G=g=>typeof g==="number"?C[g]:[g.n,g.lat,g.lon];
 const fmt=d=>d<1?Math.round(d*1000)+" m":Math.round(d).toLocaleString("es-ES")+" km";const prox=d=>Math.max(0,Math.round(100*(1-d/MAXD)));
 
 // Estado
-const MAX=6;const MODE="dificil";let st={guesses:[],done:false,won:false};let stats={played:0,wins:0,streak:0,best:0,last:null};
+const MAX=6;const PTS=(won,n)=>won?Math.max(0,10-2*(n-1)):0;const MODE="dificil";let st={guesses:[],done:false,won:false};let stats={played:0,wins:0,streak:0,best:0,last:null};
 try{const s=JSON.parse(localStorage.getItem("dd-"+key));if(s)st=s}catch(e){}
 try{const s=JSON.parse(localStorage.getItem("dd-stats"));if(s)stats=s}catch(e){}
 const save=()=>{try{localStorage.setItem("dd-"+key,JSON.stringify(st));localStorage.setItem("dd-stats",JSON.stringify(stats))}catch(e){}};
@@ -290,12 +293,13 @@ function drawGuesses(){let h="";for(let k=0;k<MAX;k++){const g=st.guesses[k];
   document.getElementById("guesses").innerHTML=h}
 
 function shareText(){const rows=st.guesses.map(g=>{if(g===T)return"🟩🟩🟩🟩🟩🎯";const p=prox(dist(G(g),TC));const f=Math.floor(p/20);return"🟩".repeat(f)+(p%20>=10?"🟨":"")+"⬜".repeat(5-f-(p%20>=10?1:0))+em(bearing(G(g),TC))});
-  return`¿Dónde está? (difícil) nº ${DAY+1} — ${st.won?st.guesses.length:"X"}/${MAX}\n${rows.join("\n")}`}
-function drawEnd(){const e=document.getElementById("end");if(!st.done){e.innerHTML="";return}
+  return`¿Dónde está? (difícil) nº ${DAY+1} — ${PTS(st.won,st.guesses.length)}/10 puntos (${st.won?st.guesses.length:"X"}/${MAX})\n${rows.join("\n")}`}
+function drawWorth(){const w=document.getElementById("worth");if(st.done){w.hidden=true;return}w.hidden=false;const v=PTS(true,st.guesses.length+1);w.innerHTML=`Si aciertas ahora: <b>${v}</b> punto${v===1?"":"s"}${v===0?" (pero mantienes la racha)":""}`}
+function drawEnd(){drawWorth();const e=document.getElementById("end");if(!st.done){e.innerHTML="";return}
   document.getElementById("guessbox").hidden=true;
-  const pct=stats.played?Math.round(100*stats.wins/stats.played):0;
-  e.innerHTML=`<div class="end"><h2>${st.won?`¡Era ${TC[0]}! Lo sacaste en ${st.guesses.length}.`:`Era ${TC[0]}. Mañana más.`}</h2>
-  <div class="stats"><div><b>${stats.played}</b><small>Jugados</small></div><div><b>${pct}%</b><small>Aciertos</small></div><div><b>${stats.streak}</b><small>Racha</small></div><div><b>${stats.best}</b><small>Mejor</small></div></div>
+  const pct=stats.played?Math.round(100*stats.wins/stats.played):0;const avg=stats.ptsN?(stats.pts/stats.ptsN).toFixed(1).replace(".",",").replace(",0",""):"–";
+  e.innerHTML=`<div class="end"><h2>${st.won?`¡Era ${TC[0]}! +${PTS(true,st.guesses.length)} puntos, en ${st.guesses.length} intento${st.guesses.length>1?"s":""}.`:`Era ${TC[0]}. 0 puntos, mañana más.`}</h2>
+  <div class="stats"><div><b>${stats.played}</b><small>Jugados</small></div><div><b>${pct}%</b><small>Aciertos</small></div><div><b>${avg}</b><small>Puntos media</small></div><div><b>${stats.streak}</b><small>Racha</small></div></div>
   <pre class="share" id="sharetxt">${shareText()}</pre>
   <div class="row"><button class="btn" id="copy">Copiar resultado</button><span class="next" id="next"></span></div>
   <a class="kofi" href="https://ko-fi.com/pascualmunoz" target="_blank" rel="noopener"><span aria-hidden="true">☕</span> ¿Te gusta el juego? Invítame a un café</a>
@@ -371,7 +375,7 @@ function guess(g){if(st.done)return;const nm=G(g)[0];
   if(g===T||st.guesses.length>=MAX){st.done=true;st.won=g===T;st.t1=Date.now();stats.played++;
     const y=new Date(now);y.setDate(y.getDate()-1);const yk=`${y.getFullYear()}-${String(y.getMonth()+1).padStart(2,"0")}-${String(y.getDate()).padStart(2,"0")}`;
     if(st.won){stats.wins++;stats.streak=stats.last===yk?stats.streak+1:1;stats.best=Math.max(stats.best,stats.streak)}else stats.streak=0;
-    stats.last=st.won?key:stats.last}
+    stats.last=st.won?key:stats.last;stats.pts=(stats.pts||0)+PTS(st.won,st.guesses.length);stats.ptsN=(stats.ptsN||0)+1}
   save();render();if(st.done)sendResult();else inp.focus()}
 render();
 
@@ -417,8 +421,9 @@ function drawLiga(force){
      <div class="row"><input id="code" maxlength="12" placeholder="Código" autocapitalize="characters"><button class="ghost" data-act="join">Unirme</button></div>`}
     <p class="lmsg" id="lmsg">${esc(ligaErr)}</p>`;return}
   el.dataset.v="liga";
-  const today=rows.filter(r=>r.fecha===key).sort((a,b)=>(b.ganado-a.ganado)||(a.intentos-b.intentos)||((a.segundos??1e9)-(b.segundos??1e9)));
-  const week={};rows.forEach(r=>{const w=week[r.apodo]||(week[r.apodo]={a:r.apodo,p:0,d:0,v:0});w.p+=r.ganado?7-r.intentos:0;w.d++;w.v+=r.ganado?1:0});
+  const rp=r=>PTS(r.ganado,r.intentos);
+  const today=rows.filter(r=>r.fecha===key).sort((a,b)=>(rp(b)-rp(a))||(b.ganado-a.ganado)||((a.segundos??1e9)-(b.segundos??1e9)));
+  const week={};rows.forEach(r=>{const w=week[r.apodo]||(week[r.apodo]={a:r.apodo,p:0,d:0,v:0});w.p+=rp(r);w.d++;w.v+=r.ganado?1:0});
   const wk=Object.values(week).sort((a,b)=>b.p-a.p||b.v-a.v);
   const me=a=>a===liga.nick?' class="me"':"";
   el.innerHTML=`<div class="lhead"><h3>Liga <span class="code">${esc(liga.code)}</span></h3><span class="who">Juegas como <b>${esc(liga.nick)}</b></span></div>
@@ -426,10 +431,10 @@ function drawLiga(force){
   <p class="lmsg" id="lmsg">${esc(ligaErr)}</p>
   <h4>Hoy</h4>
   ${!st.done?`<p class="hint">Termina el reto para ver cómo han quedado los demás.</p>`:
-    today.length?`<div class="tbl"><table><thead><tr><th>#</th><th>Apodo</th><th>Intentos</th><th>Tiempo</th></tr></thead><tbody>${today.map((r,i)=>`<tr${me(r.apodo)}><td>${i+1}</td><td>${esc(r.apodo)}</td><td>${r.ganado?r.intentos+"/6":"X/6"}</td><td>${mmss(r.segundos)}</td></tr>`).join("")}</tbody></table></div>`:`<p class="hint">Aún no hay resultados de hoy.</p>`}
+    today.length?`<div class="tbl"><table><thead><tr><th>#</th><th>Apodo</th><th>Puntos</th><th>Intentos</th><th>Tiempo</th></tr></thead><tbody>${today.map((r,i)=>`<tr${me(r.apodo)}><td>${i+1}</td><td>${esc(r.apodo)}</td><td>${rp(r)}</td><td>${r.ganado?r.intentos+"/6":"X/6"}</td><td>${mmss(r.segundos)}</td></tr>`).join("")}</tbody></table></div>`:`<p class="hint">Aún no hay resultados de hoy.</p>`}
   <h4>Últimos 7 días</h4>
   ${wk.length?`<div class="tbl"><table><thead><tr><th>#</th><th>Apodo</th><th>Puntos</th><th>Aciertos</th></tr></thead><tbody>${wk.map((w,i)=>`<tr${me(w.a)}><td>${i+1}</td><td>${esc(w.a)}</td><td>${w.p}</td><td>${w.v}/${w.d}</td></tr>`).join("")}</tbody></table></div>
-  <p class="hint">Acertar en 1 intento da 6 puntos, en 6 da 1 punto; fallar da 0. El tiempo cuenta desde que abres el reto del día.</p>`:`<p class="hint">Todavía nadie ha jugado esta semana.</p>`}`}
+  <p class="hint">Acertar vale 10 puntos y cada fallo resta 2: a la primera son 10, a la sexta 0. Si no aciertas, 0. Si hay empate hoy, gana quien tarde menos. El tiempo cuenta desde que abres el reto del día.</p>`:`<p class="hint">Todavía nadie ha jugado esta semana.</p>`}`}
 document.getElementById("liga").addEventListener("click",async e=>{
   const b=e.target.closest("[data-act]");if(!b)return;const act=b.dataset.act,m=document.getElementById("lmsg");
   if(act==="create"||act==="join"){
