@@ -3,8 +3,26 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="Cada día, una ciudad o pueblo de España. Adivínalo en 6 intentos.">
-<title>Dónde Está</title>
+<title>¿Dónde está? · Adivina el pueblo o la ciudad de España del día</title>
+<meta name="description" content="Cada día, una ciudad o pueblo de España. Adivínalo en 6 intentos con pistas, distancia y dirección en el mapa. Gratis, sin registro y con liga para jugar con amigos.">
+<link rel="canonical" href="https://pmunyoz.github.io/donde-esta/">
+<link rel="icon" href="icon-donde.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-donde-180.png">
+<meta name="theme-color" content="#1B2F45">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_ES">
+<meta property="og:site_name" content="¿Dónde está? · Letras del día">
+<meta property="og:title" content="¿Dónde está? · Adivina el pueblo o la ciudad de España del día">
+<meta property="og:description" content="Cada día, una ciudad o pueblo de España. Adivínalo en 6 intentos con pistas, distancia y dirección en el mapa. Gratis, sin registro y con liga para jugar con amigos.">
+<meta property="og:url" content="https://pmunyoz.github.io/donde-esta/">
+<meta property="og:image" content="https://pmunyoz.github.io/donde-esta/og-donde.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="¿Dónde está? · Adivina el pueblo o la ciudad de España del día">
+<meta name="twitter:description" content="Cada día, una ciudad o pueblo de España. Adivínalo en 6 intentos con pistas, distancia y dirección en el mapa. Gratis, sin registro y con liga para jugar con amigos.">
+<meta name="twitter:image" content="https://pmunyoz.github.io/donde-esta/og-donde.png">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "¿Dónde está?", "url": "https://pmunyoz.github.io/donde-esta/", "description": "Cada día, una ciudad o pueblo de España. Adivínalo en 6 intentos con pistas, distancia y dirección en el mapa. Gratis, sin registro y con liga para jugar con amigos.", "applicationCategory": "GameApplication", "operatingSystem": "Cualquiera (navegador web)", "inLanguage": "es", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"}, "author": {"@type": "Person", "name": "Pascual Muñoz"}}</script>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Archivo:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
@@ -72,7 +90,7 @@ button{font:inherit;cursor:pointer;border:0;border-radius:10px}
 .stats small{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
 .end .row{flex-wrap:wrap;align-items:center}
 .next{font-family:var(--f-mono);font-size:.85rem;color:var(--muted)}
-pre.share{margin:0;white-space:pre-wrap;font-family:var(--f-mono);font-size:.8rem;background:var(--sea);padding:10px;border-radius:8px}
+pre.share{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font-family:var(--f-mono);font-size:.8rem;background:var(--sea);padding:10px;border-radius:8px}
 .how{font-size:.85rem;color:var(--muted)}
 .liga{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:10px}
 .liga h3{font-family:var(--f-display);font-weight:800;font-size:1.25rem;margin:0}
@@ -108,6 +126,14 @@ pre.share{margin:0;white-space:pre-wrap;font-family:var(--f-mono);font-size:.8re
 .photo figcaption a{color:inherit}
 .photo .clue{border:0;border-radius:0}
 .how a{color:var(--ink);font-weight:600}
+.retobox{background:var(--card);border:2px solid var(--signal);border-radius:12px;padding:10px 14px;display:flex;flex-direction:column;gap:2px;font-size:.88rem}
+.retobox b{font-family:var(--f-display);font-weight:800;font-size:1.05rem}
+.retobox a{color:var(--ink);font-weight:600}
+.retobox.err{border-color:var(--bad)}
+.about{border-top:1px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:6px;font-size:.86rem;color:var(--muted)}
+.about h2{font-family:var(--f-display);font-weight:800;font-size:1.05rem;color:var(--ink);margin:6px 0 0}
+.about p{margin:0;max-width:65ch}
+.about a{color:var(--ink);font-weight:600}
 </style>
 </head>
 <body>
@@ -117,6 +143,7 @@ pre.share{margin:0;white-space:pre-wrap;font-family:var(--f-mono);font-size:.8re
     <h1>¿Dónde<br><span>está?</span></h1>
     <div class="num" id="num"></div>
   </header>
+  <div class="retobox" id="retobox" hidden></div>
   <p class="how">Cada día, una ciudad o pueblo de España que no es capital de provincia. Tienes 6 intentos: cada fallo destapa una pista y te dice a cuántos km estás y hacia dónde mirar. Acertar vale 10 puntos y cada fallo resta 2 (a la última, 1 punto).</p>
 
   <div class="map" id="map"></div>
@@ -142,8 +169,15 @@ pre.share{margin:0;white-space:pre-wrap;font-family:var(--f-mono);font-size:.8re
   <div id="end"></div>
   <section class="liga" id="liga" hidden></section>
   <p class="osm">Búsqueda de lugares: datos © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">colaboradores de OpenStreetMap</a>, vía Photon. Fotos: Wikimedia Commons. · <a href="https://ko-fi.com/pascualmunoz" target="_blank" rel="noopener">Invítame a un café</a> · Más juegos: <a href="letras.html">Letras del día</a></p>
+  <section class="about">
+    <h2>Cómo se juega a ¿Dónde está?</h2>
+    <p>Cada día hay una población de España distinta, la misma para todos: 365 ciudades y pueblos de la península y Baleares que no son capitales de provincia. Escribe un lugar y verás a cuántos kilómetros estás y en qué dirección mirar. Cada fallo destapa una pista nueva, y a partir del segundo aparece una foto. Tienes 6 intentos: acertar a la primera vale 10 puntos y cada fallo resta 2.</p>
+    <h2>Para profesores</h2>
+    <p>Elige un lugar, escribe tus pistas y compártelo con tus alumnos con un enlace o un código QR. Ideal para repasar Geografía o Historia. <a href="profes.html">Crear un reto para clase</a></p>
+  </section>
 </div>
 
+<script src="reto.js"></script>
 <script>
 // [nombre, lat, lon, comunidad, pista1, pista2, alias]
 const C=[
@@ -514,6 +548,14 @@ const C=[
 ["Ubrique",36.678,-5.448,"Cádiz","Es famosa por su marroquinería de piel.","Está en plena sierra de Grazalema.",[]]
 ];
 const norm=s=>s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-zñ ]/g," ").replace(/\s+/g," ").trim();
+// Reto personalizado (enlace de un profesor): si el lugar no está en la lista, se añade al final
+const RETO=window.Reto?Reto.read("d"):null;
+const CUSTOM=RETO&&!RETO.error&&RETO.nm&&isFinite(RETO.la)&&isFinite(RETO.lo)?RETO:null;
+const escH=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let CT=-1;
+if(CUSTOM){const nm=String(CUSTOM.nm).replace(/[<>&"']/g,"").trim();CUSTOM.nm=nm;
+  CT=C.findIndex(c=>norm(c[0])===norm(nm)&&Math.abs(c[1]-CUSTOM.la)<0.15&&Math.abs(c[2]-CUSTOM.lo)<0.15);
+  if(CT<0){C.push([nm,+CUSTOM.la,+CUSTOM.lo,escH(CUSTOM.pr||""),"","",[]]);CT=C.length-1}}
 const IDX=C.map((c,i)=>({i,keys:[norm(c[0]),...c[6].map(norm)]}));
 function find(s){const n=norm(s);if(!n)return -1;const h=IDX.find(x=>x.keys.includes(n));return h?h.i:-1}
 
@@ -528,8 +570,13 @@ function pickDay(d){if(d<START){const o=perm(N0,2026);return o[((d%N0)+N0)%N0]}
   const k=d-START,c=Math.floor(k/C.length);return cycleOrder(c)[k%C.length]}
 const now=new Date();const key=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}-${String(now.getDate()).padStart(2,"0")}`;
 const DAY=Math.round((Date.UTC(now.getFullYear(),now.getMonth(),now.getDate())-Date.UTC(2026,0,1))/864e5);
-const T=pickDay(DAY);const TC=C[T];
-document.getElementById("num").innerHTML=`Reto nº ${DAY+1}<br>${now.toLocaleDateString("es-ES",{day:"numeric",month:"long"})}`;
+const T=CUSTOM?CT:pickDay(DAY);const TC=C[T];
+document.getElementById("num").innerHTML=CUSTOM?`Reto para clase${CUSTOM.au?`<br>de ${escH(CUSTOM.au)}`:""}`:`Reto nº ${DAY+1}<br>${now.toLocaleDateString("es-ES",{day:"numeric",month:"long"})}`;
+const SHARE_URL=CUSTOM?location.href:location.origin+location.pathname;
+{const rb=document.getElementById("retobox");
+ if(CUSTOM){rb.hidden=false;rb.innerHTML=`<b>${escH(CUSTOM.ti||"Reto personalizado")}</b><span>${CUSTOM.au?`Creado por ${escH(CUSTOM.au)}. `:""}Adivina el lugar en 6 intentos. <a href="./">Ir al reto del día</a></span>`;
+   document.querySelector(".how").textContent="Escribe un lugar de España y verás a cuántos km estás y hacia dónde mirar. Cada fallo destapa una pista. Acertar a la primera vale 10 puntos y cada fallo resta 2."}
+ else if(RETO&&RETO.error){rb.hidden=false;rb.classList.add("err");rb.innerHTML="<b>Este enlace de reto no funciona</b><span>Puede que se haya copiado incompleto. Mientras tanto, aquí tienes el reto del día.</span>"}}
 
 // Geometría
 const R=6371,rad=d=>d*Math.PI/180;
@@ -540,10 +587,10 @@ const G=g=>typeof g==="number"?C[g]:[g.n,g.lat,g.lon];
 const fmt=d=>d<1?Math.round(d*1000)+" m":Math.round(d).toLocaleString("es-ES")+" km";const prox=d=>Math.max(0,Math.round(100*(1-d/MAXD)));
 
 // Estado
-const MAX=6;const PTS=(won,n)=>won?Math.max(1,10-2*(n-1)):0;const MODE="dificil";let st={guesses:[],done:false,won:false};let stats={played:0,wins:0,streak:0,best:0,last:null};
-try{const s=JSON.parse(localStorage.getItem("dd-"+key));if(s)st=s}catch(e){}
+const MAX=6;const PTS=(won,n)=>won?Math.max(1,10-2*(n-1)):0;const MODE="dificil";const SK=CUSTOM?"dd-r-"+CUSTOM.id:"dd-"+key;let st={guesses:[],done:false,won:false};let stats={played:0,wins:0,streak:0,best:0,last:null};
+try{const s=JSON.parse(localStorage.getItem(SK));if(s)st=s}catch(e){}
 try{const s=JSON.parse(localStorage.getItem("dd-stats"));if(s)stats=s}catch(e){}
-const save=()=>{try{localStorage.setItem("dd-"+key,JSON.stringify(st));localStorage.setItem("dd-stats",JSON.stringify(stats))}catch(e){}};
+const save=()=>{try{localStorage.setItem(SK,JSON.stringify(st));localStorage.setItem("dd-stats",JSON.stringify(stats))}catch(e){}};
 
 // Mapa
 const OUT=[[43.78,-7.69],[43.55,-6.2],[43.47,-5.0],[43.46,-3.8],[43.4,-3.0],[43.36,-1.79],[43.05,-1.3],[42.82,-0.6],[42.7,0.4],[42.6,1.4],[42.45,2.2],[42.43,3.17],[42.3,3.3],[41.9,3.2],[41.4,2.25],[41.1,1.2],[40.75,0.9],[40.5,0.5],[39.9,0.02],[39.4,-0.3],[38.8,0.22],[38.3,-0.5],[37.9,-0.75],[37.6,-0.7],[37.4,-1.6],[36.9,-1.9],[36.72,-2.2],[36.75,-3.0],[36.72,-4.4],[36.42,-5.2],[36.01,-5.61],[36.3,-6.2],[36.8,-6.4],[37.2,-7.4],[37.9,-7.3],[38.5,-7.1],[38.9,-7.05],[39.4,-7.3],[39.7,-7.0],[40.1,-6.9],[40.6,-6.8],[41.0,-6.9],[41.6,-6.35],[41.95,-6.6],[41.88,-8.1],[42.1,-8.85],[42.5,-8.95],[42.9,-9.27],[43.2,-9.0],[43.4,-8.4]];
@@ -564,8 +611,10 @@ function drawMap(){
 
 // Pistas
 function clues(){const l=TC[0].replace(/[^A-Za-zÁÉÍÓÚÜÑáéíóúüñ]/g,"").length;
+  if(CUSTOM){const out=(Array.isArray(CUSTOM.c)?CUSTOM.c:[]).filter(Boolean).slice(0,4).map(x=>["Pista",escH(x)]);
+    if(CUSTOM.pr)out.push(["Provincia",escH(CUSTOM.pr)]);out.push(["Nombre",`Empieza por «${TC[0][0]}» y tiene ${l} letras.`]);return out.slice(0,6)}
   return[["Pista",TC[4]],["Pista",TC[5]],["Provincia",TC[3]],["Nombre",`Empieza por «${TC[0][0]}» y tiene ${l} letras.`]]}
-const TH=()=>photo?[0,1,3,4]:[0,1,2,3];
+const TH=()=>CUSTOM?clues().map((_,i)=>i):photo?[0,1,3,4]:[0,1,2,3];
 let shown=0;
 function drawClues(){const cl=clues(),th=TH(),f=st.guesses.length;
   document.getElementById("clues").innerHTML=cl.map((c,i)=>(st.done||f>=th[i])?`<div class="clue${i>=shown&&i>0?" new":""}"><span class="k">${c[0]}</span><span>${c[1]}</span></div>`:`<div class="clue locked"><span class="k">${c[0]}</span><span>Se destapa con el fallo ${th[i]}</span></div>`).join("");
@@ -581,17 +630,19 @@ function drawGuesses(){let h="";for(let k=0;k<MAX;k++){const g=st.guesses[k];
   document.getElementById("guesses").innerHTML=h}
 
 function shareText(){const rows=st.guesses.map(g=>{if(g===T)return"🟩🟩🟩🟩🟩🎯";const p=prox(dist(G(g),TC));const f=Math.floor(p/20);return"🟩".repeat(f)+(p%20>=10?"🟨":"")+"⬜".repeat(5-f-(p%20>=10?1:0))+em(bearing(G(g),TC))});
-  return`¿Dónde está? nº ${DAY+1} — ${PTS(st.won,st.guesses.length)}/10 puntos (${st.won?st.guesses.length:"X"}/${MAX})\n${rows.join("\n")}`}
+  const head=CUSTOM?`¿Dónde está? · ${CUSTOM.ti||"Reto para clase"}`:`¿Dónde está? nº ${DAY+1}`;
+  return`${head} — ${PTS(st.won,st.guesses.length)}/10 puntos (${st.won?st.guesses.length:"X"}/${MAX})\n${rows.join("\n")}\n${SHARE_URL}`}
 function drawWorth(){const w=document.getElementById("worth");if(st.done){w.hidden=true;return}w.hidden=false;const v=PTS(true,st.guesses.length+1);w.innerHTML=`Si aciertas ahora: <b>${v}</b> punto${v===1?"":"s"}`}
 function drawEnd(){drawWorth();const e=document.getElementById("end");if(!st.done){e.innerHTML="";return}
   document.getElementById("guessbox").hidden=true;
   const pct=stats.played?Math.round(100*stats.wins/stats.played):0;const avg=stats.ptsN?(stats.pts/stats.ptsN).toFixed(1).replace(".",",").replace(",0",""):"–";
-  e.innerHTML=`<div class="end"><h2>${st.won?`¡Era ${TC[0]}! +${PTS(true,st.guesses.length)} puntos, en ${st.guesses.length} intento${st.guesses.length>1?"s":""}.`:`Era ${TC[0]}. 0 puntos, mañana más.`}</h2>
-  <div class="stats"><div><b>${stats.played}</b><small>Jugados</small></div><div><b>${pct}%</b><small>Aciertos</small></div><div><b>${avg}</b><small>Puntos media</small></div><div><b>${stats.streak}</b><small>Racha</small></div></div>
+  e.innerHTML=`<div class="end"><h2>${st.won?`¡Era ${TC[0]}! +${PTS(true,st.guesses.length)} puntos, en ${st.guesses.length} intento${st.guesses.length>1?"s":""}.`:`Era ${TC[0]}. 0 puntos, ${CUSTOM?"otra vez será":"mañana más"}.`}</h2>
+  ${CUSTOM?"":`<div class="stats"><div><b>${stats.played}</b><small>Jugados</small></div><div><b>${pct}%</b><small>Aciertos</small></div><div><b>${avg}</b><small>Puntos media</small></div><div><b>${stats.streak}</b><small>Racha</small></div></div>`}
   <pre class="share" id="sharetxt">${shareText()}</pre>
-  <div class="row"><button class="btn" id="copy">Copiar resultado</button><span class="next" id="next"></span></div>
+  <div class="row"><button class="btn" id="copy">Copiar resultado</button>${CUSTOM?"":`<span class="next" id="next"></span>`}</div>
   <a class="kofi" href="https://ko-fi.com/pascualmunoz" target="_blank" rel="noopener"><span aria-hidden="true">☕</span> ¿Te gusta el juego? Invítame a un café</a>
-  <a class="kofi" href="letras.html"><span aria-hidden="true">🔤</span> Juega también a Letras del día</a></div>`;
+  <a class="kofi" href="letras.html"><span aria-hidden="true">🔤</span> Juega también a Letras del día</a>
+  <a class="kofi" href="profes.html"><span aria-hidden="true">🍎</span> ¿Eres profe? Crea tu propio reto</a></div>`;
   document.getElementById("copy").onclick=async ev=>{try{await navigator.clipboard.writeText(shareText());ev.target.textContent="Copiado"}catch(_){const r=document.createRange();r.selectNodeContents(document.getElementById("sharetxt"));const s=getSelection();s.removeAllRanges();s.addRange(r);ev.target.textContent="Selecciónalo y cópialo"}};
   tick()}
 function tick(){const el=document.getElementById("next");if(!el)return;const n=new Date(),m=new Date(n);m.setHours(24,0,0,0);let s=Math.max(0,Math.floor((m-n)/1000));
@@ -613,7 +664,7 @@ async function credit(file){
     const strip=h=>{const d=document.createElement("div");d.innerHTML=h||"";return d.textContent.trim()};
     return{artist:strip(m.Artist&&m.Artist.value)||"autor desconocido",lic:strip(m.LicenseShortName&&m.LicenseShortName.value)}}
   catch(e){return{artist:"",lic:""}}}
-async function loadPhoto(){
+async function loadPhoto(){if(CUSTOM)return;
   const box=document.getElementById("photoimg");
   for(const t of [TC[7]||TC[0]+" ("+TC[3].replace(/ \(.*\)/,"")+")",TC[0]]){try{const r=await wiki(t);if(r){photo=r;Object.assign(photo,await credit(r.file));
     box.innerHTML="";const im=new Image();im.alt="Foto de la ciudad del día";im.src=r.src;box.appendChild(im);render();return}}catch(e){}}
@@ -660,10 +711,10 @@ async function submit(){if(st.done)return;sg.hidden=true;req++;clearTimeout(tmr)
 function guess(g){if(st.done)return;const nm=G(g)[0];
   if(st.guesses.some(x=>norm(G(x)[0])===norm(nm))){msg.textContent=`Ya probaste ${nm}.`;return}
   st.guesses.push(g);inp.value="";msg.textContent="";
-  if(g===T||st.guesses.length>=MAX){st.done=true;st.won=g===T;st.t1=Date.now();stats.played++;
+  if(g===T||st.guesses.length>=MAX){st.done=true;st.won=g===T;st.t1=Date.now();if(!CUSTOM){stats.played++;
     const y=new Date(now);y.setDate(y.getDate()-1);const yk=`${y.getFullYear()}-${String(y.getMonth()+1).padStart(2,"0")}-${String(y.getDate()).padStart(2,"0")}`;
     if(st.won){stats.wins++;stats.streak=stats.last===yk?stats.streak+1:1;stats.best=Math.max(stats.best,stats.streak)}else stats.streak=0;
-    stats.last=st.won?key:stats.last;stats.pts=(stats.pts||0)+PTS(st.won,st.guesses.length);stats.ptsN=(stats.ptsN||0)+1}
+    stats.last=st.won?key:stats.last;stats.pts=(stats.pts||0)+PTS(st.won,st.guesses.length);stats.ptsN=(stats.ptsN||0)+1}}
   save();render();if(st.done)sendResult();else inp.focus()}
 render();
 
@@ -685,19 +736,19 @@ async function api(path,opt={}){
   if(r.status===409)return null;if(!r.ok)throw new Error("HTTP "+r.status);
   const t=await r.text();return t?JSON.parse(t):null}
 async function sendResult(){
-  if(!SUPA.url||!liga.code||!st.done||st.sent===liga.code)return;
+  if(CUSTOM||!SUPA.url||!liga.code||!st.done||st.sent===liga.code)return;
   const seg=st.t0&&st.t1?Math.max(0,Math.round((st.t1-st.t0)/1000)):null;
   try{await api("resultados",{method:"POST",headers:{Prefer:"return=minimal"},body:JSON.stringify({liga:liga.code,apodo:liga.nick,modo:MODE,fecha:key,intentos:st.won?st.guesses.length:7,ganado:st.won,segundos:seg})});
     st.sent=liga.code;save();ligaErr=""}
   catch(e){ligaErr="No se pudo enviar tu resultado. Se reintentará al volver a abrir la página."}
   loadRank()}
 async function loadRank(){
-  if(!SUPA.url||!liga.code)return;const f=new Date(now);f.setDate(f.getDate()-6);
+  if(CUSTOM||!SUPA.url||!liga.code)return;const f=new Date(now);f.setDate(f.getDate()-6);
   try{rows=await api(`resultados?liga=eq.${liga.code}&modo=eq.${MODE}&fecha=gte.${dkey(f)}&select=apodo,fecha,intentos,ganado,segundos`)||[]}
   catch(e){ligaErr="No se pudo cargar la clasificación."}
   drawLiga(true)}
 function drawLiga(force){
-  const el=document.getElementById("liga");if(!SUPA.url){el.hidden=true;return}el.hidden=false;
+  const el=document.getElementById("liga");if(!SUPA.url||CUSTOM){el.hidden=true;return}el.hidden=false;
   if(!liga.code){if(el.dataset.v==="form"&&!force)return;el.dataset.v="form";
     el.innerHTML=`<h3>Liga de amigos</h3>
     ${urlLiga?`<p>Te han invitado a la liga <b class="code">${esc(urlLiga)}</b>. Elige un apodo para entrar.</p>`:`<p>Compite con tus amigos: crea una liga y pásales el enlace, o únete con su código.</p>`}

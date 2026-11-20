@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Retos para clase · Crea tu propio ¿Dónde está? y Letras</title>
+<meta name="description" content="Herramienta gratuita para profesores: crea un juego de palabras desordenadas o de adivinar un lugar de España con tus pistas, y compártelo con tus alumnos con un enlace o un QR.">
+<link rel="canonical" href="https://pmunyoz.github.io/donde-esta/profes.html">
+<link rel="icon" href="icon-donde.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-donde-180.png">
+<meta name="theme-color" content="#1B2F45">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_ES">
+<meta property="og:site_name" content="¿Dónde está? · Letras del día">
+<meta property="og:title" content="Retos para clase · Crea tu propio ¿Dónde está? y Letras">
+<meta property="og:description" content="Herramienta gratuita para profesores: crea un juego de palabras desordenadas o de adivinar un lugar de España con tus pistas, y compártelo con tus alumnos con un enlace o un QR.">
+<meta property="og:url" content="https://pmunyoz.github.io/donde-esta/profes.html">
+<meta property="og:image" content="https://pmunyoz.github.io/donde-esta/og-profes.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Retos para clase · Crea tu propio ¿Dónde está? y Letras">
+<meta name="twitter:description" content="Herramienta gratuita para profesores: crea un juego de palabras desordenadas o de adivinar un lugar de España con tus pistas, y compártelo con tus alumnos con un enlace o un QR.">
+<meta name="twitter:image" content="https://pmunyoz.github.io/donde-esta/og-profes.png">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Retos para clase", "url": "https://pmunyoz.github.io/donde-esta/profes.html", "description": "Herramienta gratuita para profesores: crea un juego de palabras desordenadas o de adivinar un lugar de España con tus pistas, y compártelo con tus alumnos con un enlace o un QR.", "applicationCategory": "GameApplication", "operatingSystem": "Cualquiera (navegador web)", "inLanguage": "es", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"}, "author": {"@type": "Person", "name": "Pascual Muñoz"}}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Archivo:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: una columna como los juegos; dos fichas de creación (Letras y ¿Dónde está?) con el resultado debajo de cada una */
+:root{
+  --sea:#D7E3EA; --ink:#1B2F45; --muted:#5F7286; --line:#B9C9D4;
+  --signal:#E3A21A; --signal-ink:#3A2600; --bg:#EEF3F6; --card:#FFFFFF; --hot:#2E8B57; --bad:#C2453B;
+  --f-display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --f-body:"Archivo",ui-sans-serif,system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --sea:#13212F; --ink:#E6EEF4; --muted:#93A6B8; --line:#35506A;
+  --signal:#F0B43A; --signal-ink:#2A1B00; --bg:#0D1823; --card:#172636; --hot:#4CC18A; --bad:#E06A5F; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --sea:#13212F; --ink:#E6EEF4; --muted:#93A6B8; --line:#35506A;
+  --signal:#F0B43A; --signal-ink:#2A1B00; --bg:#0D1823; --card:#172636; --hot:#4CC18A; --bad:#E06A5F; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 40px}
+.wrap{max-width:620px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+header{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
+h1{font-family:var(--f-display);font-weight:800;font-size:2.1rem;line-height:1;margin:0;letter-spacing:-.02em}
+h1 span{color:var(--signal)}
+.back{font-size:.85rem;color:var(--muted)}
+.back a,.lead a,.notes a,.osm a{color:var(--ink);font-weight:600}
+.lead{margin:0;color:var(--muted);max-width:65ch}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:12px}
+.card h2{font-family:var(--f-display);font-weight:800;font-size:1.35rem;margin:0;display:flex;align-items:center;gap:10px}
+.card h2 .ic{display:grid;place-items:center;width:34px;height:34px;border-radius:9px;background:var(--ink);color:var(--signal);font-size:1rem}
+.card > p{margin:0;color:var(--muted);font-size:.9rem}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:520px){.grid2{grid-template-columns:1fr}}
+.f{display:flex;flex-direction:column;gap:4px;min-width:0;position:relative}
+label{font-size:.82rem;font-weight:600}
+.hint{font-size:.78rem;color:var(--muted);font-weight:400}
+input[type=text],textarea,select{font:inherit;font-size:16px;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);width:100%;min-width:0}
+textarea{min-height:9.5em;resize:vertical;font-family:var(--f-mono);font-size:15px;text-transform:uppercase;letter-spacing:.04em}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--signal)}
+.check{display:flex;gap:8px;align-items:center;font-size:.88rem}
+.check input{width:18px;height:18px}
+button,.btnlink{font:inherit;cursor:pointer;border:0;border-radius:10px;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+.btn{background:var(--signal);color:var(--signal-ink);font-weight:600;padding:12px 18px}
+.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line);padding:10px 14px;font-weight:500}
+.btn:focus-visible,.ghost:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.err{color:var(--bad);font-size:.86rem;margin:0}
+.err:empty{display:none}
+.sugg{position:absolute;left:0;right:0;top:100%;margin-top:4px;background:var(--card);border:1px solid var(--line);border-radius:10px;z-index:5;overflow:hidden;box-shadow:0 8px 24px rgb(0 0 0 / .14)}
+.sugg button{display:block;width:100%;text-align:left;background:transparent;color:var(--ink);padding:10px 14px;border-radius:0}
+.sugg button:hover,.sugg button.on{background:var(--sea)}
+.sugg small{color:var(--muted)}
+.chosen{font-size:.85rem;color:var(--hot);font-weight:600}
+.chosen:empty{display:none}
+.out{border-top:1px dashed var(--line);padding-top:14px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;align-items:start}
+@media (max-width:520px){.out{grid-template-columns:1fr}}
+.out .link{font-family:var(--f-mono);font-size:.78rem;background:var(--sea);border-radius:8px;padding:8px 10px;overflow-wrap:anywhere;user-select:all}
+.out .side{display:flex;flex-direction:column;gap:8px;align-items:center}
+.qr{background:#fff;padding:10px;border-radius:10px;width:180px;height:180px}
+.qr img,.qr canvas{display:block;width:160px!important;height:160px!important}
+.ok{color:var(--hot);font-weight:600;margin:0}
+.notes{display:flex;flex-direction:column;gap:6px;font-size:.86rem;color:var(--muted)}
+.notes h2{font-family:var(--f-display);font-weight:800;font-size:1.05rem;color:var(--ink);margin:4px 0 0}
+.notes p,.notes ul{margin:0;max-width:65ch}
+.osm{font-size:.72rem;color:var(--muted);text-align:center;margin:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Retos<br><span>para clase</span></h1>
+    <div class="back"><a href="./">¿Dónde está?</a> · <a href="letras.html">Letras del día</a></div>
+  </header>
+  <p class="lead">Crea un reto con tus propias palabras o con el lugar que estéis estudiando y compártelo con tus alumnos con un enlace o un código QR. No hace falta registrarse: el reto va dentro del propio enlace.</p>
+
+  <!-- Letras -->
+  <section class="card" id="letras">
+    <h2><span class="ic" aria-hidden="true">Aa</span>Letras: tus palabras</h2>
+    <p>Los alumnos verán cada palabra con las letras mezcladas y tendrán que ordenarlas antes de que se acabe el tiempo.</p>
+    <div class="grid2">
+      <div class="f"><label for="l-ti">Título del reto <span class="hint">(opcional)</span></label><input type="text" id="l-ti" maxlength="60" placeholder="Vocabulario: el clima"></div>
+      <div class="f"><label for="l-au">Tu nombre <span class="hint">(opcional)</span></label><input type="text" id="l-au" maxlength="40" placeholder="Profe Ana"></div>
+    </div>
+    <div class="f">
+      <label for="l-w">Palabras <span class="hint">una por línea, de 1 a 10 palabras, de 3 a 12 letras, sin espacios</span></label>
+      <textarea id="l-w" placeholder="NUBE&#10;TORMENTA&#10;HURACÁN&#10;GRANIZO&#10;TEMPERATURA"></textarea>
+    </div>
+    <div class="f" style="max-width:260px"><label for="l-s">Tiempo para cada palabra</label>
+      <select id="l-s"><option value="30">30 segundos</option><option value="60" selected>1 minuto</option><option value="90">1 minuto y medio</option><option value="120">2 minutos</option></select></div>
+    <p class="err" id="l-err" role="alert"></p>
+    <div class="row"><button class="btn" id="l-go">Crear enlace</button></div>
+    <div class="out" id="l-out" hidden></div>
+  </section>
+
+  <!-- ¿Dónde está? -->
+  <section class="card" id="donde">
+    <h2><span class="ic" aria-hidden="true">📍</span>¿Dónde está?: tu lugar</h2>
+    <p>Elige una población de la península o Baleares y escribe las pistas. Los alumnos verán una pista nueva con cada fallo, y al final la provincia y la inicial si lo dejas marcado.</p>
+    <div class="grid2">
+      <div class="f"><label for="d-ti">Título del reto <span class="hint">(opcional)</span></label><input type="text" id="d-ti" maxlength="60" placeholder="Repaso: el Camino de Santiago"></div>
+      <div class="f"><label for="d-au">Tu nombre <span class="hint">(opcional)</span></label><input type="text" id="d-au" maxlength="40" placeholder="Profe Ana"></div>
+    </div>
+    <div class="f" id="d-box">
+      <label for="d-q">Lugar</label>
+      <input type="text" id="d-q" autocomplete="off" placeholder="Escribe una ciudad o pueblo…">
+      <div class="sugg" id="d-sugg" hidden></div>
+      <span class="chosen" id="d-chosen"></span>
+    </div>
+    <div class="f"><label for="d-c1">Pista 1 <span class="hint">la ven desde el principio</span></label><input type="text" id="d-c1" maxlength="140" placeholder="Aquí termina el Camino de Santiago."></div>
+    <div class="f"><label for="d-c2">Pista 2 <span class="hint">(opcional) tras el primer fallo</span></label><input type="text" id="d-c2" maxlength="140" placeholder="Su catedral tiene el Pórtico de la Gloria."></div>
+    <div class="f"><label for="d-c3">Pista 3 <span class="hint">(opcional)</span></label><input type="text" id="d-c3" maxlength="140"></div>
+    <div class="f"><label for="d-c4">Pista 4 <span class="hint">(opcional)</span></label><input type="text" id="d-c4" maxlength="140"></div>
+    <label class="check"><input type="checkbox" id="d-pr" checked> Dar también la provincia como pista</label>
+    <p class="err" id="d-err" role="alert"></p>
+    <div class="row"><button class="btn" id="d-go">Crear enlace</button></div>
+    <div class="out" id="d-out" hidden></div>
+  </section>
+
+  <section class="notes">
+    <h2>Cómo usarlo en clase</h2>
+    <ul>
+      <li>Proyecta el código QR o envía el enlace por la plataforma de clase. Funciona en móvil, tableta y ordenador.</li>
+      <li>Al terminar, cada alumno puede copiar su resultado (puntos y tiempo) y mandártelo.</li>
+      <li>El reto no caduca: el enlace funciona siempre, y si lo vuelves a crear igual, es el mismo reto.</li>
+    </ul>
+    <h2>Privacidad</h2>
+    <p>No se guarda nada en ningún servidor: ni el reto ni los resultados de los alumnos. La respuesta va cifrada en el enlace para que no se vea a simple vista.</p>
+  </section>
+  <p class="osm">Búsqueda de lugares: datos © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">colaboradores de OpenStreetMap</a>, vía Photon · <a href="https://ko-fi.com/pascualmunoz" target="_blank" rel="noopener">Invítame a un café</a></p>
+</div>
+
+<script src="qr.js"></script>
+<script src="reto.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const normL=s=>s.toUpperCase().replace(/Ñ/g,"\u0001").normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/\u0001/g,"Ñ");
+
+// Resultado común: enlace, copiar, probar y QR
+function showOut(box,url,label){
+  box.hidden=false;
+  box.innerHTML=`<div style="display:flex;flex-direction:column;gap:10px;min-width:0">
+    <p class="ok">${label}</p>
+    <div class="link" id="${box.id}-link">${esc(url)}</div>
+    <div class="row"><button class="btn" data-copy>Copiar enlace</button><a class="ghost btnlink" href="${esc(url)}" target="_blank" rel="noopener">Probar el reto</a></div>
+  </div>
+  <div class="side"><div class="qr" id="${box.id}-qr" aria-label="Código QR del reto"></div><button class="ghost" data-dl>Descargar QR</button></div>`;
+  const qrEl=$(box.id+"-qr");
+  try{qrEl.append(QRLite.draw(document.createElement("canvas"),url,480))}catch(e){qrEl.parentElement.hidden=true}
+  box.querySelector("[data-copy]").onclick=async ev=>{
+    try{await navigator.clipboard.writeText(url);ev.target.textContent="Enlace copiado"}
+    catch(_){const r=document.createRange();r.selectNodeContents($(box.id+"-link"));const s=getSelection();s.removeAllRanges();s.addRange(r);ev.target.textContent="Selecciónalo y cópialo"}};
+  box.querySelector("[data-dl]").onclick=()=>{const c=qrEl.querySelector("canvas");if(!c)return;const src=c.toDataURL("image/png");const a=document.createElement("a");a.href=src;a.download="reto-qr.png";document.body.append(a);a.click();a.remove()};
+  box.scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+const pageUrl=(file,code)=>new URL(file+"?reto="+code,location.href).href;
+
+// ---- Letras ----
+$("l-go").onclick=()=>{
+  const err=$("l-err");err.textContent="";
+  const lines=$("l-w").value.split(/\n/).map(s=>s.trim()).filter(Boolean);
+  if(!lines.length){err.textContent="Escribe al menos una palabra.";return}
+  if(lines.length>10){err.textContent=`Has escrito ${lines.length} palabras. El máximo es 10.`;return}
+  const bad=lines.filter(w=>{const n=normL(w);return !/^[A-ZÑ]+$/.test(n)||n.length<3||n.length>12});
+  if(bad.length){err.textContent=`Revisa ${bad.length>1?"estas palabras":"esta palabra"}: ${bad.join(", ")}. Cada una debe tener entre 3 y 12 letras, sin espacios, números ni guiones.`;return}
+  const reto={k:"l",w:lines.map(w=>w.toUpperCase()),s:+$("l-s").value};
+  const ti=$("l-ti").value.trim(),au=$("l-au").value.trim();if(ti)reto.ti=ti;if(au)reto.au=au;
+  showOut($("l-out"),pageUrl("letras.html",Reto.encode(reto)),`Reto creado: ${lines.length} palabra${lines.length>1?"s":""}.`);
+};
+
+// ---- ¿Dónde está? ----
+let place=null,sel=-1,list=[],tmr=null,req=0;
+const PLACES=["city","town","village","municipality","hamlet","suburb","neighbourhood","locality"];
+async function geo(q){
+  // Solo península y Baleares, que es lo que dibuja el mapa del juego
+  const u="https://photon.komoot.io/api/?limit=12&bbox=-9.6,35.8,4.6,44&q="+encodeURIComponent(q);
+  const j=await (await fetch(u)).json();const seen=new Set();
+  return j.features.filter(f=>f.properties&&f.properties.countrycode==="ES"&&f.properties.osm_key==="place"&&PLACES.includes(f.properties.osm_value)&&f.properties.name)
+    .map(f=>({n:f.properties.name,pr:f.properties.county||f.properties.state||"",la:+f.geometry.coordinates[1].toFixed(4),lo:+f.geometry.coordinates[0].toFixed(4)}))
+    .filter(o=>{const k=o.n+"|"+o.pr;if(seen.has(k))return false;seen.add(k);return true}).slice(0,6)}
+const q=$("d-q"),sg=$("d-sugg");
+function drawSugg(){if(!list.length){sg.hidden=true;return}sel=-1;
+  sg.innerHTML=list.map((o,k)=>`<button type="button" data-k="${k}">${esc(o.n)}${o.pr?` <small>· ${esc(o.pr)}</small>`:""}</button>`).join("");sg.hidden=false}
+q.addEventListener("input",()=>{place=null;$("d-chosen").textContent="";clearTimeout(tmr);const v=q.value.trim();if(v.length<2){sg.hidden=true;return}
+  const id=++req;tmr=setTimeout(async()=>{try{const r=await geo(v);if(id!==req)return;list=r;
+    if(!r.length){sg.hidden=true;$("d-err").textContent=`No encuentro «${v}». Prueba con otro nombre o revisa cómo se escribe.`}else{$("d-err").textContent="";drawSugg()}}
+    catch(e){$("d-err").textContent="No he podido buscar el lugar. Comprueba tu conexión y vuelve a intentarlo."}},300)});
+q.addEventListener("keydown",e=>{if(sg.hidden)return;const b=[...sg.querySelectorAll("button")];
+  if(e.key==="ArrowDown"||e.key==="ArrowUp"){e.preventDefault();sel=(sel+(e.key==="ArrowDown"?1:-1)+b.length)%b.length;b.forEach((x,k)=>x.classList.toggle("on",k===sel))}
+  else if(e.key==="Enter"&&sel>=0){e.preventDefault();choose(list[sel])}else if(e.key==="Escape")sg.hidden=true});
+sg.addEventListener("click",e=>{const b=e.target.closest("button");if(b)choose(list[+b.dataset.k])});
+document.addEventListener("click",e=>{if(!e.target.closest("#d-box"))sg.hidden=true});
+function choose(o){place=o;q.value=o.n;sg.hidden=true;$("d-err").textContent="";$("d-chosen").textContent=`✓ ${o.n}${o.pr?" ("+o.pr+")":""}`}
+$("d-go").onclick=()=>{
+  const err=$("d-err");err.textContent="";
+  if(!place){err.textContent="Elige el lugar en la lista de sugerencias que aparece al escribir.";q.focus();return}
+  const c=["d-c1","d-c2","d-c3","d-c4"].map(id=>$(id).value.trim()).filter(Boolean);
+  if(!c.length){err.textContent="Escribe al menos la primera pista.";$("d-c1").focus();return}
+  const leak=c.find(x=>normL(x).includes(normL(place.n)));
+  if(leak){err.textContent=`La pista «${leak}» contiene el nombre del lugar. Cámbiala para no dar la respuesta.`;return}
+  const reto={k:"d",nm:place.n,la:place.la,lo:place.lo,c};
+  if($("d-pr").checked&&place.pr)reto.pr=place.pr;
+  const ti=$("d-ti").value.trim(),au=$("d-au").value.trim();if(ti)reto.ti=ti;if(au)reto.au=au;
+  showOut($("d-out"),pageUrl("./",Reto.encode(reto)),`Reto creado: ${place.n}.`);
+};
+</script>
+</body>
+</html>
