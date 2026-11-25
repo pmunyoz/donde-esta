@@ -90,6 +90,7 @@ button{font:inherit;cursor:pointer;border:0;border-radius:10px}
 .stats small{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
 .end .row{flex-wrap:wrap;align-items:center}
 .next{font-family:var(--f-mono);font-size:.85rem;color:var(--muted)}
+a.next{color:var(--ink);font-weight:600}
 pre.share{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font-family:var(--f-mono);font-size:.8rem;background:var(--sea);padding:10px;border-radius:8px}
 .how{font-size:.85rem;color:var(--muted)}
 .liga{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:10px}
@@ -168,7 +169,7 @@ pre.share{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font-family:var(-
   <div class="guesses" id="guesses"></div>
   <div id="end"></div>
   <section class="liga" id="liga" hidden></section>
-  <p class="osm">Búsqueda de lugares: datos © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">colaboradores de OpenStreetMap</a>, vía Photon. Fotos: Wikimedia Commons. · <a href="https://ko-fi.com/pascualmunoz" target="_blank" rel="noopener">Invítame a un café</a> · Más juegos: <a href="letras.html">Letras del día</a></p>
+  <p class="osm">Búsqueda de lugares: datos © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">colaboradores de OpenStreetMap</a>, vía Photon. Fotos: Wikimedia Commons. · <a href="https://ko-fi.com/pascualmunoz" target="_blank" rel="noopener">Invítame a un café</a> · Más juegos: <a href="letras.html">Letras del día</a> · <a href="archivo.html">Días anteriores</a> · <a href="privacidad.html">Privacidad</a></p>
   <section class="about">
     <h2>Cómo se juega a ¿Dónde está?</h2>
     <p>Cada día hay una población de España distinta, la misma para todos: 365 ciudades y pueblos de la península y Baleares que no son capitales de provincia. Escribe un lugar y verás a cuántos kilómetros estás y en qué dirección mirar. Cada fallo destapa una pista nueva, y a partir del segundo aparece una foto. Tienes 6 intentos: acertar a la primera vale 10 puntos y cada fallo resta 2.</p>
@@ -178,6 +179,7 @@ pre.share{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font-family:var(-
 </div>
 
 <script src="reto.js"></script>
+<script src="ads.js"></script>
 <script>
 // [nombre, lat, lon, comunidad, pista1, pista2, alias]
 const C=[
@@ -568,14 +570,17 @@ function perm(n,seed){const r=mulberry(seed),o=[...Array(n).keys()];for(let i=o.
 function cycleOrder(c){const o=perm(C.length,7000+c);if(c>0){const prev=perm(C.length,7000+c-1);if(o[0]===prev[prev.length-1])[o[0],o[1]]=[o[1],o[0]]}return o}
 function pickDay(d){if(d<START){const o=perm(N0,2026);return o[((d%N0)+N0)%N0]}
   const k=d-START,c=Math.floor(k/C.length);return cycleOrder(c)[k%C.length]}
-const now=new Date();const key=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}-${String(now.getDate()).padStart(2,"0")}`;
+const ARCH=(()=>{const p=new URLSearchParams(location.search).get("dia");if(CUSTOM||!p||!/^\d{4}-\d{2}-\d{2}$/.test(p))return null;const[y,m,d]=p.split("-").map(Number);const t=new Date(y,m-1,d,12),h=new Date();h.setHours(0,0,0,0);return t.getDate()===d&&t>=new Date(2026,10,13,12)&&t<h?t:null})();
+const now=ARCH||new Date();const key=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}-${String(now.getDate()).padStart(2,"0")}`;
 const DAY=Math.round((Date.UTC(now.getFullYear(),now.getMonth(),now.getDate())-Date.UTC(2026,0,1))/864e5);
 const T=CUSTOM?CT:pickDay(DAY);const TC=C[T];
 document.getElementById("num").innerHTML=CUSTOM?`Reto para clase${CUSTOM.au?`<br>de ${escH(CUSTOM.au)}`:""}`:`Reto nº ${DAY+1}<br>${now.toLocaleDateString("es-ES",{day:"numeric",month:"long"})}`;
-const SHARE_URL=CUSTOM?location.href:location.origin+location.pathname;
+const SHARE_URL=CUSTOM?location.href:location.origin+location.pathname+(ARCH?"?dia="+key:"");
 {const rb=document.getElementById("retobox");
  if(CUSTOM){rb.hidden=false;rb.innerHTML=`<b>${escH(CUSTOM.ti||"Reto personalizado")}</b><span>${CUSTOM.au?`Creado por ${escH(CUSTOM.au)}. `:""}Adivina el lugar en 6 intentos. <a href="./">Ir al reto del día</a></span>`;
    document.querySelector(".how").textContent="Escribe un lugar de España y verás a cuántos km estás y hacia dónde mirar. Cada fallo destapa una pista. Acertar a la primera vale 10 puntos y cada fallo resta 2."}
+
+ else if(ARCH){rb.hidden=false;rb.innerHTML=`<b>Reto de un día anterior</b><span>No cuenta para tus estadísticas ni para la liga. <a href="archivo.html">Ver todos los días</a> · <a href="./">Ir al reto de hoy</a></span>`}
  else if(RETO&&RETO.error){rb.hidden=false;rb.classList.add("err");rb.innerHTML="<b>Este enlace de reto no funciona</b><span>Puede que se haya copiado incompleto. Mientras tanto, aquí tienes el reto del día.</span>"}}
 
 // Geometría
@@ -636,13 +641,16 @@ function drawWorth(){const w=document.getElementById("worth");if(st.done){w.hidd
 function drawEnd(){drawWorth();const e=document.getElementById("end");if(!st.done){e.innerHTML="";return}
   document.getElementById("guessbox").hidden=true;
   const pct=stats.played?Math.round(100*stats.wins/stats.played):0;const avg=stats.ptsN?(stats.pts/stats.ptsN).toFixed(1).replace(".",",").replace(",0",""):"–";
-  e.innerHTML=`<div class="end"><h2>${st.won?`¡Era ${TC[0]}! +${PTS(true,st.guesses.length)} puntos, en ${st.guesses.length} intento${st.guesses.length>1?"s":""}.`:`Era ${TC[0]}. 0 puntos, ${CUSTOM?"otra vez será":"mañana más"}.`}</h2>
-  ${CUSTOM?"":`<div class="stats"><div><b>${stats.played}</b><small>Jugados</small></div><div><b>${pct}%</b><small>Aciertos</small></div><div><b>${avg}</b><small>Puntos media</small></div><div><b>${stats.streak}</b><small>Racha</small></div></div>`}
+  e.innerHTML=`<div class="end"><h2>${st.won?`¡Era ${TC[0]}! +${PTS(true,st.guesses.length)} puntos, en ${st.guesses.length} intento${st.guesses.length>1?"s":""}.`:`Era ${TC[0]}. 0 puntos, ${CUSTOM||ARCH?"otra vez será":"mañana más"}.`}</h2>
+  ${CUSTOM||ARCH?"":`<div class="stats"><div><b>${stats.played}</b><small>Jugados</small></div><div><b>${pct}%</b><small>Aciertos</small></div><div><b>${avg}</b><small>Puntos media</small></div><div><b>${stats.streak}</b><small>Racha</small></div></div>`}
   <pre class="share" id="sharetxt">${shareText()}</pre>
-  <div class="row"><button class="btn" id="copy">Copiar resultado</button>${CUSTOM?"":`<span class="next" id="next"></span>`}</div>
+  <div class="row"><button class="btn" id="copy">Copiar resultado</button>${CUSTOM?"":ARCH?`<a class="next" href="./">Ir al reto de hoy</a>`:`<span class="next" id="next"></span>`}</div>
   <a class="kofi" href="https://ko-fi.com/pascualmunoz" target="_blank" rel="noopener"><span aria-hidden="true">☕</span> ¿Te gusta el juego? Invítame a un café</a>
+  <a class="kofi" href="archivo.html"><span aria-hidden="true">📅</span> Juega los días anteriores</a>
   <a class="kofi" href="letras.html"><span aria-hidden="true">🔤</span> Juega también a Letras del día</a>
-  <a class="kofi" href="profes.html"><span aria-hidden="true">🍎</span> ¿Eres profe? Crea tu propio reto</a></div>`;
+  <a class="kofi" href="profes.html"><span aria-hidden="true">🍎</span> ¿Eres profe? Crea tu propio reto</a>
+  <div class="ad-slot"></div></div>`;
+  if(window.Ads)Ads.fill();
   document.getElementById("copy").onclick=async ev=>{try{await navigator.clipboard.writeText(shareText());ev.target.textContent="Copiado"}catch(_){const r=document.createRange();r.selectNodeContents(document.getElementById("sharetxt"));const s=getSelection();s.removeAllRanges();s.addRange(r);ev.target.textContent="Selecciónalo y cópialo"}};
   tick()}
 function tick(){const el=document.getElementById("next");if(!el)return;const n=new Date(),m=new Date(n);m.setHours(24,0,0,0);let s=Math.max(0,Math.floor((m-n)/1000));
@@ -711,7 +719,7 @@ async function submit(){if(st.done)return;sg.hidden=true;req++;clearTimeout(tmr)
 function guess(g){if(st.done)return;const nm=G(g)[0];
   if(st.guesses.some(x=>norm(G(x)[0])===norm(nm))){msg.textContent=`Ya probaste ${nm}.`;return}
   st.guesses.push(g);inp.value="";msg.textContent="";
-  if(g===T||st.guesses.length>=MAX){st.done=true;st.won=g===T;st.t1=Date.now();if(!CUSTOM){stats.played++;
+  if(g===T||st.guesses.length>=MAX){st.done=true;st.won=g===T;st.t1=Date.now();if(!CUSTOM&&!ARCH){stats.played++;
     const y=new Date(now);y.setDate(y.getDate()-1);const yk=`${y.getFullYear()}-${String(y.getMonth()+1).padStart(2,"0")}-${String(y.getDate()).padStart(2,"0")}`;
     if(st.won){stats.wins++;stats.streak=stats.last===yk?stats.streak+1:1;stats.best=Math.max(stats.best,stats.streak)}else stats.streak=0;
     stats.last=st.won?key:stats.last;stats.pts=(stats.pts||0)+PTS(st.won,st.guesses.length);stats.ptsN=(stats.ptsN||0)+1}}
@@ -736,19 +744,19 @@ async function api(path,opt={}){
   if(r.status===409)return null;if(!r.ok)throw new Error("HTTP "+r.status);
   const t=await r.text();return t?JSON.parse(t):null}
 async function sendResult(){
-  if(CUSTOM||!SUPA.url||!liga.code||!st.done||st.sent===liga.code)return;
+  if(CUSTOM||ARCH||!SUPA.url||!liga.code||!st.done||st.sent===liga.code)return;
   const seg=st.t0&&st.t1?Math.max(0,Math.round((st.t1-st.t0)/1000)):null;
   try{await api("resultados",{method:"POST",headers:{Prefer:"return=minimal"},body:JSON.stringify({liga:liga.code,apodo:liga.nick,modo:MODE,fecha:key,intentos:st.won?st.guesses.length:7,ganado:st.won,segundos:seg})});
     st.sent=liga.code;save();ligaErr=""}
   catch(e){ligaErr="No se pudo enviar tu resultado. Se reintentará al volver a abrir la página."}
   loadRank()}
 async function loadRank(){
-  if(CUSTOM||!SUPA.url||!liga.code)return;const f=new Date(now);f.setDate(f.getDate()-6);
+  if(CUSTOM||ARCH||!SUPA.url||!liga.code)return;const f=new Date(now);f.setDate(f.getDate()-6);
   try{rows=await api(`resultados?liga=eq.${liga.code}&modo=eq.${MODE}&fecha=gte.${dkey(f)}&select=apodo,fecha,intentos,ganado,segundos`)||[]}
   catch(e){ligaErr="No se pudo cargar la clasificación."}
   drawLiga(true)}
 function drawLiga(force){
-  const el=document.getElementById("liga");if(!SUPA.url||CUSTOM){el.hidden=true;return}el.hidden=false;
+  const el=document.getElementById("liga");if(!SUPA.url||CUSTOM||ARCH){el.hidden=true;return}el.hidden=false;
   if(!liga.code){if(el.dataset.v==="form"&&!force)return;el.dataset.v="form";
     el.innerHTML=`<h3>Liga de amigos</h3>
     ${urlLiga?`<p>Te han invitado a la liga <b class="code">${esc(urlLiga)}</b>. Elige un apodo para entrar.</p>`:`<p>Compite con tus amigos: crea una liga y pásales el enlace, o únete con su código.</p>`}
