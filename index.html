@@ -135,11 +135,19 @@ pre.share{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font-family:var(-
 .about h2{font-family:var(--f-display);font-weight:800;font-size:1.05rem;color:var(--ink);margin:6px 0 0}
 .about p{margin:0;max-width:65ch}
 .about a{color:var(--ink);font-weight:600}
+
+/* Barra de juegos */
+.games{display:grid;grid-template-columns:1.35fr 1fr 1fr;gap:6px;margin:0;padding:0;list-style:none}
+.games a{display:flex;align-items:center;justify-content:center;gap:5px;padding:7px 4px;border-radius:999px;border:1.5px solid var(--line);color:var(--ink);text-decoration:none;font-size:.82rem;font-weight:600;white-space:nowrap}
+.games a:hover{border-color:var(--signal)}
+.games a[aria-current]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.games a:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 </style>
 </head>
 <body>
 
 <div class="wrap">
+  <nav aria-label="Juegos"><ul class="games"><li><a href="./" aria-current="page"><span aria-hidden="true">📍</span> ¿Dónde está?</a></li><li><a href="letras.html"><span aria-hidden="true">🔤</span> Letras</a></li><li><a href="cifras.html"><span aria-hidden="true">🔢</span> Cifras</a></li></ul></nav>
   <header>
     <h1>¿Dónde<br><span>está?</span></h1>
     <div class="num" id="num"></div>
