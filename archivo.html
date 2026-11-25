@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Días anteriores · ¿Dónde está? y Letras del día</title>
-<meta name="description" content="Juega los retos de días anteriores de ¿Dónde está? (adivina el pueblo o la ciudad de España) y de Letras del día (palabras desordenadas). Gratis y sin registro.">
+<title>Días anteriores · ¿Dónde está?, Letras y Cifras del día</title>
+<meta name="description" content="Juega los retos de días anteriores de ¿Dónde está? (adivina el pueblo o la ciudad de España) de Letras del día (palabras desordenadas) y de Cifras del día (números). Gratis y sin registro.">
 <link rel="canonical" href="https://pmunyoz.github.io/donde-esta/archivo.html">
 <link rel="icon" href="icon-donde.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-donde-180.png">
@@ -13,7 +13,7 @@
 <meta property="og:locale" content="es_ES">
 <meta property="og:site_name" content="¿Dónde está? · Letras del día">
 <meta property="og:title" content="Días anteriores · ¿Dónde está? y Letras del día">
-<meta property="og:description" content="¿Te perdiste algún día? Juega los retos anteriores de ¿Dónde está? y Letras del día.">
+<meta property="og:description" content="¿Te perdiste algún día? Juega los retos anteriores de ¿Dónde está?, Letras y Cifras del día.">
 <meta property="og:url" content="https://pmunyoz.github.io/donde-esta/archivo.html">
 <meta property="og:image" content="https://pmunyoz.github.io/donde-esta/og-donde.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -37,10 +37,11 @@ h1 span{color:var(--signal)}
 .how{font-size:.85rem;color:var(--muted);margin:0}
 a{color:var(--ink)}
 .days{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
-.day{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center}
+.day{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;align-items:center}
+.day .d{grid-column:1/-1}
 .day .d{font-weight:600}
 .day .d small{display:block;font-family:var(--f-mono);font-size:.75rem;color:var(--muted);font-weight:500}
-.g{display:inline-flex;align-items:center;gap:6px;padding:8px 10px;border-radius:10px;border:1.5px solid var(--line);text-decoration:none;font-weight:600;font-size:.88rem;white-space:nowrap}
+.g{display:flex;justify-content:center;align-items:center;gap:6px;padding:8px 10px;border-radius:10px;border:1.5px solid var(--line);text-decoration:none;font-weight:600;font-size:.88rem;white-space:nowrap}
 .g:hover{border-color:var(--signal)}
 .g:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 .g.done{border-style:dashed;color:var(--muted);font-weight:500}
@@ -53,7 +54,7 @@ a{color:var(--ink)}
 <body>
 <div class="wrap">
   <h1>Días<br><span>anteriores</span></h1>
-  <p class="how">¿Te perdiste algún día? Aquí están todos los retos pasados. Los que juegues aquí no cuentan para tus estadísticas ni para la liga. Volver al reto de hoy: <a href="./">¿Dónde está?</a> · <a href="letras.html">Letras del día</a></p>
+  <p class="how">¿Te perdiste algún día? Aquí están todos los retos pasados. Los que juegues aquí no cuentan para tus estadísticas ni para la liga. Volver al reto de hoy: <a href="./">¿Dónde está?</a> · <a href="letras.html">Letras del día</a> · <a href="cifras.html">Cifras del día</a></p>
   <ol class="days" id="days"></ol>
   <div class="ad-slot"></div>
   <p class="osm"><a href="https://ko-fi.com/pascualmunoz" target="_blank" rel="noopener">Invítame a un café</a> · <a href="profes.html">Retos para clase</a> · <a href="privacidad.html">Privacidad</a></p>
@@ -61,10 +62,11 @@ a{color:var(--ink)}
 <script src="ads.js"></script>
 <script>
 // Mismas fechas de inicio y numeración que los juegos
-const DONDE0=new Date(2026,10,13),LETRAS0=new Date(2026,10,14);
+const DONDE0=new Date(2026,10,13),LETRAS0=new Date(2026,10,14),CIFRAS0=new Date(2026,10,25);
 const dkey=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
 const dnum=d=>Math.round((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())-Date.UTC(2026,0,1))/864e5)+1;
 const lnum=d=>Math.round((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())-Date.UTC(2026,10,14))/864e5)+1;
+const cnum=d=>Math.round((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())-Date.UTC(2026,10,25))/864e5)+1;
 const get=k=>{try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}};
 function donde(d){const s=get("dd-"+dkey(d)),u="./?dia="+dkey(d);
   if(s&&s.done){const p=s.won?Math.max(1,10-2*(s.guesses.length-1)):0;return`<a class="g done" href="${u}">📍 <b>${p}</b>/10</a>`}
@@ -73,10 +75,14 @@ function letras(d){if(d<LETRAS0)return`<span class="g na">🔤</span>`;
   const s=get("lt-"+dkey(d)),u="letras.html?dia="+dkey(d);
   if(s&&s.done){const p=(s.res||[]).reduce((a,r)=>a+(r.pts||0),0);return`<a class="g done" href="${u}">🔤 <b>${p}</b>/25</a>`}
   return`<a class="g" href="${u}">🔤 Jugar</a>`}
+function cifras(d){if(d<CIFRAS0)return`<span class="g na">🔢</span>`;
+  const s=get("cf-"+dkey(d)),u="cifras.html?dia="+dkey(d);
+  if(s&&s.done){const p=(s.res||[]).reduce((a,r)=>a+(r.pts||0),0);return`<a class="g done" href="${u}">🔢 <b>${p}</b>/30</a>`}
+  return`<a class="g" href="${u}">🔢 Jugar</a>`}
 const out=[],d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()-1);
 for(;d>=DONDE0;d.setDate(d.getDate()-1)){
   const f=d.toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long"});
-  out.push(`<li class="day"><span class="d">${f[0].toUpperCase()+f.slice(1)}<small>¿Dónde está? nº ${dnum(d)}${d>=LETRAS0?` · Letras nº ${lnum(d)}`:""}</small></span>${donde(new Date(d))}${letras(new Date(d))}</li>`)}
+  out.push(`<li class="day"><span class="d">${f[0].toUpperCase()+f.slice(1)}<small>¿Dónde está? nº ${dnum(d)}${d>=LETRAS0?` · Letras nº ${lnum(d)}`:""}${d>=CIFRAS0?` · Cifras nº ${cnum(d)}`:""}</small></span>${donde(new Date(d))}${letras(new Date(d))}${cifras(new Date(d))}</li>`)}
 document.getElementById("days").innerHTML=out.join("")||`<li class="how">Todavía no hay días anteriores.</li>`;
 </script>
 </body>
