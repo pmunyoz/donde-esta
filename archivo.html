@@ -84,6 +84,7 @@ for(;d>=DONDE0;d.setDate(d.getDate()-1)){
   const f=d.toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long"});
   out.push(`<li class="day"><span class="d">${f[0].toUpperCase()+f.slice(1)}<small>¿Dónde está? nº ${dnum(d)}${d>=LETRAS0?` · Letras nº ${lnum(d)}`:""}${d>=CIFRAS0?` · Cifras nº ${cnum(d)}`:""}</small></span>${donde(new Date(d))}${letras(new Date(d))}${cifras(new Date(d))}</li>`)}
 document.getElementById("days").innerHTML=out.join("")||`<li class="how">Todavía no hay días anteriores.</li>`;
+if(window.Ads)Ads.fill();
 </script>
 </body>
 </html>

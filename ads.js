@@ -1,12 +1,18 @@
-// Anuncios de Google AdSense. APAGADOS mientras CLIENT esté vacío: no se carga nada de Google.
+// Anuncios de Google AdSense, en modo discreto. APAGADOS mientras CLIENT o SLOT estén vacíos:
+// en ese caso no se carga nada de Google.
+//
+// Reglas para que no molesten al jugar:
+//  - El código de Google solo se carga al terminar la partida (pantalla final) o en la página
+//    de días anteriores. Durante el juego no hay nada de publicidad, ni siquiera cargada.
+//  - Un único anuncio por pantalla, debajo de todo, con su hueco reservado para que nada salte.
+//  - Solo bloques manuales (SLOT). En el panel de AdSense, DESACTIVA los «Anuncios automáticos»
+//    (o al menos los formatos «Anclados» y «Viñeta»), porque son los que tapan la pantalla.
 //
 // Para activarlos:
 //  1. Cuando AdSense apruebe la web, copia tu ID de editor (empieza por "ca-pub-") en CLIENT.
-//  2. Opcional: crea un bloque de anuncio adaptable en AdSense y pon su número en SLOT.
-//     Sin SLOT solo funcionan los anuncios automáticos que configures en el panel de AdSense.
+//  2. Crea en AdSense un bloque «Anuncio de display» adaptable y pon su número en SLOT.
 //  3. Sube un archivo ads.txt a la raíz del dominio con la línea que te da AdSense.
 //  4. En AdSense > Privacidad y mensajes, activa el mensaje de consentimiento para Europa (RGPD).
-//     Google lo muestra solo; no hace falta tocar nada aquí.
 (function () {
   const CLIENT = "";   // p. ej. "ca-pub-1234567890123456"
   const SLOT = "";     // p. ej. "1234567890"
@@ -21,16 +27,19 @@
     s.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=" + encodeURIComponent(CLIENT);
     document.head.appendChild(s);
     const css = document.createElement("style");
-    css.textContent = ".ad-slot{margin-top:4px;min-height:100px;text-align:center}.ad-slot::before{content:'Publicidad';display:block;font-size:.7rem;color:var(--muted);margin-bottom:4px}";
+    css.textContent = ".ad-slot{margin-top:4px;min-height:120px;max-height:320px;overflow:hidden;text-align:center}.ad-slot::before{content:'Publicidad';display:block;font-size:.7rem;color:var(--muted);margin-bottom:4px}";
     document.head.appendChild(css);
   }
 
   // Rellena los huecos <div class="ad-slot"></div> que aún estén vacíos.
+  // Solo se llama desde la pantalla final y desde la página de días anteriores.
   function fill() {
-    if (!CLIENT) return;
+    if (!CLIENT || !SLOT) return;
+    const slots = document.querySelectorAll(".ad-slot:not([data-done])");
+    if (!slots.length) return;
     load();
-    if (!SLOT) return;
-    document.querySelectorAll(".ad-slot:not([data-done])").forEach(function (el) {
+    slots.forEach(function (el, i) {
+      if (i > 0) return; // un solo anuncio por pantalla
       el.dataset.done = "1";
       const ins = document.createElement("ins");
       ins.className = "adsbygoogle";
@@ -44,9 +53,5 @@
     });
   }
 
-  window.Ads = { fill: fill, enabled: !!CLIENT };
-  if (CLIENT) {
-    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", fill);
-    else fill();
-  }
+  window.Ads = { fill: fill, enabled: !!(CLIENT && SLOT) };
 })();
