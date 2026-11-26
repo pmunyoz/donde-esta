@@ -204,11 +204,12 @@ function mulberry(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1
 function shuffled(arr,seed){const r=mulberry(seed),o=arr.slice();for(let i=o.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[o[i],o[j]]=[o[j],o[i]]}return o}
 
 // Palabras del día: mismo resultado para todos según la fecha local
-const ARCH=(()=>{const p=new URLSearchParams(location.search).get("dia");if(CUSTOM||!p||!/^\d{4}-\d{2}-\d{2}$/.test(p))return null;const[y,m,d]=p.split("-").map(Number);const t=new Date(y,m-1,d,12),h=new Date();h.setHours(0,0,0,0);return t.getDate()===d&&t>=new Date(2026,10,14,12)&&t<h?t:null})();
+const ARCH=(()=>{const p=new URLSearchParams(location.search).get("dia");if(CUSTOM||!p||!/^\d{4}-\d{2}-\d{2}$/.test(p))return null;const[y,m,d]=p.split("-").map(Number);const t=new Date(y,m-1,d,12),h=new Date();h.setHours(0,0,0,0);return t.getDate()===d&&t>=new Date(2026,10,26,12)&&t<h?t:null})();
 const now=ARCH||new Date();
 const dkey=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
 const key=dkey(now);
 const DAY=Math.round((Date.UTC(now.getFullYear(),now.getMonth(),now.getDate())-Date.UTC(2026,10,14))/864e5);
+const NUM=Math.round((Date.UTC(now.getFullYear(),now.getMonth(),now.getDate())-Date.UTC(2026,10,26))/864e5)+1; // nº de reto visible: el 26/11/2026 es el nº 1
 const pick=(L,k)=>{const o=shuffled(L,4100+k);return o[((DAY%o.length)+o.length)%o.length]};
 const DISP=CUSTOM?CUSTOM.w.slice(0,10).map(w=>String(w).trim()):LISTS.map(pick),WORDS=DISP.map(w=>norm(w).replace(/[^A-ZÑ]/g,""));
 if(CUSTOM){LENS=WORDS.map(w=>w.length);WORD_T=[30,60,90,120].includes(CUSTOM.s)?CUSTOM.s:60}
@@ -220,7 +221,7 @@ function scramble(w,seed){const a=[...w];
   for(let t=0;t<60;t++){const s=shuffled(a,seed+t*977);const same=s.filter((c,i)=>c===a[i]).length;if(s.join("")!==w&&same<=Math.floor(a.length/4))return s}
   return a.slice().reverse()}
 const LET=WORDS.map((w,k)=>scramble([...w].join(""),SEED+k*7+1));
-document.getElementById("num").innerHTML=CUSTOM?`Reto para clase${CUSTOM.au?`<br>de ${escH(CUSTOM.au)}`:""}`:`Reto nº ${DAY+1}<br>${now.toLocaleDateString("es-ES",{day:"numeric",month:"long"})}`;
+document.getElementById("num").innerHTML=CUSTOM?`Reto para clase${CUSTOM.au?`<br>de ${escH(CUSTOM.au)}`:""}`:`Reto nº ${NUM}<br>${now.toLocaleDateString("es-ES",{day:"numeric",month:"long"})}`;
 {const rb=document.getElementById("retobox");
  if(CUSTOM){rb.hidden=false;rb.innerHTML=`<b>${escH(CUSTOM.ti||"Reto personalizado")}</b><span>${CUSTOM.au?`Creado por ${escH(CUSTOM.au)}. `:""}${NW} palabra${NW>1?"s":""}, ${tTxt} cada una. <a href="letras.html">Ir al reto del día</a></span>`;
    document.querySelector(".how").textContent=`Ordena las letras de cada palabra. Tienes ${tTxt} para cada una y vale hasta 5 puntos si la sacas rápido.`}
@@ -338,7 +339,7 @@ document.addEventListener("keydown",e=>{
 
 // Final
 const KEY=["❌","1️⃣","2️⃣","3️⃣","4️⃣","5️⃣"];
-function shareText(){const head=CUSTOM?`Letras · ${CUSTOM.ti||"Reto para clase"}`:`Letras del día nº ${DAY+1}`;
+function shareText(){const head=CUSTOM?`Letras · ${CUSTOM.ti||"Reto para clase"}`:`Letras del día nº ${NUM}`;
   return`${head} — ${score()}/${MAXP}\n${st.res.map(r=>KEY[r.pts]).join("")}\n⏱️ ${mmss(usedSecs())}\n${SHARE_URL}`}
 function verdict(p){const q=p/MAXP;return q>=.88?"Imbatible":q>=.68?"Muy bien":q>=.44?"Bien jugado":q>=.2?"Se puede mejorar":CUSTOM||ARCH?"Otra vez será":"Mañana más"}
 function drawEnd(){const e=document.getElementById("end");if(!st.done||Date.now()<endHold){e.innerHTML="";return}

@@ -63,11 +63,11 @@ a{color:var(--ink)}
 <script src="ads.js"></script>
 <script>
 // Mismas fechas de inicio y numeración que los juegos
-const DONDE0=new Date(2026,10,13),LETRAS0=new Date(2026,10,14),CIFRAS0=new Date(2026,10,25);
+const DONDE0=new Date(2026,10,26),LETRAS0=new Date(2026,10,26),CIFRAS0=new Date(2026,10,26);
 const dkey=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
-const dnum=d=>Math.round((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())-Date.UTC(2026,0,1))/864e5)+1;
-const lnum=d=>Math.round((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())-Date.UTC(2026,10,14))/864e5)+1;
-const cnum=d=>Math.round((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())-Date.UTC(2026,10,25))/864e5)+1;
+const dnum=d=>Math.round((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())-Date.UTC(2026,10,26))/864e5)+1;
+const lnum=d=>Math.round((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())-Date.UTC(2026,10,26))/864e5)+1;
+const cnum=d=>Math.round((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())-Date.UTC(2026,10,26))/864e5)+1;
 const get=k=>{try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}};
 function donde(d){const s=get("dd-"+dkey(d)),u="./?dia="+dkey(d);
   if(s&&s.done){const p=s.won?Math.max(1,10-2*(s.guesses.length-1)):0;return`<a class="g done" href="${u}">📍 <b>${p}</b>/10</a>`}
