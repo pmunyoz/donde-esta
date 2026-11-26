@@ -231,6 +231,10 @@ def lletres():
     llistes = json.dumps([P.L5, P.L6, P.L7, P.L8, P.L10], ensure_ascii=False, separators=(",", ":"))
     h, n = re.subn(r"const LISTS=\[\[.*?\]\];", lambda m: f"const LISTS={llistes};", h, count=1, flags=re.S)
     if not n: raise Falta(f"{f}: no trobe les llistes de paraules")
+    # Les llistes antigues de Letras (LISTS0) no s'usen en valencià: sempre les paraules en valencià
+    h, n = re.subn(r"const LISTS0=\[\[.*?\]\];\n?", "", h, count=1, flags=re.S)
+    h = h.replace('(key<="2026-11-26"?LISTS0:LISTS).map(pick)', 'LISTS.map(pick)')
+    if "LISTS0" in h: raise Falta(f"{f}: queda alguna referència a LISTS0")
     h = aplicar(h, [
         # Dades pròpies: altres partides, lliga i estadístiques que les de Letras
         ('const SK=CUSTOM?"lt-r-"+CUSTOM.id:"lt-"+key;', 'const SK=CUSTOM?"ll-r-"+CUSTOM.id:"ll-"+key;'),
