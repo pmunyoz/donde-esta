@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="google-adsense-account" content="ca-pub-8361369070531250">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="application-name" content="Piensa un rato">
+<meta name="apple-mobile-web-app-title" content="Piensa un rato">
+<title>Clasificación en directo · Retos para clase</title>
+<meta name="description" content="Herramienta gratuita para profesores: crea un juego de palabras desordenadas, de adivinar un lugar de España con tus pistas o de cálculo mental con tus números, y compártelo con tus alumnos con un enlace o un QR.">
+<link rel="canonical" href="https://piensaunrato.es/profes.html">
+<link rel="icon" href="icon-donde.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-donde-180.png">
+<meta name="theme-color" content="#1B2F45">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_ES">
+<meta property="og:site_name" content="¿Dónde está? · Letras del día">
+<meta property="og:title" content="Retos para clase · Crea tu propio ¿Dónde está? y Letras">
+<meta property="og:description" content="Herramienta gratuita para profesores: crea un juego de palabras desordenadas, de adivinar un lugar de España con tus pistas o de cálculo mental con tus números, y compártelo con tus alumnos con un enlace o un QR.">
+<meta property="og:url" content="https://piensaunrato.es/profes.html">
+<meta property="og:image" content="https://piensaunrato.es/og-profes.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Retos para clase · Crea tu propio ¿Dónde está? y Letras">
+<meta name="twitter:description" content="Herramienta gratuita para profesores: crea un juego de palabras desordenadas, de adivinar un lugar de España con tus pistas o de cálculo mental con tus números, y compártelo con tus alumnos con un enlace o un QR.">
+<meta name="twitter:image" content="https://piensaunrato.es/og-profes.png">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Retos para clase", "url": "https://piensaunrato.es/profes.html", "description": "Herramienta gratuita para profesores: crea un juego de palabras desordenadas, de adivinar un lugar de España con tus pistas o de cálculo mental con tus números, y compártelo con tus alumnos con un enlace o un QR.", "applicationCategory": "GameApplication", "operatingSystem": "Cualquiera (navegador web)", "inLanguage": "es", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"}, "author": {"@type": "Person", "name": "Pascual Muñoz"}}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Archivo:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: una columna como los juegos; tres fichas de creación (Letras, ¿Dónde está? y Cifras) con el resultado debajo de cada una */
+:root{
+  --sea:#D7E3EA; --ink:#1B2F45; --muted:#5F7286; --line:#B9C9D4;
+  --signal:#E3A21A; --signal-ink:#3A2600; --bg:#EEF3F6; --card:#FFFFFF; --hot:#2E8B57; --bad:#C2453B;
+  --f-display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --f-body:"Archivo",ui-sans-serif,system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --sea:#13212F; --ink:#E6EEF4; --muted:#93A6B8; --line:#35506A;
+  --signal:#F0B43A; --signal-ink:#2A1B00; --bg:#0D1823; --card:#172636; --hot:#4CC18A; --bad:#E06A5F; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --sea:#13212F; --ink:#E6EEF4; --muted:#93A6B8; --line:#35506A;
+  --signal:#F0B43A; --signal-ink:#2A1B00; --bg:#0D1823; --card:#172636; --hot:#4CC18A; --bad:#E06A5F; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 40px}
+.wrap{max-width:620px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+header{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
+h1{font-family:var(--f-display);font-weight:800;font-size:2.1rem;line-height:1;margin:0;letter-spacing:-.02em}
+h1 span{color:var(--signal)}
+.back{font-size:.85rem;color:var(--muted)}
+.back a,.lead a,.notes a,.osm a{color:var(--ink);font-weight:600}
+.lead{margin:0;color:var(--muted);max-width:65ch}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:12px}
+.card h2{font-family:var(--f-display);font-weight:800;font-size:1.35rem;margin:0;display:flex;align-items:center;gap:10px}
+.card h2 .ic{display:grid;place-items:center;width:34px;height:34px;border-radius:9px;background:var(--ink);color:var(--signal);font-size:1rem}
+.card > p{margin:0;color:var(--muted);font-size:.9rem}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:520px){.grid2{grid-template-columns:1fr}}
+.f{display:flex;flex-direction:column;gap:4px;min-width:0;position:relative}
+label{font-size:.82rem;font-weight:600}
+.hint{font-size:.78rem;color:var(--muted);font-weight:400}
+input[type=text],textarea,select{font:inherit;font-size:16px;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);width:100%;min-width:0}
+textarea{min-height:9.5em;resize:vertical;font-family:var(--f-mono);font-size:15px;text-transform:uppercase;letter-spacing:.04em}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--signal)}
+.check{display:flex;gap:8px;align-items:center;font-size:.88rem}
+.check input{width:18px;height:18px}
+button,.btnlink{font:inherit;cursor:pointer;border:0;border-radius:10px;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+.btn{background:var(--signal);color:var(--signal-ink);font-weight:600;padding:12px 18px}
+.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line);padding:10px 14px;font-weight:500}
+.btn:focus-visible,.ghost:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.wa{background:#25D366;color:#073B1C;font-weight:600;padding:12px 18px;gap:6px}
+.wa:hover{background:#20BD5A}
+.wa:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.err{color:var(--bad);font-size:.86rem;margin:0}
+.err:empty{display:none}
+.sugg{position:absolute;left:0;right:0;top:100%;margin-top:4px;background:var(--card);border:1px solid var(--line);border-radius:10px;z-index:5;overflow:hidden;box-shadow:0 8px 24px rgb(0 0 0 / .14)}
+.sugg button{display:block;width:100%;text-align:left;background:transparent;color:var(--ink);padding:10px 14px;border-radius:0}
+.sugg button:hover,.sugg button.on{background:var(--sea)}
+.sugg small{color:var(--muted)}
+.chosen{font-size:.85rem;color:var(--hot);font-weight:600}
+.chosen:empty{display:none}
+.out{border-top:1px dashed var(--line);padding-top:14px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;align-items:start}
+@media (max-width:520px){.out{grid-template-columns:1fr}}
+.out .link{font-family:var(--f-mono);font-size:.78rem;background:var(--sea);border-radius:8px;padding:8px 10px;overflow-wrap:anywhere;user-select:all}
+.out .side{display:flex;flex-direction:column;gap:8px;align-items:center}
+.qr{background:#fff;padding:10px;border-radius:10px;width:180px;height:180px}
+.qr img,.qr canvas{display:block;width:160px!important;height:160px!important}
+.ok{color:var(--hot);font-weight:600;margin:0}
+.notes{display:flex;flex-direction:column;gap:6px;font-size:.86rem;color:var(--muted)}
+.notes h2{font-family:var(--f-display);font-weight:800;font-size:1.05rem;color:var(--ink);margin:4px 0 0}
+.notes p,.notes ul{margin:0;max-width:65ch}
+.osm{font-size:.72rem;color:var(--muted);text-align:center;margin:0}
+
+.board-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.wrap.wide{max-width:1100px}
+.live{font-size:.85rem;color:var(--muted);display:flex;align-items:center;gap:6px}
+.live i{width:10px;height:10px;border-radius:50%;background:var(--hot);display:inline-block;animation:pulse 1.6s infinite}
+@keyframes pulse{50%{opacity:.3}}
+@media (prefers-reduced-motion:reduce){.live i{animation:none}}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:20px;align-items:start}
+@media (max-width:760px){.grid{grid-template-columns:1fr}}
+.rank{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.rank li{display:grid;grid-template-columns:48px minmax(0,1fr) auto auto;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px;font-size:clamp(1rem,2.2vw,1.4rem)}
+.rank li .pos{font-family:var(--f-display);font-weight:800;font-size:1.3em;text-align:center}
+.rank li:nth-child(1){border:2px solid var(--signal)}
+.rank li .nm{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rank li .pt{font-family:var(--f-display);font-weight:800}
+.rank li .tm{color:var(--muted);font-size:.8em;font-variant-numeric:tabular-nums;min-width:3.5em;text-align:right}
+.join{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
+.join .qr{width:220px;height:220px}
+.join .qr canvas{width:200px!important;height:200px!important}
+.empty{color:var(--muted);background:var(--card);border:1px dashed var(--line);border-radius:12px;padding:24px;text-align:center}
+.count{font-family:var(--f-display);font-weight:800;font-size:2rem;line-height:1}
+</style>
+</head>
+<body>
+<div class="wrap wide">
+  <div class="board-top">
+    <div><h1 id="tit">Clasificación<br><span>en directo</span></h1></div>
+    <div class="live"><i aria-hidden="true"></i> Se actualiza sola cada pocos segundos</div>
+  </div>
+  <div class="grid">
+    <div>
+      <ol class="rank" id="rank" aria-live="polite"></ol>
+    </div>
+    <aside class="join">
+      <div><div class="count" id="count">0</div><div class="hint">alumnos han terminado</div></div>
+      <div class="qr" id="qr" aria-label="Código QR del reto"></div>
+      <div class="hint">Escanea para jugar el reto</div>
+      <div class="hint" id="hint"></div>
+    </aside>
+  </div>
+  <p class="notes" style="font-size:.8rem">Solo ve esta clasificación quien tenga este enlace. Los resultados se borran solos a los 7 días. Recomienda a tus alumnos usar solo su nombre de pila o un apodo.</p>
+</div>
+<script src="qr.js"></script>
+<script>
+{
+const q=new URLSearchParams(location.search),C=(q.get("c")||"").toUpperCase(),U=q.get("u")||"",T=q.get("t")||"";
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const mmss=s=>s==null?"":`${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`;
+const rank=document.getElementById("rank");
+if(T)document.getElementById("tit").innerHTML=`${esc(T)}<br><span>en directo</span>`;
+let reto=null;try{const u=new URL(U);if(u.origin===location.origin)reto=u.href}catch(e){}
+if(reto){try{document.getElementById("qr").append(QRLite.draw(document.createElement("canvas"),reto,480))}catch(e){}}
+else document.querySelector(".join .qr").hidden=true;
+if(!/^[A-Z0-9]{8,12}$/.test(C)){rank.outerHTML=`<p class="empty">Este enlace de clasificación no es válido. Vuelve a crear el reto desde «Retos para clase».</p>`}
+else{
+  const medal=["🥇","🥈","🥉"];
+  async function cargar(){
+    try{const r=await fetch("https://lnqigozwqraprajvaoiv.supabase.co/rest/v1/rpc/clase_ranking",{method:"POST",headers:{apikey:"sb_publishable_T2XYHn31Yyt5cwPQ_q_JNQ_7ZgMXqPN","Content-Type":"application/json"},body:JSON.stringify({p_clase:C})});
+      const d=await r.json();document.getElementById("count").textContent=d.length;
+      rank.innerHTML=d.length?d.map((x,i)=>`<li><span class="pos">${medal[i]||i+1}</span><span class="nm">${esc(x.nombre)}</span><span class="pt">${x.puntos}</span><span class="tm">${mmss(x.segundos)}</span></li>`).join(""):`<li class="empty" style="display:block">Todavía nadie ha terminado. Los resultados irán apareciendo aquí.</li>`;
+      document.getElementById("hint").textContent="";
+    }catch(e){document.getElementById("hint").textContent="Sin conexión: reintentando…"}}
+  cargar();setInterval(cargar,5000);
+}
+}
+</script>
+</body>
+</html>

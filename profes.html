@@ -121,6 +121,7 @@ button,.btnlink{font:inherit;cursor:pointer;border:0;border-radius:10px;text-dec
     <div class="f" style="max-width:260px"><label for="l-s">Tiempo para cada palabra</label>
       <select id="l-s"><option value="30">30 segundos</option><option value="60" selected>1 minuto</option><option value="90">1 minuto y medio</option><option value="120">2 minutos</option></select></div>
     <p class="err" id="l-err" role="alert"></p>
+    <label class="check"><input type="checkbox" id="l-live" checked> Ver los resultados de la clase en directo <span class="hint">(cada alumno escribe su nombre al terminar)</span></label>
     <div class="row"><button class="btn" id="l-go">Crear enlace</button></div>
     <div class="out" id="l-out" hidden></div>
   </section>
@@ -145,6 +146,7 @@ button,.btnlink{font:inherit;cursor:pointer;border:0;border-radius:10px;text-dec
     <div class="f"><label for="d-c4">Pista 4 <span class="hint">(opcional)</span></label><input type="text" id="d-c4" maxlength="140"></div>
     <label class="check"><input type="checkbox" id="d-pr" checked> Dar también la provincia como pista</label>
     <p class="err" id="d-err" role="alert"></p>
+    <label class="check"><input type="checkbox" id="d-live" checked> Ver los resultados de la clase en directo <span class="hint">(cada alumno escribe su nombre al terminar)</span></label>
     <div class="row"><button class="btn" id="d-go">Crear enlace</button></div>
     <div class="out" id="d-out" hidden></div>
   </section>
@@ -172,6 +174,7 @@ button,.btnlink{font:inherit;cursor:pointer;border:0;border-radius:10px;text-dec
       <select id="c-s"><option value="60">1 minuto</option><option value="90" selected>1 minuto y medio</option><option value="120">2 minutos</option><option value="180">3 minutos</option><option value="300">5 minutos</option><option value="0">Sin límite</option></select></div>
     <p class="err" id="c-err" role="alert"></p>
     <p class="hint" id="c-info"></p>
+    <label class="check"><input type="checkbox" id="c-live" checked> Ver los resultados de la clase en directo <span class="hint">(cada alumno escribe su nombre al terminar)</span></label>
     <div class="row"><button class="btn" id="c-go">Crear enlace</button></div>
     <div class="out" id="c-out" hidden></div>
   </section>
@@ -181,10 +184,11 @@ button,.btnlink{font:inherit;cursor:pointer;border:0;border-radius:10px;text-dec
     <ul>
       <li>Proyecta el código QR, compártelo por WhatsApp o pega el enlace en la plataforma de clase. Funciona en móvil, tableta y ordenador.</li>
       <li>Al terminar, cada alumno puede copiar su resultado (puntos y tiempo) y mandártelo.</li>
-      <li>El reto no caduca: el enlace funciona siempre, y si lo vuelves a crear igual, es el mismo reto.</li>
+      <li>El reto no caduca: el enlace funciona siempre. Con «resultados en directo», cada vez que lo creas tiene su propia clasificación.</li>
+      <li>Clasificación en directo: proyecta el panel en clase y verás a cada alumno aparecer al terminar, con sus puntos y su tiempo.</li>
     </ul>
     <h2>Privacidad</h2>
-    <p>No se guarda nada en ningún servidor: ni el reto ni los resultados de los alumnos. La respuesta va cifrada en el enlace para que no se vea a simple vista.</p>
+    <p>El reto va dentro del enlace, con la respuesta cifrada para que no se vea a simple vista. Si activas la clasificación en directo, se guardan el nombre que escribe cada alumno y su resultado, solo los ve quien tenga el enlace del panel y se borran a los 7 días. Recomienda usar solo el nombre de pila o un apodo.</p>
   </section>
   <p class="osm">Búsqueda de lugares: datos © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">colaboradores de OpenStreetMap</a>, vía Photon · <a href="https://ko-fi.com/pascualmunoz" target="_blank" rel="noopener">Invítame a un café</a></p>
 </div>
@@ -197,11 +201,12 @@ const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"
 const normL=s=>s.toUpperCase().replace(/Ñ/g,"\u0001").normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/\u0001/g,"Ñ");
 
 // Resultado común: enlace, copiar, probar y QR
-function showOut(box,url,label,msg){
+function showOut(box,url,label,msg,board){
   box.hidden=false;
   box.innerHTML=`<div style="display:flex;flex-direction:column;gap:10px;min-width:0">
     <p class="ok">${label}</p>
     <div class="link" id="${box.id}-link">${esc(url)}</div>
+    ${board?`<a class="btn btnlink" href="${esc(board)}" target="_blank" rel="noopener">📊 Abrir la clasificación en directo</a><p class="hint" style="margin:0">Ábrela en el ordenador del aula y proyéctala: los resultados aparecen según terminan. Guarda este enlace para volver a verla; se borra a los 7 días.</p>`:""}
     <div class="row"><a class="wa btnlink" href="https://wa.me/?text=${encodeURIComponent(msg+"\n"+url)}" target="_blank" rel="noopener"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.3-.4.8-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s1 2.6 1.1 2.7c.1.2 1.9 2.9 4.6 4.1 1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.8-1.2.2-.6.2-1.1.1-1.2-.1-.1-.2-.2-.4-.3z"/></svg> Compartir por WhatsApp</a><a class="ghost btnlink" href="${esc(url)}" target="_blank" rel="noopener">Probar el reto</a></div>
   </div>
   <div class="side"><div class="qr" id="${box.id}-qr" aria-label="Código QR del reto"></div><button class="ghost" data-dl>Descargar QR</button></div>`;
@@ -211,6 +216,9 @@ function showOut(box,url,label,msg){
   box.scrollIntoView({behavior:"smooth",block:"nearest"});
 }
 const pageUrl=(file,code)=>new URL(file+"?reto="+code,location.href).href;
+// Modo clase en directo: código aleatorio de 10 caracteres y enlace al panel del profe
+const claseCode=()=>{const A="ABCDEFGHJKLMNPQRSTUVWXYZ23456789",r=crypto.getRandomValues(new Uint8Array(10));return[...r].map(x=>A[x%32]).join("")};
+const boardUrl=(reto,url)=>reto.cl?new URL("clase.html?c="+reto.cl+"&u="+encodeURIComponent(url)+(reto.ti?"&t="+encodeURIComponent(reto.ti):""),location.href).href:"";
 
 // ---- Letras ----
 $("l-go").onclick=()=>{
@@ -220,9 +228,9 @@ $("l-go").onclick=()=>{
   if(lines.length>10){err.textContent=`Has escrito ${lines.length} palabras. El máximo es 10.`;return}
   const bad=lines.filter(w=>{const n=normL(w);return !/^[A-ZÑ]+$/.test(n)||n.length<3||n.length>12});
   if(bad.length){err.textContent=`Revisa ${bad.length>1?"estas palabras":"esta palabra"}: ${bad.join(", ")}. Cada una debe tener entre 3 y 12 letras, sin espacios, números ni guiones.`;return}
-  const reto={k:"l",w:lines.map(w=>w.toUpperCase()),s:+$("l-s").value};
+  const reto={k:"l",w:lines.map(w=>w.toUpperCase()),s:+$("l-s").value};if($("l-live").checked)reto.cl=claseCode();
   const ti=$("l-ti").value.trim(),au=$("l-au").value.trim();if(ti)reto.ti=ti;if(au)reto.au=au;
-  showOut($("l-out"),pageUrl("letras.html",Reto.encode(reto)),`Reto creado: ${lines.length} palabra${lines.length>1?"s":""}.`,`🔤 Reto de Letras${ti?`: ${ti}`:""}${au?` (de ${au})`:""}. Ordena ${lines.length} palabra${lines.length>1?"s":""} con las letras mezcladas antes de que se acabe el tiempo:`);
+  showOut($("l-out"),pageUrl("letras.html",Reto.encode(reto)),`Reto creado: ${lines.length} palabra${lines.length>1?"s":""}.`,`🔤 Reto de Letras${ti?`: ${ti}`:""}${au?` (de ${au})`:""}. Ordena ${lines.length} palabra${lines.length>1?"s":""} con las letras mezcladas antes de que se acabe el tiempo:`,boardUrl(reto,pageUrl("letras.html",Reto.encode(reto))));
 };
 
 // ---- ¿Dónde está? ----
@@ -255,10 +263,10 @@ $("d-go").onclick=()=>{
   if(!c.length){err.textContent="Escribe al menos la primera pista.";$("d-c1").focus();return}
   const leak=c.find(x=>normL(x).includes(normL(place.n)));
   if(leak){err.textContent=`La pista «${leak}» contiene el nombre del lugar. Cámbiala para no dar la respuesta.`;return}
-  const reto={k:"d",nm:place.n,la:place.la,lo:place.lo,c};
+  const reto={k:"d",nm:place.n,la:place.la,lo:place.lo,c};if($("d-live").checked)reto.cl=claseCode();
   if($("d-pr").checked&&place.pr)reto.pr=place.pr;
   const ti=$("d-ti").value.trim(),au=$("d-au").value.trim();if(ti)reto.ti=ti;if(au)reto.au=au;
-  showOut($("d-out"),pageUrl("./",Reto.encode(reto)),`Reto creado: ${place.n}.`,`📍 Reto de ¿Dónde está?${ti?`: ${ti}`:""}${au?` (de ${au})`:""}. Adivina el lugar con las pistas en 6 intentos:`);
+  showOut($("d-out"),pageUrl("./",Reto.encode(reto)),`Reto creado: ${place.n}.`,`📍 Reto de ¿Dónde está?${ti?`: ${ti}`:""}${au?` (de ${au})`:""}. Adivina el lugar con las pistas en 6 intentos:`,boardUrl(reto,pageUrl("./",Reto.encode(reto))));
 };
 // ---- Cifras ----
 function solveC(nums,target){const seen=new Set();let best=null;
@@ -289,9 +297,9 @@ $("c-go").onclick=()=>{
     r.push([t,nums])}
   const noex=r.map(([t,n],i)=>({i,b:solveC(n,t)})).filter(x=>x.b.d!==0);
   if(noex.length)info.textContent=noex.map(x=>`La ronda ${x.i+1} no tiene solución exacta: lo más cerca posible es ${x.b.v}.`).join(" ")+" Puedes dejarla así (contará el más cercano) o cambiar los números.";
-  const reto={k:"c",r,s:+$("c-s").value};
+  const reto={k:"c",r,s:+$("c-s").value};if($("c-live").checked)reto.cl=claseCode();
   const ti=$("c-ti").value.trim(),au=$("c-au").value.trim();if(ti)reto.ti=ti;if(au)reto.au=au;
-  showOut($("c-out"),pageUrl("cifras.html",Reto.encode(reto)),`Reto creado: ${r.length} ronda${r.length>1?"s":""}.`,`🔢 Reto de Cifras${ti?`: ${ti}`:""}${au?` (de ${au})`:""}. Llega a la cifra objetivo con sumas, restas, multiplicaciones y divisiones:`);
+  showOut($("c-out"),pageUrl("cifras.html",Reto.encode(reto)),`Reto creado: ${r.length} ronda${r.length>1?"s":""}.`,`🔢 Reto de Cifras${ti?`: ${ti}`:""}${au?` (de ${au})`:""}. Llega a la cifra objetivo con sumas, restas, multiplicaciones y divisiones:`,boardUrl(reto,pageUrl("cifras.html",Reto.encode(reto))));
 };
 if(location.hash==="#cifras")setTimeout(()=>$("cifras").scrollIntoView({block:"start"}),50);
 </script>
