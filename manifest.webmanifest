@@ -1,0 +1,22 @@
+{
+  "name": "Piensa un rato",
+  "short_name": "Piensa un rato",
+  "description": "Tres juegos diarios gratis en español: ¿Dónde está?, Letras del día y Cifras del día.",
+  "lang": "es",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#EEF3F6",
+  "theme_color": "#1B2F45",
+  "icons": [
+    { "src": "/app-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/app-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/app-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "¿Dónde está?", "url": "/", "icons": [{ "src": "/icon-donde-180.png", "sizes": "180x180", "type": "image/png" }] },
+    { "name": "Letras del día", "url": "/letras.html", "icons": [{ "src": "/icon-letras-180.png", "sizes": "180x180", "type": "image/png" }] },
+    { "name": "Cifras del día", "url": "/cifras.html", "icons": [{ "src": "/icon-cifras-180.png", "sizes": "180x180", "type": "image/png" }] }
+  ]
+}
