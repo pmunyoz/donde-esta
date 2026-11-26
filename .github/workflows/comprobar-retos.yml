@@ -23,3 +23,7 @@ jobs:
           python -m playwright install --with-deps chromium
       - name: Revisar los próximos 30 días
         run: python tests/comprobar_retos.py 30
+      - name: Comprobar que la versión en valenciano está al día
+        run: |
+          python herramientas/valenciano.py
+          git diff --exit-code -- va/ || (echo "Falta regenerar el valenciano: ejecuta python herramientas/valenciano.py" && exit 1)

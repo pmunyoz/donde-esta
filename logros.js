@@ -10,15 +10,15 @@
     let keys = [];
     try { keys = Object.keys(localStorage); } catch (e) {}
     for (const k of keys) {
-      const m = k.match(/^(dd|lt|cf)-(\d{4}-\d{2}-\d{2})$/);
+      const m = k.match(/^(dd|lt|ll|cf)-(\d{4}-\d{2}-\d{2})$/);  // ll = Lletres del dia (valencià)
       if (!m) continue;
       const s = get(k);
       if (!s || !s.done) continue;
       const fecha = m[2], jugado = s.t1 ? ymd(s.t1) : fecha, archivo = jugado !== fecha;
       D.jugados.add(jugado);
-      (D.porFecha[fecha] = D.porFecha[fecha] || new Set()).add(m[1]);
+      (D.porFecha[fecha] = D.porFecha[fecha] || new Set()).add(m[1] === "ll" ? "lt" : m[1]);
       if (m[1] === "dd") D.donde.push({ fecha, archivo, won: !!s.won, n: (s.guesses || []).length });
-      else if (m[1] === "lt") { const r = s.res || []; D.letras.push({ fecha, archivo, pts: r.reduce((a, x) => a + (x.pts || 0), 0), ok: r.filter((x) => x.ok).length, rapida: Math.min(99, ...r.filter((x) => x.ok).map((x) => x.s ?? 99)) }); }
+      else if (m[1] === "lt" || m[1] === "ll") { const r = s.res || []; D.letras.push({ fecha, archivo, pts: r.reduce((a, x) => a + (x.pts || 0), 0), ok: r.filter((x) => x.ok).length, rapida: Math.min(99, ...r.filter((x) => x.ok).map((x) => x.s ?? 99)) }); }
       else { const r = s.res || []; D.cifras.push({ fecha, archivo, pts: r.reduce((a, x) => a + (x.pts || 0), 0), exactas: r.filter((x) => x.d === 0).length }); }
     }
     // Racha conjunta: días seguidos (por día de juego) con al menos un reto terminado
