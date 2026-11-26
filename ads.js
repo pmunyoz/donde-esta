@@ -14,7 +14,7 @@
 //  3. Sube un archivo ads.txt a la raíz del dominio con la línea que te da AdSense.
 //  4. En AdSense > Privacidad y mensajes, activa el mensaje de consentimiento para Europa (RGPD).
 (function () {
-  const CLIENT = "";   // p. ej. "ca-pub-1234567890123456"
+  const CLIENT = "ca-pub-8361369070531250";   // p. ej. "ca-pub-1234567890123456"
   const SLOT = "";     // p. ej. "1234567890"
   let loaded = false;
 
