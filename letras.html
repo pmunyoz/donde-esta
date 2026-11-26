@@ -60,6 +60,8 @@ button{font:inherit;cursor:pointer;border:0;border-radius:10px}
 .btn{background:var(--signal);color:var(--signal-ink);font-weight:600;padding:12px 18px}
 a.wa{background:#25D366;color:#073B1C;font-weight:600;padding:12px 18px;border-radius:10px;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
 a.wa:hover{background:#20BD5A}
+.recom{display:flex;justify-content:center}
+.recom a.wa{width:100%;max-width:360px;justify-content:center}
 a.wa:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 .ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line);padding:10px 14px;font-weight:500}
 .btn:focus-visible,.ghost:focus-visible,.tile:focus-visible,.slot:focus-visible,.kofi:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
@@ -167,6 +169,15 @@ pre.share{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font-family:var(-
 .games a:hover{border-color:var(--signal)}
 .games a[aria-current]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
 .games a:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+
+.cafe{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:12px;background:var(--signal);color:var(--signal-ink);text-decoration:none;box-shadow:0 3px 0 rgb(0 0 0 / .18)}
+.cafe:hover{filter:brightness(1.05)}
+.cafe:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.cafe .cup{font-size:1.9rem;line-height:1;flex:none}
+.cafe .txt{display:flex;flex-direction:column;gap:2px;min-width:0}
+.cafe b{font-size:1rem}
+.cafe small{font-size:.82rem;opacity:.85;line-height:1.35}
+#wa{flex:1 1 220px;justify-content:center}
 </style>
 </head>
 <body>
@@ -182,6 +193,7 @@ pre.share{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font-family:var(-
   <section id="play"></section>
   <div id="end"></div>
   <section class="liga" id="liga" hidden></section>
+  <p class="recom"><a class="wa" href="https://wa.me/?text=Te%20recomiendo%20Letras%20del%20d%C3%ADa%3A%20cada%20d%C3%ADa%2C%20cinco%20palabras%20con%20las%20letras%20mezcladas%20y%20un%20minuto%20para%20cada%20una.%20Gratis%20y%20sin%20registro%20%F0%9F%91%89%20https%3A//piensaunrato.es/letras.html%0AY%20si%20te%20gusta%2C%20tambi%C3%A9n%20hay%20%C2%BFD%C3%B3nde%20est%C3%A1%3F%20y%20Cifras%20del%20d%C3%ADa." target="_blank" rel="noopener"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.3-.4.8-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s1 2.6 1.1 2.7c.1.2 1.9 2.9 4.6 4.1 1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.8-1.2.2-.6.2-1.1.1-1.2-.1-.1-.2-.2-.4-.3z"/></svg> Recomienda Letras del día por WhatsApp</a></p>
   <p class="osm">Más juegos: <a href="./">¿Dónde está?</a> · <a href="cifras.html">Cifras del día</a> · <a href="archivo.html">Días anteriores</a> · <a href="https://ko-fi.com/pascualmunoz" target="_blank" rel="noopener">Invítame a un café</a> · <a href="sugerencias.html?juego=letras">Sugerencias</a> · <a href="acerca.html">Acerca de</a> · <a href="privacidad.html">Privacidad</a></p>
   <section class="about">
     <h2>Cómo se juega a Letras del día</h2>
@@ -348,15 +360,14 @@ function drawEnd(){const e=document.getElementById("end");if(!st.done||Date.now(
   <div class="words">${st.res.map((r,k)=>`<div class="w ${r.ok?"ok":"ko"}"><span class="n">${LENS[k]} l.</span><span class="word">${escH(DISP[k].toUpperCase())}</span><span class="t">${r.ok?mmss(r.s):"–"}</span><span class="p">${r.ok?"+"+r.pts:"0"}</span></div>`).join("")}</div>
   ${CUSTOM||ARCH?"":`<div class="stats"><div><b>${stats.played}</b><small>Jugados</small></div><div><b>${avg}</b><small>Media</small></div><div><b>${stats.best}</b><small>Mejor</small></div><div><b>${stats.streak}</b><small>Racha</small></div></div>`}
   <pre class="share" id="sharetxt">${shareText()}</pre>
-  <div class="row"><button class="btn" id="copy">Copiar resultado</button><a class="wa" id="wa" href="https://wa.me/?text=${encodeURIComponent(shareText())}" target="_blank" rel="noopener"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.3-.4.8-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s1 2.6 1.1 2.7c.1.2 1.9 2.9 4.6 4.1 1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.8-1.2.2-.6.2-1.1.1-1.2-.1-.1-.2-.2-.4-.3z"/></svg> WhatsApp</a>${CUSTOM?"":ARCH?`<a class="next" href="letras.html">Ir al reto de hoy</a>`:`<span class="next" id="next"></span>`}</div>
-  <a class="kofi" href="https://ko-fi.com/pascualmunoz" target="_blank" rel="noopener"><span aria-hidden="true">☕</span> ¿Te gusta el juego? Invítame a un café</a>
+  <div class="row"><a class="wa" id="wa" href="https://wa.me/?text=${encodeURIComponent(shareText())}" target="_blank" rel="noopener"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.3-.4.8-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s1 2.6 1.1 2.7c.1.2 1.9 2.9 4.6 4.1 1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.8-1.2.2-.6.2-1.1.1-1.2-.1-.1-.2-.2-.4-.3z"/></svg> Compartir resultado por WhatsApp</a>${CUSTOM?"":ARCH?`<a class="next" href="letras.html">Ir al reto de hoy</a>`:`<span class="next" id="next"></span>`}</div>
+  <a class="cafe" href="https://ko-fi.com/pascualmunoz" target="_blank" rel="noopener"><span class="cup" aria-hidden="true">☕</span><span class="txt"><b>¿Te ha gustado? Invítame a un café</b><small>Los juegos son gratis. Con un café me ayudas a mantenerlos y a crear más.</small></span></a>
   <a class="also" href="archivo.html"><span aria-hidden="true">📅</span> Juega los días anteriores</a>
   <a class="also" href="cifras.html"><span aria-hidden="true">🔢</span> Juega también a Cifras del día</a>
   <a class="also" href="./"><span aria-hidden="true">📍</span> Juega también a ¿Dónde está?</a>
   <a class="also" href="profes.html"><span aria-hidden="true">🍎</span> ¿Eres profe? Crea tu propio reto</a>
   <div class="ad-slot"></div></div>`;
   if(window.Ads)Ads.fill();
-  document.getElementById("copy").onclick=async ev=>{try{await navigator.clipboard.writeText(shareText());ev.target.textContent="Copiado"}catch(_){const r=document.createRange();r.selectNodeContents(document.getElementById("sharetxt"));const s=getSelection();s.removeAllRanges();s.addRange(r);ev.target.textContent="Selecciónalo y cópialo"}};
   next()}
 function next(){const el=document.getElementById("next");if(!el)return;const n=new Date(),m=new Date(n);m.setHours(24,0,0,0);const s=Math.max(0,Math.floor((m-n)/1000));
   el.textContent=`Siguiente en ${String(Math.floor(s/3600)).padStart(2,"0")}:${String(Math.floor(s/60)%60).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`}
