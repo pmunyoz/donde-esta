@@ -15,7 +15,7 @@
 //  4. En AdSense > Privacidad y mensajes, activa el mensaje de consentimiento para Europa (RGPD).
 (function () {
   const CLIENT = "ca-pub-8361369070531250";   // p. ej. "ca-pub-1234567890123456"
-  const SLOT = "";     // p. ej. "1234567890"
+  const SLOT = "8510435358";     // p. ej. "1234567890"
   let loaded = false;
 
   function load() {
