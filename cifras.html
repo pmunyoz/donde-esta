@@ -228,11 +228,12 @@ const escH=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;
 const ARCH=(()=>{const p=new URLSearchParams(location.search).get("dia");
   if(CUSTOM||!p||!/^\d{4}-\d{2}-\d{2}$/.test(p))return null;const[y,m,d]=p.split("-").map(Number);
   const t=new Date(y,m-1,d,12),h=new Date();h.setHours(0,0,0,0);
-  return t.getDate()===d&&t>=new Date(2026,10,25,12)&&t<h?t:null})();
+  return t.getDate()===d&&t>=new Date(2026,10,26,12)&&t<h?t:null})();
 const now=ARCH||new Date();
 const dkey=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
 const key=dkey(now);
 const DAY=Math.round((Date.UTC(now.getFullYear(),now.getMonth(),now.getDate())-Date.UTC(2026,10,25))/864e5);
+const NUM=Math.round((Date.UTC(now.getFullYear(),now.getMonth(),now.getDate())-Date.UTC(2026,10,26))/864e5)+1; // nº de reto visible: el 26/11/2026 es el nº 1
 
 // Busca la solución exacta (o la más cercana) por fuerza bruta con poda de estados repetidos
 function solve(nums,target){const seen=new Set();let best=null;
@@ -263,7 +264,7 @@ const tTxt=!isFinite(ROUND_T)?"sin límite de tiempo":ROUND_T===90?"un minuto y 
 const solTxt=R=>R.exact?`Una solución: ${R.sol.map(escH).join(" · ")}`:`No se puede llegar exacto. Lo más cerca posible es ${R.bestV}${R.sol.length?": "+R.sol.map(escH).join(" · "):""}`;
 const PTS=d=>d===0?10:d<=2?7:d<=5?5:d<=10?3:d<=25?1:0;
 const SHARE_URL=CUSTOM?location.href:location.origin+location.pathname+(ARCH?"?dia="+key:"");
-document.getElementById("num").innerHTML=CUSTOM?`Reto para clase${CUSTOM.au?`<br>de ${escH(CUSTOM.au)}`:""}`:`Reto nº ${DAY+1}<br>${now.toLocaleDateString("es-ES",{day:"numeric",month:"long"})}`;
+document.getElementById("num").innerHTML=CUSTOM?`Reto para clase${CUSTOM.au?`<br>de ${escH(CUSTOM.au)}`:""}`:`Reto nº ${NUM}<br>${now.toLocaleDateString("es-ES",{day:"numeric",month:"long"})}`;
 {const rb=document.getElementById("retobox");
  if(CUSTOM){rb.hidden=false;rb.innerHTML=`<b>${escH(CUSTOM.ti||"Reto personalizado")}</b><span>${CUSTOM.au?`Creado por ${escH(CUSTOM.au)}. `:""}${NR} ronda${NR>1?"s":""}, ${tTxt}. <a href="cifras.html">Ir al reto del día</a></span>`}
  else if(RETO){rb.hidden=false;rb.innerHTML=`<b>Este enlace de reto no funciona</b><span>Puede que esté incompleto. Mientras tanto, aquí tienes el reto del día.</span>`}}
@@ -386,7 +387,7 @@ document.addEventListener("keydown",e=>{
 
 // Final
 function shareText(){const sq=r=>r.d===0?"🟩":r.pts>0?"🟨":"🟥";
-  return`${CUSTOM?`Cifras · ${CUSTOM.ti||"Reto para clase"}`:`Cifras del día nº ${DAY+1}`} — ${score()}/${MAXP} puntos\n${st.res.map(r=>sq(r)+(r.d===0?" exacto":` a ${r.d}`)).join("\n")}\n${SHARE_URL}`}
+  return`${CUSTOM?`Cifras · ${CUSTOM.ti||"Reto para clase"}`:`Cifras del día nº ${NUM}`} — ${score()}/${MAXP} puntos\n${st.res.map(r=>sq(r)+(r.d===0?" exacto":` a ${r.d}`)).join("\n")}\n${SHARE_URL}`}
 function verdict(p){const q=p/MAXP;return q>=.9?"Imbatible":q>=.66?"Muy bien":q>=.4?"Bien jugado":q>=.15?"Se puede mejorar":CUSTOM||ARCH?"Otra vez será":"Mañana más"}
 function drawEnd(){const e=document.getElementById("end");if(!st.done||Date.now()<endHold){e.innerHTML="";return}
   const avg=stats.played?(stats.total/stats.played).toFixed(1).replace(".",","):"0";

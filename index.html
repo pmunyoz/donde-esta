@@ -583,11 +583,12 @@ function perm(n,seed){const r=mulberry(seed),o=[...Array(n).keys()];for(let i=o.
 function cycleOrder(c){const o=perm(C.length,7000+c);if(c>0){const prev=perm(C.length,7000+c-1);if(o[0]===prev[prev.length-1])[o[0],o[1]]=[o[1],o[0]]}return o}
 function pickDay(d){if(d<START){const o=perm(N0,2026);return o[((d%N0)+N0)%N0]}
   const k=d-START,c=Math.floor(k/C.length);return cycleOrder(c)[k%C.length]}
-const ARCH=(()=>{const p=new URLSearchParams(location.search).get("dia");if(CUSTOM||!p||!/^\d{4}-\d{2}-\d{2}$/.test(p))return null;const[y,m,d]=p.split("-").map(Number);const t=new Date(y,m-1,d,12),h=new Date();h.setHours(0,0,0,0);return t.getDate()===d&&t>=new Date(2026,10,13,12)&&t<h?t:null})();
+const ARCH=(()=>{const p=new URLSearchParams(location.search).get("dia");if(CUSTOM||!p||!/^\d{4}-\d{2}-\d{2}$/.test(p))return null;const[y,m,d]=p.split("-").map(Number);const t=new Date(y,m-1,d,12),h=new Date();h.setHours(0,0,0,0);return t.getDate()===d&&t>=new Date(2026,10,26,12)&&t<h?t:null})();
 const now=ARCH||new Date();const key=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}-${String(now.getDate()).padStart(2,"0")}`;
 const DAY=Math.round((Date.UTC(now.getFullYear(),now.getMonth(),now.getDate())-Date.UTC(2026,0,1))/864e5);
+const NUM=Math.round((Date.UTC(now.getFullYear(),now.getMonth(),now.getDate())-Date.UTC(2026,10,26))/864e5)+1; // nº de reto visible: el 26/11/2026 es el nº 1
 const T=CUSTOM?CT:pickDay(DAY);const TC=C[T];
-document.getElementById("num").innerHTML=CUSTOM?`Reto para clase${CUSTOM.au?`<br>de ${escH(CUSTOM.au)}`:""}`:`Reto nº ${DAY+1}<br>${now.toLocaleDateString("es-ES",{day:"numeric",month:"long"})}`;
+document.getElementById("num").innerHTML=CUSTOM?`Reto para clase${CUSTOM.au?`<br>de ${escH(CUSTOM.au)}`:""}`:`Reto nº ${NUM}<br>${now.toLocaleDateString("es-ES",{day:"numeric",month:"long"})}`;
 const SHARE_URL=CUSTOM?location.href:location.origin+location.pathname+(ARCH?"?dia="+key:"");
 {const rb=document.getElementById("retobox");
  if(CUSTOM){rb.hidden=false;rb.innerHTML=`<b>${escH(CUSTOM.ti||"Reto personalizado")}</b><span>${CUSTOM.au?`Creado por ${escH(CUSTOM.au)}. `:""}Adivina el lugar en 6 intentos. <a href="./">Ir al reto del día</a></span>`;
@@ -648,7 +649,7 @@ function drawGuesses(){let h="";for(let k=0;k<MAX;k++){const g=st.guesses[k];
   document.getElementById("guesses").innerHTML=h}
 
 function shareText(){const rows=st.guesses.map(g=>{if(g===T)return"🟩🟩🟩🟩🟩🎯";const p=prox(dist(G(g),TC));const f=Math.floor(p/20);return"🟩".repeat(f)+(p%20>=10?"🟨":"")+"⬜".repeat(5-f-(p%20>=10?1:0))+em(bearing(G(g),TC))});
-  const head=CUSTOM?`¿Dónde está? · ${CUSTOM.ti||"Reto para clase"}`:`¿Dónde está? nº ${DAY+1}`;
+  const head=CUSTOM?`¿Dónde está? · ${CUSTOM.ti||"Reto para clase"}`:`¿Dónde está? nº ${NUM}`;
   return`${head} — ${PTS(st.won,st.guesses.length)}/10 puntos (${st.won?st.guesses.length:"X"}/${MAX})\n${rows.join("\n")}\n${SHARE_URL}`}
 function drawWorth(){const w=document.getElementById("worth");if(st.done){w.hidden=true;return}w.hidden=false;const v=PTS(true,st.guesses.length+1);w.innerHTML=`Si aciertas ahora: <b>${v}</b> punto${v===1?"":"s"}`}
 function drawEnd(){drawWorth();const e=document.getElementById("end");if(!st.done){e.innerHTML="";return}
