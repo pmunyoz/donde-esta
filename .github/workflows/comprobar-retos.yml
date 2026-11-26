@@ -1,0 +1,25 @@
+name: Comprobar retos
+
+# Revisa los retos de los próximos 30 días de los tres juegos.
+# Si algo falla, GitHub avisa por email a quien gestiona el repositorio.
+on:
+  schedule:
+    - cron: "13 5 * * *"   # cada día hacia las 6:13 (hora peninsular en invierno)
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  comprobar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Instalar Playwright
+        run: |
+          pip install playwright==1.48.0
+          python -m playwright install --with-deps chromium
+      - name: Revisar los próximos 30 días
+        run: python tests/comprobar_retos.py 30
