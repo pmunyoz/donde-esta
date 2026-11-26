@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="google-adsense-account" content="ca-pub-8361369070531250">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="application-name" content="Piensa un rato">
+<meta name="apple-mobile-web-app-title" content="Piensa un rato">
+<title>Tus logros · Piensa un rato</title>
+<meta name="description" content="Tus logros en ¿Dónde está?, Letras del día y Cifras del día: rachas, aciertos y retos completados.">
+<link rel="canonical" href="https://piensaunrato.es/logros.html">
+<link rel="icon" href="icon-donde.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-donde-180.png">
+<meta name="theme-color" content="#1B2F45">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_ES">
+<meta property="og:site_name" content="¿Dónde está? · Letras del día">
+<meta property="og:title" content="Tus logros · Piensa un rato">
+<meta property="og:description" content="¿Te perdiste algún día? Juega los retos anteriores de ¿Dónde está?, Letras y Cifras del día.">
+<meta property="og:url" content="https://piensaunrato.es/logros.html">
+<meta property="og:image" content="https://piensaunrato.es/og-donde.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Archivo:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+:root{
+  --ink:#1B2F45; --muted:#5F7286; --line:#B9C9D4; --signal:#E3A21A; --bg:#EEF3F6; --card:#FFFFFF; --hot:#2E8B57;
+  --f-display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --f-body:"Archivo",ui-sans-serif,system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root{
+  --ink:#E6EEF4; --muted:#93A6B8; --line:#35506A; --signal:#F0B43A; --bg:#0D1823; --card:#172636; --hot:#4CC18A; color-scheme:dark}}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;margin:0;
+  padding:20px max(16px,env(safe-area-inset-right,0px)) 40px max(16px,env(safe-area-inset-left,0px))}
+.wrap{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+h1{font-family:var(--f-display);font-weight:800;font-size:2.1rem;line-height:1;margin:0;letter-spacing:-.02em}
+h1 span{color:var(--signal)}
+a{color:var(--ink)}
+.how{font-size:.9rem;color:var(--muted);margin:0}
+.sum{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.sum div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center}
+.sum b{display:block;font-family:var(--f-display);font-size:1.6rem;line-height:1.1}
+.sum small{font-size:.75rem;color:var(--muted)}
+.list{display:flex;flex-direction:column;gap:8px}
+.lg{display:flex;align-items:center;gap:12px;background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px}
+.lg.ok{border-color:var(--signal)}
+.lg .ic{font-size:1.7rem;width:44px;height:44px;display:grid;place-items:center;border-radius:10px;background:var(--bg);flex:none}
+.lg:not(.ok) .ic{filter:grayscale(1);opacity:.45}
+.lg .txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.lg b{font-size:.98rem}
+.lg small{color:var(--muted);font-size:.82rem}
+.bar{height:6px;border-radius:4px;background:var(--bg);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--signal)}
+.tick{font-weight:700;color:var(--signal);font-size:.8rem;white-space:nowrap}
+.osm{font-size:.8rem;color:var(--muted);margin:0}
+.osm a{font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Tus<br><span>logros</span></h1>
+  <p class="how">Se guardan en este navegador, sin cuenta. Si juegas en otro móvil u ordenador, allí llevarás otros. Volver a: <a href="./">¿Dónde está?</a> · <a href="letras.html">Letras</a> · <a href="cifras.html">Cifras</a></p>
+  <div class="sum" id="sum"></div>
+  <div class="list" id="list"></div>
+  <p class="osm"><a href="archivo.html">Días anteriores</a> · <a href="acerca.html">Acerca de</a> · <a href="privacidad.html">Privacidad</a></p>
+</div>
+<script src="logros.js"></script>
+<script>
+{
+const {D,logros}=Logros.estado();
+const n=logros.filter(l=>l.ok).length;
+document.getElementById("sum").innerHTML=`<div><b>${n}/${logros.length}</b><small>Logros</small></div><div><b>${D.rachaActual}</b><small>Racha actual</small></div><div><b>${D.total}</b><small>Retos terminados</small></div>`;
+const orden=[...logros.filter(l=>l.ok),...logros.filter(l=>!l.ok).sort((a,b)=>b.v/b.meta-a.v/a.meta)];
+document.getElementById("list").innerHTML=orden.map(l=>`<div class="lg${l.ok?" ok":""}"><span class="ic" aria-hidden="true">${l.ic}</span><span class="txt"><b>${l.nombre}</b><small>${l.desc}</small>${!l.ok&&l.meta>1?`<span class="bar" role="img" aria-label="${l.v} de ${l.meta}"><i style="width:${Math.round(100*l.v/l.meta)}%"></i></span><small>${l.v} de ${l.meta}</small>`:""}</span>${l.ok?`<span class="tick">✓ Conseguido</span>`:""}</div>`).join("");
+}
+</script>
+<script data-goatcounter="https://pmunyoz.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+</body>
+</html>
