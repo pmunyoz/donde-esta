@@ -73,6 +73,9 @@ button,.btnlink{font:inherit;cursor:pointer;border:0;border-radius:10px;text-dec
 .btn{background:var(--signal);color:var(--signal-ink);font-weight:600;padding:12px 18px}
 .ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line);padding:10px 14px;font-weight:500}
 .btn:focus-visible,.ghost:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.wa{background:#25D366;color:#073B1C;font-weight:600;padding:12px 18px;gap:6px}
+.wa:hover{background:#20BD5A}
+.wa:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .err{color:var(--bad);font-size:.86rem;margin:0}
 .err:empty{display:none}
@@ -176,7 +179,7 @@ button,.btnlink{font:inherit;cursor:pointer;border:0;border-radius:10px;text-dec
   <section class="notes">
     <h2>Cómo usarlo en clase</h2>
     <ul>
-      <li>Proyecta el código QR o envía el enlace por la plataforma de clase. Funciona en móvil, tableta y ordenador.</li>
+      <li>Proyecta el código QR, compártelo por WhatsApp o pega el enlace en la plataforma de clase. Funciona en móvil, tableta y ordenador.</li>
       <li>Al terminar, cada alumno puede copiar su resultado (puntos y tiempo) y mandártelo.</li>
       <li>El reto no caduca: el enlace funciona siempre, y si lo vuelves a crear igual, es el mismo reto.</li>
     </ul>
@@ -194,19 +197,16 @@ const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"
 const normL=s=>s.toUpperCase().replace(/Ñ/g,"\u0001").normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/\u0001/g,"Ñ");
 
 // Resultado común: enlace, copiar, probar y QR
-function showOut(box,url,label){
+function showOut(box,url,label,msg){
   box.hidden=false;
   box.innerHTML=`<div style="display:flex;flex-direction:column;gap:10px;min-width:0">
     <p class="ok">${label}</p>
     <div class="link" id="${box.id}-link">${esc(url)}</div>
-    <div class="row"><button class="btn" data-copy>Copiar enlace</button><a class="ghost btnlink" href="${esc(url)}" target="_blank" rel="noopener">Probar el reto</a></div>
+    <div class="row"><a class="wa btnlink" href="https://wa.me/?text=${encodeURIComponent(msg+"\n"+url)}" target="_blank" rel="noopener"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.3-.4.8-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s1 2.6 1.1 2.7c.1.2 1.9 2.9 4.6 4.1 1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.8-1.2.2-.6.2-1.1.1-1.2-.1-.1-.2-.2-.4-.3z"/></svg> Compartir por WhatsApp</a><a class="ghost btnlink" href="${esc(url)}" target="_blank" rel="noopener">Probar el reto</a></div>
   </div>
   <div class="side"><div class="qr" id="${box.id}-qr" aria-label="Código QR del reto"></div><button class="ghost" data-dl>Descargar QR</button></div>`;
   const qrEl=$(box.id+"-qr");
   try{qrEl.append(QRLite.draw(document.createElement("canvas"),url,480))}catch(e){qrEl.parentElement.hidden=true}
-  box.querySelector("[data-copy]").onclick=async ev=>{
-    try{await navigator.clipboard.writeText(url);ev.target.textContent="Enlace copiado"}
-    catch(_){const r=document.createRange();r.selectNodeContents($(box.id+"-link"));const s=getSelection();s.removeAllRanges();s.addRange(r);ev.target.textContent="Selecciónalo y cópialo"}};
   box.querySelector("[data-dl]").onclick=()=>{const c=qrEl.querySelector("canvas");if(!c)return;const src=c.toDataURL("image/png");const a=document.createElement("a");a.href=src;a.download="reto-qr.png";document.body.append(a);a.click();a.remove()};
   box.scrollIntoView({behavior:"smooth",block:"nearest"});
 }
@@ -222,7 +222,7 @@ $("l-go").onclick=()=>{
   if(bad.length){err.textContent=`Revisa ${bad.length>1?"estas palabras":"esta palabra"}: ${bad.join(", ")}. Cada una debe tener entre 3 y 12 letras, sin espacios, números ni guiones.`;return}
   const reto={k:"l",w:lines.map(w=>w.toUpperCase()),s:+$("l-s").value};
   const ti=$("l-ti").value.trim(),au=$("l-au").value.trim();if(ti)reto.ti=ti;if(au)reto.au=au;
-  showOut($("l-out"),pageUrl("letras.html",Reto.encode(reto)),`Reto creado: ${lines.length} palabra${lines.length>1?"s":""}.`);
+  showOut($("l-out"),pageUrl("letras.html",Reto.encode(reto)),`Reto creado: ${lines.length} palabra${lines.length>1?"s":""}.`,`🔤 Reto de Letras${ti?`: ${ti}`:""}${au?` (de ${au})`:""}. Ordena ${lines.length} palabra${lines.length>1?"s":""} con las letras mezcladas antes de que se acabe el tiempo:`);
 };
 
 // ---- ¿Dónde está? ----
@@ -258,7 +258,7 @@ $("d-go").onclick=()=>{
   const reto={k:"d",nm:place.n,la:place.la,lo:place.lo,c};
   if($("d-pr").checked&&place.pr)reto.pr=place.pr;
   const ti=$("d-ti").value.trim(),au=$("d-au").value.trim();if(ti)reto.ti=ti;if(au)reto.au=au;
-  showOut($("d-out"),pageUrl("./",Reto.encode(reto)),`Reto creado: ${place.n}.`);
+  showOut($("d-out"),pageUrl("./",Reto.encode(reto)),`Reto creado: ${place.n}.`,`📍 Reto de ¿Dónde está?${ti?`: ${ti}`:""}${au?` (de ${au})`:""}. Adivina el lugar con las pistas en 6 intentos:`);
 };
 // ---- Cifras ----
 function solveC(nums,target){const seen=new Set();let best=null;
@@ -291,7 +291,7 @@ $("c-go").onclick=()=>{
   if(noex.length)info.textContent=noex.map(x=>`La ronda ${x.i+1} no tiene solución exacta: lo más cerca posible es ${x.b.v}.`).join(" ")+" Puedes dejarla así (contará el más cercano) o cambiar los números.";
   const reto={k:"c",r,s:+$("c-s").value};
   const ti=$("c-ti").value.trim(),au=$("c-au").value.trim();if(ti)reto.ti=ti;if(au)reto.au=au;
-  showOut($("c-out"),pageUrl("cifras.html",Reto.encode(reto)),`Reto creado: ${r.length} ronda${r.length>1?"s":""}.`);
+  showOut($("c-out"),pageUrl("cifras.html",Reto.encode(reto)),`Reto creado: ${r.length} ronda${r.length>1?"s":""}.`,`🔢 Reto de Cifras${ti?`: ${ti}`:""}${au?` (de ${au})`:""}. Llega a la cifra objetivo con sumas, restas, multiplicaciones y divisiones:`);
 };
 if(location.hash==="#cifras")setTimeout(()=>$("cifras").scrollIntoView({block:"start"}),50);
 </script>
