@@ -189,6 +189,7 @@ pre.share{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font-family:var(-
 
 <script src="reto.js"></script>
 <script src="ads.js"></script>
+<script src="contador.js"></script>
 <script>
 // [nombre, lat, lon, comunidad, pista1, pista2, alias]
 const C=[
@@ -729,7 +730,7 @@ async function submit(){if(st.done)return;sg.hidden=true;req++;clearTimeout(tmr)
 function guess(g){if(st.done)return;const nm=G(g)[0];
   if(st.guesses.some(x=>norm(G(x)[0])===norm(nm))){msg.textContent=`Ya probaste ${nm}.`;return}
   st.guesses.push(g);inp.value="";msg.textContent="";
-  if(g===T||st.guesses.length>=MAX){st.done=true;st.won=g===T;st.t1=Date.now();if(!CUSTOM&&!ARCH){stats.played++;
+  if(g===T||st.guesses.length>=MAX){st.done=true;st.won=g===T;st.t1=Date.now();if(window.contarPartida)contarPartida("donde",CUSTOM?"reto":ARCH?"archivo":"diario",key,g===T?Math.max(1,10-2*(st.guesses.length-1)):0);if(!CUSTOM&&!ARCH){stats.played++;
     const y=new Date(now);y.setDate(y.getDate()-1);const yk=`${y.getFullYear()}-${String(y.getMonth()+1).padStart(2,"0")}-${String(y.getDate()).padStart(2,"0")}`;
     if(st.won){stats.wins++;stats.streak=stats.last===yk?stats.streak+1:1;stats.best=Math.max(stats.best,stats.streak)}else stats.streak=0;
     stats.last=st.won?key:stats.last;stats.pts=(stats.pts||0)+PTS(st.won,st.guesses.length);stats.ptsN=(stats.ptsN||0)+1}}
@@ -811,5 +812,6 @@ if(liga.code&&urlLiga&&urlLiga!==liga.code){/* invitación a otra liga: se muest
 drawLiga(true);if(st.done)sendResult();else loadRank();
 </script>
 
+<script data-goatcounter="https://pmunyoz.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>

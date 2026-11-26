@@ -208,6 +208,7 @@ pre.share{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font-family:var(-
   </section>
 </div>
 <script src="ads.js"></script>
+<script src="contador.js"></script>
 <script>
 // ===== Cifras del día =====
 const RETO=null,CUSTOM=null;
@@ -342,7 +343,7 @@ function finish(){if(st.done||Date.now()<st.start)return;
     setTimeout(()=>{render();sendResult()},REVEAL);return}
   st.start=Date.now()+REVEAL;save();render()}
 function drawPlayReveal(){const d=st.done;st.done=false;drawPlay();st.done=d}
-function endStats(){if(ARCH)return;const y=new Date(now);y.setDate(y.getDate()-1);
+function endStats(){if(window.contarPartida)contarPartida("cifras",ARCH?"archivo":"diario",key,score());if(ARCH)return;const y=new Date(now);y.setDate(y.getDate()-1);
   stats.played++;stats.total+=score();stats.best=Math.max(stats.best,score());
   stats.streak=stats.last===dkey(y)?stats.streak+1:1;stats.maxStreak=Math.max(stats.maxStreak||0,stats.streak);stats.last=key}
 
@@ -463,5 +464,6 @@ document.getElementById("liga").addEventListener("click",async e=>{
 render();
 if(st.done)sendResult();else loadRank();
 </script>
+<script data-goatcounter="https://pmunyoz.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>

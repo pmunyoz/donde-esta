@@ -190,6 +190,7 @@ pre.share{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font-family:var(-
 
 <script src="reto.js"></script>
 <script src="ads.js"></script>
+<script src="contador.js"></script>
 <script>
 const LISTS=[["CAMPO","CIELO","FUEGO","GLOBO","HUEVO","LIBRO","MUNDO","NIEVE","PLAYA","QUESO","RELOJ","SILLA","PERRO","LIMÓN","PIANO","BURRO","PLUMA","SUELO","CALLE","NOCHE","LECHE","PATIO","MANGO","HIELO","TORRE","VIAJE","DULCE","MARZO","JUNIO","JULIO","ZORRO","PULPO","GAFAS","FALDA","LÁPIZ","COCHE","BOMBA","NARIZ","BRAZO","OREJA","TECHO","CALDO","OVEJA","YOGUR","CUEVA","MONJA","BALÓN","FRUTA","HUESO","PIZZA","BUZÓN","JABÓN"],["JARDÍN","BOSQUE","CAMIÓN","PUEBLO","ABUELO","JIRAFA","SOMBRA","PUERTA","CEREZA","TURRÓN","FÚTBOL","ESPEJO","TOMATE","PATATA","ZAPATO","VERANO","CONEJO","PALOMA","CAMISA","GUANTE","NEVERA","ESCOBA","TOALLA","MÉDICO","DOCTOR","PINTOR","TAMBOR","VIOLÍN","MÚSICA","DIBUJO","CUENTO","NOVELA","TEATRO","COHETE","VOLCÁN","PLANTA","ABRIGO","DELFÍN","LLUVIA","TRUENO","PUENTE","CIUDAD","PARQUE","TIENDA","MALETA","AZÚCAR","HARINA","ACEITE"],["VENTANA","MANZANA","CUCHARA","NARANJA","BOTELLA","GALLINA","CABALLO","CORBATA","BUFANDA","PLÁTANO","CEBOLLA","LECHUGA","TENEDOR","CEPILLO","MOCHILA","PIZARRA","ESCUELA","MAESTRO","BOMBERO","POLICÍA","CARTERO","MONTAÑA","ARDILLA","TORTUGA","BALLENA","TIBURÓN","CANGURO","MAPACHE","GALLETA","DOMINGO","MERCADO","BILLETE","VINAGRE","ESPALDA","RODILLA","PESTAÑA","AUTOBÚS","TRACTOR","CHORIZO","CASTAÑA","LENTEJA","VESTIDO","ABANICO","ABOGADO","GIRASOL","AMAPOLA","HORMIGA","LECHUZA","JUGUETE","TOBOGÁN"],["CASTILLO","INVIERNO","CHAQUETA","PIMIENTO","CUCHILLO","CUADERNO","GUITARRA","TROMPETA","ESTRELLA","DESIERTO","PINGÜINO","ALMOHADA","ESCALERA","ASCENSOR","PARAGUAS","SEMÁFORO","AVIONETA","TORTILLA","GAZPACHO","CROQUETA","ALMENDRA","AVELLANA","CALABAZA","GUISANTE","GARBANZO","MEJILLÓN","CALCETÍN","PANTALÓN","SOMBRERO","CAMISETA","PANADERO","CAMARERO","ACEITUNA","MARIPOSA","COLUMPIO","CARAMELO","HOSPITAL","ELEFANTE","CANGREJO","FLAMENCO","LAVADORA","TELÉFONO","CHIMENEA","ALFOMBRA","BOMBILLA","ESTACIÓN","FARMACIA","ENSALADA","LIMONADA","NATACIÓN"],["MURCIÉLAGO","DINOSAURIO","CARPINTERO","CALENDARIO","AEROPUERTO","BIBLIOTECA","PASTELERÍA","BALONCESTO","ASTRONAUTA","TELESCOPIO","HIPOPÓTAMO","ESCARABAJO","LOCOMOTORA","AMBULANCIA","FERRETERÍA","PELUQUERÍA","CARNICERÍA","JUGUETERÍA","CUMPLEAÑOS","VACACIONES","CAMPAMENTO","AVENTURERO","EXPLORADOR","FOTOGRAFÍA","PERIODISTA","FUTBOLISTA","ARQUITECTO","CIENTÍFICO","PRESIDENTE","CONTENEDOR","ALBÓNDIGAS","POLVORONES","CHUCHERÍAS","MONTAÑISMO","SENDERISMO","EQUITACIÓN","ESCAPARATE","CREMALLERA","PARACAÍDAS","CAMPEONATO","MAQUINISTA","ARQUEÓLOGO","GOLONDRINA","SALAMANDRA","NUBARRONES","ACANTILADO","CORDILLERA","MEDIANOCHE","NOCHEVIEJA","CARNAVALES"]];
 let LENS=[5,6,7,8,10],WORD_T=60;const REVEAL=1600;
@@ -303,7 +304,7 @@ function finish(ok){if(st.done||Date.now()<st.start)return;
 function showLastReveal(){const L=NW-1,r=st.res[L],el=document.getElementById("play");
   el.innerHTML=`<div class="board"><div class="label">Palabra ${NW} de ${NW}</div><div class="slots" style="--n:${WORDS[L].length}">${[...WORDS[L]].map(c=>`<div class="slot ${r.ok?"ok":"ko"}">${c}</div>`).join("")}</div>
   <p class="msg ${r.ok?"good":"bad"}">${r.ok?`¡Bien! +${r.pts} puntos`:`Era ${escH(DISP[L].toUpperCase())}`}</p></div>`}
-function endStats(){if(CUSTOM||ARCH)return;const y=new Date(now);y.setDate(y.getDate()-1);
+function endStats(){if(window.contarPartida)contarPartida("letras",CUSTOM?"reto":ARCH?"archivo":"diario",key,score());if(CUSTOM||ARCH)return;const y=new Date(now);y.setDate(y.getDate()-1);
   stats.played++;stats.total+=score();stats.best=Math.max(stats.best,score());
   stats.streak=stats.last===dkey(y)?stats.streak+1:1;stats.maxStreak=Math.max(stats.maxStreak||0,stats.streak);stats.last=key}
 
@@ -429,5 +430,6 @@ document.getElementById("liga").addEventListener("click",async e=>{
 render();
 if(st.done)sendResult();else loadRank();
 </script>
+<script data-goatcounter="https://pmunyoz.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>
