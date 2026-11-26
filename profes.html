@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="google-adsense-account" content="ca-pub-8361369070531250">
-<title>Retos para clase · Crea tu propio ¿Dónde está? y Letras</title>
-<meta name="description" content="Herramienta gratuita para profesores: crea un juego de palabras desordenadas o de adivinar un lugar de España con tus pistas, y compártelo con tus alumnos con un enlace o un QR.">
+<title>Retos para clase · Crea tu propio ¿Dónde está?, Letras o Cifras</title>
+<meta name="description" content="Herramienta gratuita para profesores: crea un juego de palabras desordenadas, de adivinar un lugar de España con tus pistas o de cálculo mental con tus números, y compártelo con tus alumnos con un enlace o un QR.">
 <link rel="canonical" href="https://piensaunrato.es/profes.html">
 <link rel="icon" href="icon-donde.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-donde-180.png">
@@ -14,20 +14,20 @@
 <meta property="og:locale" content="es_ES">
 <meta property="og:site_name" content="¿Dónde está? · Letras del día">
 <meta property="og:title" content="Retos para clase · Crea tu propio ¿Dónde está? y Letras">
-<meta property="og:description" content="Herramienta gratuita para profesores: crea un juego de palabras desordenadas o de adivinar un lugar de España con tus pistas, y compártelo con tus alumnos con un enlace o un QR.">
+<meta property="og:description" content="Herramienta gratuita para profesores: crea un juego de palabras desordenadas, de adivinar un lugar de España con tus pistas o de cálculo mental con tus números, y compártelo con tus alumnos con un enlace o un QR.">
 <meta property="og:url" content="https://piensaunrato.es/profes.html">
 <meta property="og:image" content="https://piensaunrato.es/og-profes.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Retos para clase · Crea tu propio ¿Dónde está? y Letras">
-<meta name="twitter:description" content="Herramienta gratuita para profesores: crea un juego de palabras desordenadas o de adivinar un lugar de España con tus pistas, y compártelo con tus alumnos con un enlace o un QR.">
+<meta name="twitter:description" content="Herramienta gratuita para profesores: crea un juego de palabras desordenadas, de adivinar un lugar de España con tus pistas o de cálculo mental con tus números, y compártelo con tus alumnos con un enlace o un QR.">
 <meta name="twitter:image" content="https://piensaunrato.es/og-profes.png">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Retos para clase", "url": "https://piensaunrato.es/profes.html", "description": "Herramienta gratuita para profesores: crea un juego de palabras desordenadas o de adivinar un lugar de España con tus pistas, y compártelo con tus alumnos con un enlace o un QR.", "applicationCategory": "GameApplication", "operatingSystem": "Cualquiera (navegador web)", "inLanguage": "es", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"}, "author": {"@type": "Person", "name": "Pascual Muñoz"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Retos para clase", "url": "https://piensaunrato.es/profes.html", "description": "Herramienta gratuita para profesores: crea un juego de palabras desordenadas, de adivinar un lugar de España con tus pistas o de cálculo mental con tus números, y compártelo con tus alumnos con un enlace o un QR.", "applicationCategory": "GameApplication", "operatingSystem": "Cualquiera (navegador web)", "inLanguage": "es", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"}, "author": {"@type": "Person", "name": "Pascual Muñoz"}}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Archivo:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
 <style>
-/* Layout: una columna como los juegos; dos fichas de creación (Letras y ¿Dónde está?) con el resultado debajo de cada una */
+/* Layout: una columna como los juegos; tres fichas de creación (Letras, ¿Dónde está? y Cifras) con el resultado debajo de cada una */
 :root{
   --sea:#D7E3EA; --ink:#1B2F45; --muted:#5F7286; --line:#B9C9D4;
   --signal:#E3A21A; --signal-ink:#3A2600; --bg:#EEF3F6; --card:#FFFFFF; --hot:#2E8B57; --bad:#C2453B;
@@ -96,9 +96,9 @@ button,.btnlink{font:inherit;cursor:pointer;border:0;border-radius:10px;text-dec
 <div class="wrap">
   <header>
     <h1>Retos<br><span>para clase</span></h1>
-    <div class="back"><a href="./">¿Dónde está?</a> · <a href="letras.html">Letras del día</a></div>
+    <div class="back"><a href="./">¿Dónde está?</a> · <a href="letras.html">Letras del día</a> · <a href="cifras.html">Cifras del día</a></div>
   </header>
-  <p class="lead">Crea un reto con tus propias palabras o con el lugar que estéis estudiando y compártelo con tus alumnos con un enlace o un código QR. No hace falta registrarse: el reto va dentro del propio enlace.</p>
+  <p class="lead">Crea un reto con tus propias palabras, con el lugar que estéis estudiando o con operaciones para practicar cálculo mental, y compártelo con tus alumnos con un enlace o un código QR. No hace falta registrarse: el reto va dentro del propio enlace.</p>
 
   <!-- Letras -->
   <section class="card" id="letras">
@@ -141,6 +141,33 @@ button,.btnlink{font:inherit;cursor:pointer;border:0;border-radius:10px;text-dec
     <p class="err" id="d-err" role="alert"></p>
     <div class="row"><button class="btn" id="d-go">Crear enlace</button></div>
     <div class="out" id="d-out" hidden></div>
+  </section>
+
+  <!-- Cifras -->
+  <section class="card" id="cifras">
+    <h2><span class="ic" aria-hidden="true">+−</span>Cifras: tus operaciones</h2>
+    <p>Cada ronda tiene unos números y una cifra objetivo. Los alumnos los combinan con sumas, restas, multiplicaciones y divisiones para acercarse lo más posible. Escribe tus rondas o genéralas al azar según la edad.</p>
+    <div class="grid2">
+      <div class="f"><label for="c-ti">Título del reto <span class="hint">(opcional)</span></label><input type="text" id="c-ti" maxlength="60" placeholder="Cálculo mental: 4.º B"></div>
+      <div class="f"><label for="c-au">Tu nombre <span class="hint">(opcional)</span></label><input type="text" id="c-au" maxlength="40" placeholder="Profe Ana"></div>
+    </div>
+    <div class="grid2">
+      <div class="f"><label for="c-lv">Nivel para generar al azar</label>
+        <select id="c-lv"><option value="1">Primaria 1.º a 3.º (objetivo hasta 50)</option><option value="2" selected>Primaria 4.º a 6.º (objetivo hasta 250)</option><option value="3">ESO y adultos (objetivo hasta 999)</option></select></div>
+      <div class="f"><label for="c-n">Número de rondas</label>
+        <select id="c-n"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></div>
+    </div>
+    <div class="row"><button class="ghost" id="c-gen" type="button">Generar rondas al azar</button></div>
+    <div class="f">
+      <label for="c-r">Rondas <span class="hint">una por línea: objetivo, dos puntos y de 2 a 6 números (del 1 al 1000)</span></label>
+      <textarea id="c-r" placeholder="120: 25 4 3 7 2 1&#10;48: 6 8 2 5&#10;365: 50 10 7 3 2 9"></textarea>
+    </div>
+    <div class="f" style="max-width:260px"><label for="c-s">Tiempo para cada ronda</label>
+      <select id="c-s"><option value="60">1 minuto</option><option value="90" selected>1 minuto y medio</option><option value="120">2 minutos</option><option value="180">3 minutos</option><option value="300">5 minutos</option><option value="0">Sin límite</option></select></div>
+    <p class="err" id="c-err" role="alert"></p>
+    <p class="hint" id="c-info"></p>
+    <div class="row"><button class="btn" id="c-go">Crear enlace</button></div>
+    <div class="out" id="c-out" hidden></div>
   </section>
 
   <section class="notes">
@@ -230,6 +257,40 @@ $("d-go").onclick=()=>{
   const ti=$("d-ti").value.trim(),au=$("d-au").value.trim();if(ti)reto.ti=ti;if(au)reto.au=au;
   showOut($("d-out"),pageUrl("./",Reto.encode(reto)),`Reto creado: ${place.n}.`);
 };
+// ---- Cifras ----
+function solveC(nums,target){const seen=new Set();let best=null;
+  function rec(arr,steps){for(const v of arr){const d=Math.abs(v-target);if(!best||d<best.d)best={d,v}}
+    if(best.d===0)return true;if(arr.length<2)return false;const k=arr.slice().sort((a,b)=>a-b).join(",");if(seen.has(k))return false;seen.add(k);
+    for(let i=0;i<arr.length;i++)for(let j=i+1;j<arr.length;j++){let a=arr[i],b=arr[j];if(a<b)[a,b]=[b,a];const rest=arr.filter((_,x)=>x!==i&&x!==j);
+      const c=[a+b];if(b>1)c.push(a*b);if(a!==b)c.push(a-b);if(b>1&&a%b===0)c.push(a/b);for(const r of c)if(rec([...rest,r]))return true}
+    return false}
+  rec(nums,[]);return best}
+const LVL={1:{n:4,big:[],lo:10,hi:50},2:{n:6,big:[25,50],nb:1,lo:50,hi:250},3:{n:6,big:[25,50,75,100],nb:1,lo:100,hi:999}};
+const rnd=n=>Math.floor(Math.random()*n);
+function genC(L){for(let t=0;t<80;t++){const sm=[1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10],bg=L.big.slice(),n=[];
+    for(let i=0;i<(L.nb||0);i++)n.push(bg.splice(rnd(bg.length),1)[0]);while(n.length<L.n)n.push(sm.splice(rnd(sm.length),1)[0]);
+    const target=L.lo+rnd(L.hi-L.lo+1);if(n.includes(target))continue;if(solveC(n,target).d===0)return`${target}: ${n.join(" ")}`}
+  return null}
+$("c-gen").onclick=()=>{const L=LVL[$("c-lv").value],k=+$("c-n").value,out=[];for(let i=0;i<k;i++){const g=genC(L);if(g)out.push(g)}
+  $("c-r").value=out.join("\n");$("c-err").textContent="";$("c-info").textContent="Rondas generadas: todas tienen solución exacta. Puedes cambiarlas antes de crear el enlace."};
+$("c-go").onclick=()=>{
+  const err=$("c-err"),info=$("c-info");err.textContent="";info.textContent="";
+  const lines=$("c-r").value.split(/\n/).map(x=>x.trim()).filter(Boolean);
+  if(!lines.length){err.textContent="Escribe al menos una ronda, o pulsa «Generar rondas al azar».";return}
+  if(lines.length>5){err.textContent=`Has escrito ${lines.length} rondas. El máximo es 5.`;return}
+  const r=[];
+  for(const [i,l] of lines.entries()){const m=l.match(/^(\d+)\s*[:=→>-]+\s*([\d\s,;.]+)$/);
+    const nums=m?m[2].split(/[\s,;.]+/).filter(Boolean).map(Number):[],t=m?+m[1]:0;
+    if(!m||t<1||t>9999||nums.length<2||nums.length>6||nums.some(n=>!Number.isInteger(n)||n<1||n>1000)){
+      err.textContent=`Revisa la ronda ${i+1} («${l}»). Escribe el objetivo (de 1 a 9999), dos puntos y de 2 a 6 números del 1 al 1000. Por ejemplo: 120: 25 4 3 7 2 1`;return}
+    r.push([t,nums])}
+  const noex=r.map(([t,n],i)=>({i,b:solveC(n,t)})).filter(x=>x.b.d!==0);
+  if(noex.length)info.textContent=noex.map(x=>`La ronda ${x.i+1} no tiene solución exacta: lo más cerca posible es ${x.b.v}.`).join(" ")+" Puedes dejarla así (contará el más cercano) o cambiar los números.";
+  const reto={k:"c",r,s:+$("c-s").value};
+  const ti=$("c-ti").value.trim(),au=$("c-au").value.trim();if(ti)reto.ti=ti;if(au)reto.au=au;
+  showOut($("c-out"),pageUrl("cifras.html",Reto.encode(reto)),`Reto creado: ${r.length} ronda${r.length>1?"s":""}.`);
+};
+if(location.hash==="#cifras")setTimeout(()=>$("cifras").scrollIntoView({block:"start"}),50);
 </script>
 <script data-goatcounter="https://pmunyoz.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>

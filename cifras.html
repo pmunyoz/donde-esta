@@ -208,19 +208,25 @@ pre.share{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font-family:var(-
     <h2>Cómo se juega a Cifras del día</h2>
     <p>Cada día hay tres rondas nuevas, iguales para todos: fácil, media y difícil. En cada una tienes seis números y una cifra objetivo de tres cifras. Elige un número, una operación y otro número; el resultado sustituye a los dos y puedes seguir operando con él. Cada número se usa una sola vez, las restas tienen que dar positivo y las divisiones, exactas.</p>
     <p>Llegar exacto vale 10 puntos; quedarse a 1 o 2, 7 puntos; a 5 o menos, 5; a 10 o menos, 3; y a 25 o menos, 1. Tienes un minuto y medio por ronda, y siempre existe al menos una forma de llegar exacto.</p>
+    <h2>Para profesores</h2>
+    <p>Elige tus propios números y objetivos, o genera rondas al azar adaptadas a la edad de tus alumnos, y compártelas con un enlace o un código QR. Ideal para practicar el cálculo mental. <a href="profes.html#cifras">Crear un reto para clase</a></p>
   </section>
 </div>
+<script src="reto.js"></script>
 <script src="ads.js"></script>
 <script src="contador.js"></script>
 <script>
 // ===== Cifras del día =====
-const RETO=null,CUSTOM=null;
+// Reto personalizado (enlace de un profesor): {k:"c", r:[[objetivo,[números]],...], s:segundos (0 = sin límite), ti, au}
+const RETO=window.Reto?Reto.read("c"):null;
+const okRound=x=>Array.isArray(x)&&Number.isInteger(x[0])&&x[0]>=1&&x[0]<=9999&&Array.isArray(x[1])&&x[1].length>=2&&x[1].length<=6&&x[1].every(n=>Number.isInteger(n)&&n>=1&&n<=1000);
+const CUSTOM=RETO&&!RETO.error&&Array.isArray(RETO.r)&&RETO.r.length>=1&&RETO.r.length<=5&&RETO.r.every(okRound)?RETO:null;
 function mulberry(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 const escH=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
 // Fecha del reto (hoy, o un día anterior con ?dia=AAAA-MM-DD)
 const ARCH=(()=>{const p=new URLSearchParams(location.search).get("dia");
-  if(!p||!/^\d{4}-\d{2}-\d{2}$/.test(p))return null;const[y,m,d]=p.split("-").map(Number);
+  if(CUSTOM||!p||!/^\d{4}-\d{2}-\d{2}$/.test(p))return null;const[y,m,d]=p.split("-").map(Number);
   const t=new Date(y,m-1,d,12),h=new Date();h.setHours(0,0,0,0);
   return t.getDate()===d&&t>=new Date(2026,10,25,12)&&t<h?t:null})();
 const now=ARCH||new Date();
@@ -249,16 +255,23 @@ function genRound(seed,L){const r=mulberry(seed);let last=null;
     while(n.length<6)n.push(sm.splice(Math.floor(r()*sm.length),1)[0]);
     const target=L.lo+Math.floor(r()*(L.hi-L.lo+1));const s=solve(n,target);last={n,target,sol:s.steps};if(s.d===0)return last}
   return last}
-const ROUNDS=LEVELS.map((L,k)=>({...genRound(DAY*97+k+1,L),name:L.name}));
-const NR=ROUNDS.length,ROUND_T=90,REVEAL=2200,MAXP=NR*10;
+const ROUNDS=CUSTOM?CUSTOM.r.map(([target,n],k)=>{const b=solve(n,target);return{n,target,sol:b.steps,exact:b.d===0,bestV:b.v,name:`Ronda ${k+1}`}})
+  :LEVELS.map((L,k)=>({...genRound(DAY*97+k+1,L),exact:true,name:L.name}));
+const ROUND_T=CUSTOM?([60,90,120,180,300].includes(CUSTOM.s)?CUSTOM.s:CUSTOM.s===0?Infinity:90):90;
+const NR=ROUNDS.length,REVEAL=2200,MAXP=NR*10;
+const tTxt=!isFinite(ROUND_T)?"sin límite de tiempo":ROUND_T===90?"un minuto y medio por ronda":ROUND_T===60?"un minuto por ronda":`${ROUND_T/60} minutos por ronda`;
+const solTxt=R=>R.exact?`Una solución: ${R.sol.map(escH).join(" · ")}`:`No se puede llegar exacto. Lo más cerca posible es ${R.bestV}${R.sol.length?": "+R.sol.map(escH).join(" · "):""}`;
 const PTS=d=>d===0?10:d<=2?7:d<=5?5:d<=10?3:d<=25?1:0;
-const SHARE_URL=location.origin+location.pathname+(ARCH?"?dia="+key:"");
-document.getElementById("num").innerHTML=`Reto nº ${DAY+1}<br>${now.toLocaleDateString("es-ES",{day:"numeric",month:"long"})}`;
+const SHARE_URL=CUSTOM?location.href:location.origin+location.pathname+(ARCH?"?dia="+key:"");
+document.getElementById("num").innerHTML=CUSTOM?`Reto para clase${CUSTOM.au?`<br>de ${escH(CUSTOM.au)}`:""}`:`Reto nº ${DAY+1}<br>${now.toLocaleDateString("es-ES",{day:"numeric",month:"long"})}`;
+{const rb=document.getElementById("retobox");
+ if(CUSTOM){rb.hidden=false;rb.innerHTML=`<b>${escH(CUSTOM.ti||"Reto personalizado")}</b><span>${CUSTOM.au?`Creado por ${escH(CUSTOM.au)}. `:""}${NR} ronda${NR>1?"s":""}, ${tTxt}. <a href="cifras.html">Ir al reto del día</a></span>`}
+ else if(RETO){rb.hidden=false;rb.innerHTML=`<b>Este enlace de reto no funciona</b><span>Puede que esté incompleto. Mientras tanto, aquí tienes el reto del día.</span>`}}
 if(ARCH){const rb=document.getElementById("retobox");rb.hidden=false;
   rb.innerHTML=`<b>Reto de un día anterior</b><span>No cuenta para tus estadísticas ni para la liga. <a href="archivo.html">Ver todos los días</a> · <a href="cifras.html">Ir al reto de hoy</a></span>`}
 
 // Estado guardado
-const SK="cf-"+key;
+const SK=CUSTOM?"cf-r-"+CUSTOM.id:"cf-"+key;
 let st={started:false,idx:0,start:0,ops:[],res:[],done:false,t0:0,t1:0,sent:""};
 let stats={played:0,total:0,best:0,streak:0,maxStreak:0,last:null};
 try{const s=JSON.parse(localStorage.getItem(SK));if(s)st=s}catch(e){}
@@ -294,25 +307,25 @@ function drawPlay(){
   const el=document.getElementById("play");
   if(st.done){el.innerHTML="";return}
   if(!st.started){
-    el.innerHTML=`<div class="board start"><h2>Tres rondas, cada vez más difíciles</h2>
+    el.innerHTML=`<div class="board start"><h2>${CUSTOM?`${NR} ronda${NR>1?"s":""} preparada${NR>1?"s":""} por tu profe`:"Tres rondas, cada vez más difíciles"}</h2>
       <ul><li>Toca un número, una operación y otro número. El resultado sustituye a los dos y puedes seguir con él.</li>
       <li>Cada número se usa una vez. Las restas deben dar positivo y las divisiones, exactas.</li>
-      <li>Tienes un minuto y medio por ronda. Cuenta el número más cercano que consigas:</li></ul>
+      <li>${isFinite(ROUND_T)?`Tienes ${tTxt}.`:"No hay límite de tiempo."} Cuenta el número más cercano que consigas:</li></ul>
       <div class="tabla">${[["Exacto",10],["±2",7],["±5",5],["±10",3],["±25",1]].map(([a,b])=>`<div><b>${b}</b>${a}</div>`).join("")}</div>
       <button class="btn" id="go">Empezar</button>
-      <p class="hint">El reloj se pone en marcha al pulsar y no se detiene si recargas la página.</p></div>`;
+      ${isFinite(ROUND_T)?`<p class="hint">El reloj se pone en marcha al pulsar y no se detiene si recargas la página.</p>`:""}</div>`;
     document.getElementById("go").onclick=()=>{st.started=true;st.t0=Date.now();st.start=Date.now();st.ops=[];save();render()};return}
   const reveal=Date.now()<st.start&&st.idx>0;showingReveal=reveal;
   if(reveal){const k=st.idx-1,R=ROUNDS[k],r=st.res[k];
     el.innerHTML=`<div class="board"><div class="label">Ronda ${k+1} de ${NR} · ${R.name}</div>
       <div class="target ${r.d===0?"ok":""}">${R.target}</div>
       <p class="msg ${r.d===0?"good":r.pts?"":"bad"}">${r.d===0?"¡Exacto! +10 puntos":`Te quedaste en ${r.v}, a ${r.d}. ${r.pts?`+${r.pts} punto${r.pts>1?"s":""}`:"0 puntos"}`}</p>
-      ${r.d===0?"":`<p class="sol">Una solución: ${R.sol.map(escH).join(" · ")}</p>`}</div>`;return}
+      ${r.d===0?"":`<p class="sol">${solTxt(R)}</p>`}</div>`;return}
   const k=st.idx,R=ROUNDS[k],B=build(k,st.ops);
   if(sel!==null&&!B.tiles.some(t=>t.id===sel)){sel=null;op=null}
   el.innerHTML=`<div class="board">
-    <div><div class="bar"><i id="bar"></i></div>
-      <div class="tinfo"><span class="worth" id="best">Más cerca: <b>${B.best}</b> · a ${B.d}</span><span class="left" id="left">${mmss(ROUND_T)}</span></div></div>
+    <div><div class="bar"${isFinite(ROUND_T)?"":" hidden"}><i id="bar"></i></div>
+      <div class="tinfo"><span class="worth" id="best">Más cerca: <b>${B.best}</b> · a ${B.d}</span><span class="left" id="left">${isFinite(ROUND_T)?mmss(ROUND_T):"Sin límite"}</span></div></div>
     <div class="label">Ronda ${k+1} de ${NR} · ${R.name}</div>
     <div class="target" aria-label="Objetivo ${R.target}">${R.target}</div>
     <div class="nums" id="nums">${B.tiles.map(t=>`<button class="tile num${t.id===sel?" sel":""}${t.id>=6?" made":""}" data-t="${t.id}" aria-pressed="${t.id===sel}">${t.v}</button>`).join("")}</div>
@@ -346,7 +359,7 @@ function finish(){if(st.done||Date.now()<st.start)return;
     setTimeout(()=>{render();sendResult()},REVEAL);return}
   st.start=Date.now()+REVEAL;save();render()}
 function drawPlayReveal(){const d=st.done;st.done=false;drawPlay();st.done=d}
-function endStats(){if(window.contarPartida)contarPartida("cifras",ARCH?"archivo":"diario",key,score());if(ARCH)return;const y=new Date(now);y.setDate(y.getDate()-1);
+function endStats(){if(window.contarPartida)contarPartida("cifras",CUSTOM?"reto":ARCH?"archivo":"diario",key,score());if(CUSTOM||ARCH)return;const y=new Date(now);y.setDate(y.getDate()-1);
   stats.played++;stats.total+=score();stats.best=Math.max(stats.best,score());
   stats.streak=stats.last===dkey(y)?stats.streak+1:1;stats.maxStreak=Math.max(stats.maxStreak||0,stats.streak);stats.last=key}
 
@@ -359,7 +372,7 @@ function tick(){
   if(el>=ROUND_T){finish();return}
   const bar=document.getElementById("bar"),l=document.getElementById("left");
   if(bar)bar.style.setProperty("--f",Math.max(0,1-el/ROUND_T).toFixed(4));
-  if(l){const left=Math.ceil(ROUND_T-el);l.textContent=mmss(left);l.classList.toggle("low",left<=10)}}
+  if(l){if(!isFinite(ROUND_T)){l.textContent="Sin límite";return}const left=Math.ceil(ROUND_T-el);l.textContent=mmss(left);l.classList.toggle("low",left<=10)}}
 setInterval(tick,100);
 
 // Teclado físico: + - * x / para operar, retroceso para deshacer, Intro para entregar
@@ -373,17 +386,18 @@ document.addEventListener("keydown",e=>{
 
 // Final
 function shareText(){const sq=r=>r.d===0?"🟩":r.pts>0?"🟨":"🟥";
-  return`Cifras del día nº ${DAY+1} — ${score()}/${MAXP} puntos\n${st.res.map(r=>sq(r)+(r.d===0?" exacto":` a ${r.d}`)).join("\n")}\n${SHARE_URL}`}
-function verdict(p){const q=p/MAXP;return q>=.9?"Imbatible":q>=.66?"Muy bien":q>=.4?"Bien jugado":q>=.15?"Se puede mejorar":ARCH?"Otra vez será":"Mañana más"}
+  return`${CUSTOM?`Cifras · ${CUSTOM.ti||"Reto para clase"}`:`Cifras del día nº ${DAY+1}`} — ${score()}/${MAXP} puntos\n${st.res.map(r=>sq(r)+(r.d===0?" exacto":` a ${r.d}`)).join("\n")}\n${SHARE_URL}`}
+function verdict(p){const q=p/MAXP;return q>=.9?"Imbatible":q>=.66?"Muy bien":q>=.4?"Bien jugado":q>=.15?"Se puede mejorar":CUSTOM||ARCH?"Otra vez será":"Mañana más"}
 function drawEnd(){const e=document.getElementById("end");if(!st.done||Date.now()<endHold){e.innerHTML="";return}
   const avg=stats.played?(stats.total/stats.played).toFixed(1).replace(".",","):"0";
   e.innerHTML=`<div class="end"><h2><span>${score()}</span> de ${MAXP} puntos. ${verdict(score())}.</h2>
   <div class="words">${ROUNDS.map((R,k)=>{const r=st.res[k]||{v:"–",d:99,pts:0,s:0};return`<div class="w ${r.d===0?"ok":r.pts?"near":"ko"}"><span class="n">${R.name}</span><span class="word">${R.target}<small> · tú ${r.v}${r.d===0?"":` (a ${r.d})`}</small></span><span class="t">${mmss(r.s)}</span><span class="p">${r.pts?"+"+r.pts:"0"}</span>
-    ${r.d===0?"":`<span class="sol">Una solución: ${R.sol.map(escH).join(" · ")}</span>`}</div>`}).join("")}</div>
-  ${ARCH?"":`<div class="stats"><div><b>${stats.played}</b><small>Jugados</small></div><div><b>${avg}</b><small>Media</small></div><div><b>${stats.best}</b><small>Mejor</small></div><div><b>${stats.streak}</b><small>Racha</small></div></div>`}
+    ${r.d===0?"":`<span class="sol">${solTxt(R)}</span>`}</div>`}).join("")}</div>
+  ${CUSTOM||ARCH?"":`<div class="stats"><div><b>${stats.played}</b><small>Jugados</small></div><div><b>${avg}</b><small>Media</small></div><div><b>${stats.best}</b><small>Mejor</small></div><div><b>${stats.streak}</b><small>Racha</small></div></div>`}
   <pre class="share" id="sharetxt">${shareText()}</pre>
-  <div class="row"><button class="btn" id="copy">Copiar resultado</button><a class="wa" id="wa" href="https://wa.me/?text=${encodeURIComponent(shareText())}" target="_blank" rel="noopener"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.3-.4.8-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s1 2.6 1.1 2.7c.1.2 1.9 2.9 4.6 4.1 1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.8-1.2.2-.6.2-1.1.1-1.2-.1-.1-.2-.2-.4-.3z"/></svg> WhatsApp</a>${ARCH?`<a class="next" href="cifras.html">Ir al reto de hoy</a>`:`<span class="next" id="next"></span>`}</div>
+  <div class="row"><button class="btn" id="copy">Copiar resultado</button><a class="wa" id="wa" href="https://wa.me/?text=${encodeURIComponent(shareText())}" target="_blank" rel="noopener"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.3-.4.8-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s1 2.6 1.1 2.7c.1.2 1.9 2.9 4.6 4.1 1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.8-1.2.2-.6.2-1.1.1-1.2-.1-.1-.2-.2-.4-.3z"/></svg> WhatsApp</a>${CUSTOM||ARCH?`<a class="next" href="cifras.html">Ir al reto de hoy</a>`:`<span class="next" id="next"></span>`}</div>
   <a class="kofi" href="https://ko-fi.com/pascualmunoz" target="_blank" rel="noopener"><span aria-hidden="true">☕</span> ¿Te gusta el juego? Invítame a un café</a>
+  <a class="also" href="profes.html#cifras"><span aria-hidden="true">🍎</span> ¿Eres profe? Crea tu propio reto</a>
   <a class="also" href="archivo.html"><span aria-hidden="true">📅</span> Juega los días anteriores</a>
   <a class="also" href="letras.html"><span aria-hidden="true">🔤</span> Juega también a Letras del día</a>
   <a class="also" href="./"><span aria-hidden="true">📍</span> Juega también a ¿Dónde está?</a>
@@ -413,18 +427,18 @@ async function api(path,opt={}){
   if(r.status===409)return null;if(!r.ok)throw new Error("HTTP "+r.status);
   const t=await r.text();return t?JSON.parse(t):null}
 async function sendResult(){
-  if(ARCH||!SUPA.url||!liga.code||!st.done||st.sent===liga.code)return;
+  if(CUSTOM||ARCH||!SUPA.url||!liga.code||!st.done||st.sent===liga.code)return;
   try{await api("resultados",{method:"POST",headers:{Prefer:"return=minimal"},body:JSON.stringify({liga:liga.code,apodo:liga.nick,modo:MODE,fecha:key,intentos:null,ganado:exact()===NR,segundos:usedSecs(),puntos:score(),aciertos:exact()})});
     st.sent=liga.code;save();ligaErr=""}
   catch(e){ligaErr="No se pudo enviar tu resultado. Se reintentará al volver a abrir la página."}
   loadRank()}
 async function loadRank(){
-  if(ARCH||!SUPA.url||!liga.code)return;const f=new Date(now);f.setDate(f.getDate()-6);
+  if(CUSTOM||ARCH||!SUPA.url||!liga.code)return;const f=new Date(now);f.setDate(f.getDate()-6);
   try{rows=await api(`resultados?liga=eq.${liga.code}&modo=eq.${MODE}&fecha=gte.${dkey(f)}&select=apodo,fecha,puntos,aciertos,segundos`)||[];ligaErr=ligaErr.startsWith("No se pudo cargar")?"":ligaErr}
   catch(e){ligaErr="No se pudo cargar la clasificación."}
   drawLiga(true)}
 function drawLiga(force){
-  const el=document.getElementById("liga");if(!SUPA.url||ARCH){el.hidden=true;return}el.hidden=false;
+  const el=document.getElementById("liga");if(!SUPA.url||CUSTOM||ARCH){el.hidden=true;return}el.hidden=false;
   if(!liga.code){if(el.dataset.v==="form"&&!force)return;el.dataset.v="form";
     el.innerHTML=`<h3>Liga de amigos</h3>
     ${urlLiga?`<p>Te han invitado a la liga <b class="code">${esc(urlLiga)}</b>. Elige un apodo para entrar.</p>`:`<p>Compite con tus amigos: crea una liga y pásales el enlace, o únete con su código. Es la misma liga que en ¿Dónde está? y Letras del día.</p>`}
