@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="google-adsense-account" content="ca-pub-8361369070531250">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="application-name" content="Piensa un rato">
+<meta name="apple-mobile-web-app-title" content="Piensa un rato">
+<title>Soluciones de ayer · ¿Dónde está?, Letras del día y Cifras del día</title>
+<meta name="description" content="Soluciones de ayer y de los últimos días: el lugar de ¿Dónde está?, las cinco palabras de Letras del día y una forma de llegar a cada cifra de Cifras del día.">
+<link rel="canonical" href="https://piensaunrato.es/soluciones.html">
+<link rel="icon" href="icon-donde.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-donde-180.png">
+<meta name="theme-color" content="#1B2F45">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_ES">
+<meta property="og:site_name" content="¿Dónde está? · Letras del día">
+<meta property="og:title" content="Soluciones de ayer · ¿Dónde está?, Letras y Cifras del día">
+<meta property="og:description" content="La solución del reto de ayer de ¿Dónde está?, las palabras de Letras del día y cómo llegar a cada cifra de Cifras del día.">
+<meta property="og:url" content="https://piensaunrato.es/soluciones.html">
+<meta property="og:image" content="https://piensaunrato.es/og-donde.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Archivo:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+:root{
+  --ink:#1B2F45; --muted:#5F7286; --line:#B9C9D4; --signal:#E3A21A; --bg:#EEF3F6; --card:#FFFFFF; --hot:#2E8B57;
+  --f-display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --f-body:"Archivo",ui-sans-serif,system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root{
+  --ink:#E6EEF4; --muted:#93A6B8; --line:#35506A; --signal:#F0B43A; --bg:#0D1823; --card:#172636; --hot:#4CC18A; color-scheme:dark}}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;margin:0;
+  padding:20px max(16px,env(safe-area-inset-right,0px)) 40px max(16px,env(safe-area-inset-left,0px))}
+.wrap{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+h1{font-family:var(--f-display);font-weight:800;font-size:2.1rem;line-height:1;margin:0;letter-spacing:-.02em}
+h1 span{color:var(--signal)}
+.how{font-size:.9rem;color:var(--muted);margin:0}
+a{color:var(--ink)}
+.nav{display:flex;gap:6px;flex-wrap:wrap}
+.nav a{padding:7px 12px;border-radius:999px;border:1.5px solid var(--line);text-decoration:none;font-size:.82rem;font-weight:600}
+.day{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.day h2{font-family:var(--f-display);font-weight:800;font-size:1.25rem;margin:0}
+details{border-top:1px dashed var(--line);padding-top:10px}
+summary{cursor:pointer;font-weight:600;list-style:none;display:flex;align-items:center;gap:8px;min-height:32px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"Ver";margin-left:auto;font-size:.8rem;font-weight:600;border:1.5px solid var(--line);border-radius:999px;padding:3px 10px;color:var(--muted)}
+details[open] summary::after{content:"Ocultar"}
+summary:focus-visible{outline:2px solid var(--ink);outline-offset:2px;border-radius:6px}
+.sol{padding:8px 0 2px;display:flex;flex-direction:column;gap:6px}
+.big{font-family:var(--f-display);font-weight:800;font-size:1.6rem;line-height:1.1}
+.muted{color:var(--muted);font-size:.85rem}
+.words{display:flex;flex-wrap:wrap;gap:6px}
+.words span{font-family:var(--f-mono);font-weight:500;background:var(--bg);border-radius:8px;padding:4px 8px;letter-spacing:.06em}
+.round{display:flex;flex-direction:column;gap:2px}
+.round b{font-family:var(--f-mono)}
+.round .ops{font-family:var(--f-mono);font-size:.82rem;color:var(--muted)}
+.play{font-size:.85rem;font-weight:600}
+.empty{background:var(--card);border:1px dashed var(--line);border-radius:14px;padding:16px;color:var(--muted)}
+.more{font:inherit;font-weight:600;background:transparent;color:var(--ink);border:1.5px solid var(--line);border-radius:10px;padding:10px 14px;cursor:pointer}
+.osm{font-size:.8rem;color:var(--muted);margin:0}
+.osm a{font-weight:600}
+.loader{position:absolute;left:-9999px;top:0;width:10px;height:10px;border:0;opacity:0;pointer-events:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="nav" aria-label="Juegos"><a href="./">📍 ¿Dónde está?</a><a href="letras.html">🔤 Letras</a><a href="cifras.html">🔢 Cifras</a></nav>
+  <h1>Soluciones<br><span>de ayer</span></h1>
+  <p class="how">Aquí tienes las soluciones de los retos de días anteriores: el lugar de <a href="./">¿Dónde está?</a>, las cinco palabras de <a href="letras.html">Letras del día</a> y una forma de llegar a cada cifra en <a href="cifras.html">Cifras del día</a>. La solución de hoy aparece mañana, para no estropearle el reto a nadie.</p>
+  <div id="days"></div>
+  <button class="more" id="more" hidden>Ver días anteriores</button>
+  <p class="osm"><a href="archivo.html">Jugar días anteriores</a> · <a href="sugerencias.html">Sugerencias</a> · <a href="acerca.html">Acerca de</a> · <a href="privacidad.html">Privacidad</a></p>
+</div>
+<script>
+{
+// Las soluciones se leen de los propios juegos: cada juego se abre oculto con ?dia=AAAA-MM-DD
+// y se leen sus variables (TC en ¿Dónde está?, DISP en Letras, ROUNDS en Cifras).
+const START=new Date(2026,10,26,12);
+const dkey=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+const num=d=>Math.round((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())-Date.UTC(2026,10,26))/864e5)+1;
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function leer(url,expr){return new Promise(res=>{const f=document.createElement("iframe");f.className="loader";f.setAttribute("aria-hidden","true");f.tabIndex=-1;
+  let done=false;const fin=v=>{if(done)return;done=true;res(v);setTimeout(()=>f.remove(),50)};
+  f.onload=()=>{let n=0;const t=setInterval(()=>{try{const v=f.contentWindow.eval(expr);if(v){clearInterval(t);fin(v)}}catch(e){}if(++n>40){clearInterval(t);fin(null)}},100)};
+  f.src=url;document.body.appendChild(f);setTimeout(()=>fin(null),9000)})}
+const days=[];{const d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()-1);for(;d>=START&&days.length<14;d.setDate(d.getDate()-1))days.push(new Date(d))}
+const box=document.getElementById("days");
+if(!days.length)box.innerHTML=`<p class="empty">Todavía no hay soluciones: los juegos empezaron el 26 de noviembre. Vuelve mañana para ver la solución del primer reto.</p>`;
+let shown=0;
+async function pintar(d){const k=dkey(d),n=num(d),f=d.toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long"});
+  const sec=document.createElement("section");sec.className="day";
+  sec.innerHTML=`<h2>${f[0].toUpperCase()+f.slice(1)} · reto nº ${n}</h2><p class="muted">Cargando soluciones…</p>`;box.appendChild(sec);
+  const [tc,disp,rounds]=await Promise.all([
+    leer(`./?dia=${k}`,"typeof TC!=='undefined'&&[TC[0],TC[3]]"),
+    leer(`letras.html?dia=${k}`,"typeof DISP!=='undefined'&&DISP.slice()"),
+    leer(`cifras.html?dia=${k}`,"typeof ROUNDS!=='undefined'&&ROUNDS.map(r=>({name:r.name,target:r.target,n:r.n.slice(),sol:r.sol.slice()}))")]);
+  sec.innerHTML=`<h2>${f[0].toUpperCase()+f.slice(1)} · reto nº ${n}</h2>
+  <details${shown===0?" open":""}><summary>📍 Solución de ¿Dónde está? nº ${n}</summary><div class="sol">${tc?`<div class="big">${esc(tc[0])}</div><div class="muted">${esc(tc[1]||"")}</div>`:`<div class="muted">No se ha podido cargar.</div>`}<a class="play" href="./?dia=${k}">Jugar este reto</a></div></details>
+  <details${shown===0?" open":""}><summary>🔤 Solución de Letras del día nº ${n}</summary><div class="sol">${disp?`<div class="words">${disp.map(w=>`<span>${esc(w)}</span>`).join("")}</div>`:`<div class="muted">No se ha podido cargar.</div>`}<a class="play" href="letras.html?dia=${k}">Jugar este reto</a></div></details>
+  <details${shown===0?" open":""}><summary>🔢 Solución de Cifras del día nº ${n}</summary><div class="sol">${rounds?rounds.map(r=>`<div class="round"><span><b>${r.target}</b> con ${r.n.join(", ")} <span class="muted">(${esc(r.name)})</span></span><span class="ops">${r.sol.map(esc).join(" · ")}</span></div>`).join(""):`<div class="muted">No se ha podido cargar.</div>`}<a class="play" href="cifras.html?dia=${k}">Jugar este reto</a></div></details>`;
+  shown++}
+const more=document.getElementById("more");
+async function next(nd){const slice=days.slice(shown,shown+nd);for(const d of slice)await pintar(d);more.hidden=shown>=days.length}
+more.onclick=()=>next(3);
+next(1);
+}
+</script>
+<script data-goatcounter="https://pmunyoz.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+</body>
+</html>
