@@ -628,7 +628,7 @@ function drawMap(){
 }
 
 // Pistas
-function clues(){const l=TC[0].replace(/[^A-Za-zÁÉÍÓÚÜÑáéíóúüñ]/g,"").length;
+function clues(){const l=(TC[0].match(/\p{L}/gu)||[]).length;
   if(CUSTOM){const out=(Array.isArray(CUSTOM.c)?CUSTOM.c:[]).filter(Boolean).slice(0,4).map(x=>["Pista",escH(x)]);
     if(CUSTOM.pr)out.push(["Provincia",escH(CUSTOM.pr)]);out.push(["Nombre",`Empieza por «${TC[0][0]}» y tiene ${l} letras.`]);return out.slice(0,6)}
   return[["Pista",TC[4]],["Pista",TC[5]],["Provincia",TC[3]],["Nombre",`Empieza por «${TC[0][0]}» y tiene ${l} letras.`]]}
