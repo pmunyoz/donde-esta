@@ -3,6 +3,7 @@
   <url><loc>https://piensaunrato.es/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>
   <url><loc>https://piensaunrato.es/letras.html</loc><changefreq>daily</changefreq><priority>0.9</priority></url>
   <url><loc>https://piensaunrato.es/cifras.html</loc><changefreq>daily</changefreq><priority>0.9</priority></url>
+  <url><loc>https://piensaunrato.es/soluciones.html</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
   <url><loc>https://piensaunrato.es/profes.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://piensaunrato.es/archivo.html</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
   <url><loc>https://piensaunrato.es/acerca.html</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
