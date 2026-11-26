@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="google-adsense-account" content="ca-pub-8361369070531250">
+<title>Sugerencias y errores · Piensa un rato</title>
+<meta name="description" content="Envía una idea, una sugerencia o un error que hayas encontrado en ¿Dónde está?, Letras del día o Cifras del día.">
+<link rel="canonical" href="https://piensaunrato.es/sugerencias.html">
+<link rel="icon" href="icon-donde.svg" type="image/svg+xml">
+<style>
+:root{--ink:#1B2F45;--muted:#5F7286;--bg:#EEF3F6;--signal:#E3A21A}
+@media (prefers-color-scheme: dark){:root{--ink:#E6EEF4;--muted:#93A6B8;--bg:#0D1823;--signal:#F0B43A;color-scheme:dark}}
+body{background:var(--bg);color:var(--ink);font-family:ui-sans-serif,system-ui,sans-serif;font-size:15px;line-height:1.6;margin:0;padding:20px 16px 40px}
+.wrap{max-width:640px;margin:0 auto}
+h1{font-size:1.8rem;margin:0 0 4px}
+h2{font-size:1.1rem;margin:24px 0 4px}
+p,li{margin:6px 0}
+small{color:var(--muted)}
+a{color:var(--ink);font-weight:600}
+label{display:block;font-weight:600;margin:16px 0 6px}
+.opt{font-weight:400;color:var(--muted)}
+select,textarea,input{width:100%;box-sizing:border-box;font:inherit;font-size:16px;color:var(--ink);background:transparent;border:1.5px solid var(--muted);border-radius:10px;padding:10px 12px}
+textarea{min-height:140px;resize:vertical}
+select:focus-visible,textarea:focus-visible,input:focus-visible,button:focus-visible{outline:2px solid var(--signal);outline-offset:2px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chips label{margin:0;font-weight:600;display:flex;align-items:center;gap:6px;border:1.5px solid var(--muted);border-radius:999px;padding:8px 14px;cursor:pointer}
+.chips input{width:auto;margin:0;accent-color:var(--signal)}
+.chips label:has(input:checked){border-color:var(--signal);background:color-mix(in srgb,var(--signal) 18%,transparent)}
+.count{font-size:.8rem;color:var(--muted);text-align:right;margin-top:4px}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+button{margin-top:18px;font:inherit;font-weight:700;font-size:16px;background:var(--ink);color:var(--bg);border:0;border-radius:999px;padding:12px 24px;cursor:pointer;min-height:44px}
+button:disabled{opacity:.5;cursor:default}
+.msg{min-height:1.4em;margin-top:12px;font-weight:600}
+.msg.bad{color:#C0392B}
+.ok{border:1.5px solid var(--signal);border-radius:12px;padding:16px;margin-top:16px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Sugerencias y errores</h1>
+<small>¿Una idea para mejorar los juegos o algo que no funciona bien? Cuéntamelo aquí.</small>
+
+<form id="f" novalidate>
+  <label>¿Qué quieres enviar?</label>
+  <div class="chips" role="radiogroup" aria-label="Tipo de mensaje">
+    <label><input type="radio" name="tipo" value="sugerencia" checked> 💡 Sugerencia</label>
+    <label><input type="radio" name="tipo" value="error"> 🐞 Error</label>
+    <label><input type="radio" name="tipo" value="otro"> ✉️ Otra cosa</label>
+  </div>
+
+  <label for="juego">¿Sobre qué juego?</label>
+  <select id="juego" name="juego">
+    <option value="general">Toda la web</option>
+    <option value="donde">¿Dónde está?</option>
+    <option value="letras">Letras del día</option>
+    <option value="cifras">Cifras del día</option>
+    <option value="profes">Retos para clase</option>
+  </select>
+
+  <label for="mensaje">Tu mensaje</label>
+  <textarea id="mensaje" name="mensaje" maxlength="2000" required placeholder="Si es un error, cuéntame qué hacías y qué pasó. Por ejemplo: «En Cifras, al deshacer, desaparece un número»."></textarea>
+  <div class="count" id="count">0 / 2000</div>
+
+  <label for="contacto">Tu email o usuario <span class="opt">(opcional, solo si quieres que te responda)</span></label>
+  <input id="contacto" name="contacto" maxlength="120" autocomplete="email" placeholder="tu@correo.com">
+
+  <div class="hp" aria-hidden="true"><label for="web">No rellenar</label><input id="web" name="web" tabindex="-1" autocomplete="off"></div>
+
+  <button type="submit" id="send">Enviar</button>
+  <p class="msg" id="msg" role="status"></p>
+</form>
+
+<p><small>Lo que envíes solo lo leo yo. Si dejas un contacto, lo usaré únicamente para responderte. Más información en la <a href="privacidad.html">página de privacidad</a>.</small></p>
+<p><a href="./">¿Dónde está?</a> · <a href="letras.html">Letras del día</a> · <a href="cifras.html">Cifras del día</a> · <a href="acerca.html">Acerca de</a></p>
+</div>
+<script>
+{
+const URL="https://lnqigozwqraprajvaoiv.supabase.co/rest/v1/sugerencias",KEY="sb_publishable_T2XYHn31Yyt5cwPQ_q_JNQ_7ZgMXqPN";
+const f=document.getElementById("f"),m=document.getElementById("mensaje"),msg=document.getElementById("msg"),btn=document.getElementById("send");
+const q=new URLSearchParams(location.search),j=q.get("juego"),t=q.get("tipo");
+if(j&&[...f.juego.options].some(o=>o.value===j))f.juego.value=j;
+if(t){const r=f.querySelector(`input[name=tipo][value="${CSS.escape(t)}"]`);if(r)r.checked=true}
+const upd=()=>document.getElementById("count").textContent=`${m.value.length} / 2000`;m.addEventListener("input",upd);
+f.addEventListener("submit",async e=>{e.preventDefault();msg.className="msg";
+  const texto=m.value.trim();
+  if(texto.length<5){msg.className="msg bad";msg.textContent="Escribe un poco más para que pueda entenderte.";m.focus();return}
+  if(f.web.value){msg.textContent="¡Gracias!";return}
+  btn.disabled=true;btn.textContent="Enviando…";
+  try{const r=await fetch(URL,{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json",Prefer:"return=minimal"},
+      body:JSON.stringify({tipo:f.tipo.value,juego:f.juego.value,mensaje:texto,contacto:f.contacto.value.trim()||null,navegador:navigator.userAgent.slice(0,300)})});
+    if(!r.ok)throw new Error(r.status);
+    f.outerHTML=`<div class="ok"><b>¡Gracias! Mensaje recibido.</b><p>Lo leeré en cuanto pueda. Si me has dejado un contacto y hace falta, te responderé.</p><p><a href="./">Volver a jugar</a></p></div>`}
+  catch(err){btn.disabled=false;btn.textContent="Enviar";msg.className="msg bad";msg.textContent="No se ha podido enviar. Revisa tu conexión e inténtalo de nuevo."}});
+}
+</script>
+<script data-goatcounter="https://pmunyoz.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+</body>
+</html>
