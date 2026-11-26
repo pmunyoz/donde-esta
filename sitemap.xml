@@ -9,4 +9,6 @@
   <url><loc>https://piensaunrato.es/acerca.html</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
   <url><loc>https://piensaunrato.es/sugerencias.html</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
   <url><loc>https://piensaunrato.es/privacidad.html</loc><changefreq>yearly</changefreq><priority>0.2</priority></url>
+  <url><loc>https://piensaunrato.es/va/xifres.html</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://piensaunrato.es/va/lletres.html</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
 </urlset>
