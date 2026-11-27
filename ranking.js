@@ -11,8 +11,10 @@
   function diario() { try { return st && st.done && !(typeof CUSTOM !== "undefined" && CUSTOM) && !(typeof ARCH !== "undefined" && ARCH); } catch (e) { return false; } }
   function resultado() {
     try {
-      if (JUEGO === "donde") return { puntos: PTS(st.won, st.guesses.length), segundos: null };
-      return { puntos: score(), segundos: usedSecs() };
+      // ¿Dónde está? cuenta con PTS(); el resto de juegos tienen score() y usedSecs()
+      if (typeof PTS === "function" && Array.isArray(st.guesses)) return { puntos: PTS(st.won, st.guesses.length), segundos: null };
+      if (typeof score === "function") return { puntos: score(), segundos: typeof usedSecs === "function" ? usedSecs() : null };
+      return null;
     } catch (e) { return null; }
   }
   function token() {
@@ -47,7 +49,7 @@
       e.preventDefault();
       const a = f.querySelector("input").value.trim(), r = resultado();
       if (a.length < 2) { msg.textContent = MSG.apodo; return; }
-      if (!r) return;
+      if (!r) { msg.textContent = MSG.error; return; }
       const b = f.querySelector("button"); b.disabled = true;
       let res = "error";
       try {
