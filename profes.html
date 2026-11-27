@@ -111,11 +111,11 @@ button,.btnlink{font:inherit;cursor:pointer;border:0;border-radius:10px;text-dec
 </head>
 <body>
 <div class="wrap">
-  <nav aria-label="Juegos"><ul class="games"><li><a href="./"><span aria-hidden="true">📍</span> ¿Dónde está?</a></li><li><a href="letras.html"><span aria-hidden="true">🔤</span> Letras</a></li><li><a href="cifras.html"><span aria-hidden="true">🔢</span> Cifras</a></li><li><a href="grupos.html"><span aria-hidden="true">🧩</span> Grupos</a></li></ul></nav>
+  <nav aria-label="Juegos"><ul class="games"><li><a href="./"><span aria-hidden="true">🏠</span>Inicio</a></li><li><a href="donde.html"><span aria-hidden="true">📍</span>Dónde</a></li><li><a href="letras.html"><span aria-hidden="true">🔤</span>Letras</a></li><li><a href="cifras.html"><span aria-hidden="true">🔢</span>Cifras</a></li><li><a href="grupos.html"><span aria-hidden="true">🧩</span>Grupos</a></li><li><a href="linea.html"><span aria-hidden="true">⏳</span>Línea</a></li></ul></nav>
   <header>
     <h1>Retos<br><span>para clase</span></h1>
   </header>
-  <p class="lead">Crea un reto con tus propias palabras, con el lugar que estéis estudiando, con operaciones para practicar cálculo mental o con grupos de palabras de cualquier tema, y compártelo con tus alumnos con un enlace o un código QR. No hace falta registrarse: el reto va dentro del propio enlace.</p>
+  <p class="lead">Crea un reto con tus propias palabras, con el lugar que estéis estudiando, con operaciones para practicar cálculo mental, con grupos de palabras de cualquier tema o con los sucesos de una época, y compártelo con tus alumnos con un enlace o un código QR. No hace falta registrarse: el reto va dentro del propio enlace.</p>
 
   <!-- Letras -->
   <section class="card" id="letras">
@@ -227,6 +227,24 @@ button,.btnlink{font:inherit;cursor:pointer;border:0;border-radius:10px;text-dec
     <div class="out" id="g-out" hidden></div>
   </section>
 
+  <!-- Línea del tiempo -->
+  <section class="card" id="linea">
+    <h2><span class="ic" aria-hidden="true">⏳</span>Línea del tiempo: tus sucesos</h2>
+    <p>Escribe de 4 a 12 sucesos con su año. Los alumnos los irán colocando de uno en uno en la línea del tiempo, antes o después de los que ya están. Ideal para Historia, Ciencias o Literatura.</p>
+    <div class="grid2">
+      <div class="f"><label for="t-ti">Título del reto <span class="hint">(opcional)</span></label><input type="text" id="t-ti" maxlength="60" placeholder="Historia: la Edad Media"></div>
+      <div class="f"><label for="t-au">Tu nombre <span class="hint">(opcional)</span></label><input type="text" id="t-au" maxlength="40" placeholder="Profe Ana"></div>
+    </div>
+    <div class="f">
+      <label for="t-e">Sucesos <span class="hint">uno por línea: el año y luego el suceso. Para antes de Cristo, añade «a. C.»</span></label>
+      <textarea id="t-e" style="text-transform:none;font-family:var(--f-body);letter-spacing:0" placeholder="476 Cae el Imperio romano de Occidente&#10;711 Los musulmanes llegan a la península&#10;1085 Alfonso VI conquista Toledo&#10;1212 Batalla de las Navas de Tolosa&#10;1492 Los Reyes Católicos toman Granada"></textarea>
+    </div>
+    <p class="err" id="t-err" role="alert"></p>
+    <label class="check"><input type="checkbox" id="t-live" checked> Ver los resultados de la clase en directo <span class="hint">(cada alumno escribe su nombre al terminar)</span></label>
+    <div class="row"><button class="btn" id="t-go">Crear enlace</button></div>
+    <div class="out" id="t-out" hidden></div>
+  </section>
+
   <section class="notes">
     <h2>Cómo usarlo en clase</h2>
     <ul>
@@ -287,6 +305,26 @@ $("g-go").onclick=()=>{
   const ti=$("g-ti").value.trim(),au=$("g-au").value.trim();if(ti)reto.ti=ti;if(au)reto.au=au;
   const url=pageUrl("grupos.html",Reto.encode(reto));
   showOut($("g-out"),url,`Reto creado: ${g.length} grupos.`,`🧩 Reto de Grupos${ti?`: ${ti}`:""}${au?` (de ${au})`:""}. Encuentra los ${g.length} grupos de cuatro palabras:`,boardUrl(reto,url));
+};
+// ---- Línea del tiempo ----
+// Cada línea: año (negativo o «a. C.» para antes de Cristo) y el suceso. «1492 Colón llega a América», «776 a. C. Primeros Juegos Olímpicos»
+function leerSuceso(l){const m=l.match(/^\s*(-?\d{1,4})\s*(a\.?\s*C\.?|d\.?\s*C\.?)?\s*[:.,;\-–—]?\s+(.+)$/i);if(!m)return null;
+  let y=+m[1];if(m[2]&&/^a/i.test(m[2]))y=-Math.abs(y);return{y,t:m[3].trim()}}
+$("t-go").onclick=()=>{
+  const err=$("t-err");err.textContent="";
+  const lines=$("t-e").value.split(/\n/).map(s=>s.trim()).filter(Boolean);
+  if(lines.length<4){err.textContent="Escribe al menos 4 sucesos, uno por línea, con su año delante.";return}
+  if(lines.length>12){err.textContent=`Has escrito ${lines.length} sucesos. El máximo es 12.`;return}
+  const e=[];
+  for(const [i,l] of lines.entries()){const s=leerSuceso(l);
+    if(!s||!s.t){err.textContent=`Revisa la línea ${i+1} («${l}»). Empieza por el año y luego el suceso. Por ejemplo: 1492 Colón llega a América`;return}
+    if(s.t.length>90){err.textContent=`El suceso de la línea ${i+1} es muy largo. Usa como mucho 90 caracteres.`;return}
+    e.push(s)}
+  if(new Set(e.map(x=>x.y)).size===1){err.textContent="Todos los sucesos tienen el mismo año. Pon años distintos.";return}
+  const reto={k:"t",e};if($("t-live").checked)reto.cl=claseCode();
+  const ti=$("t-ti").value.trim(),au=$("t-au").value.trim();if(ti)reto.ti=ti;if(au)reto.au=au;
+  const url=pageUrl("linea.html",Reto.encode(reto));
+  showOut($("t-out"),url,`Reto creado: ${e.length} sucesos.`,`⏳ Reto de Línea del tiempo${ti?`: ${ti}`:""}${au?` (de ${au})`:""}. Ordena ${e.length} sucesos en la línea del tiempo:`,boardUrl(reto,url));
 };
 // ---- Letras ----
 $("l-go").onclick=()=>{
@@ -388,7 +426,7 @@ $("d-go").onclick=()=>{
   const reto={k:"d",nm:place.n,la:place.la,lo:place.lo,c};if($("d-live").checked)reto.cl=claseCode();
   if($("d-pr").checked&&place.pr)reto.pr=place.pr;
   const ti=$("d-ti").value.trim(),au=$("d-au").value.trim();if(ti)reto.ti=ti;if(au)reto.au=au;
-  showOut($("d-out"),pageUrl("./",Reto.encode(reto)),`Reto creado: ${place.n}.`,`📍 Reto de ¿Dónde está?${ti?`: ${ti}`:""}${au?` (de ${au})`:""}. Adivina el lugar con las pistas en 6 intentos:`,boardUrl(reto,pageUrl("./",Reto.encode(reto))));
+  showOut($("d-out"),pageUrl("donde.html",Reto.encode(reto)),`Reto creado: ${place.n}.`,`📍 Reto de ¿Dónde está?${ti?`: ${ti}`:""}${au?` (de ${au})`:""}. Adivina el lugar con las pistas en 6 intentos:`,boardUrl(reto,pageUrl("donde.html",Reto.encode(reto))));
 };
 // ---- Cifras ----
 function solveC(nums,target){const seen=new Set();let best=null;

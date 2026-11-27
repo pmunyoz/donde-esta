@@ -1,4 +1,4 @@
-"""Comprueba los retos diarios de los próximos días en los cuatro juegos.
+"""Comprueba los retos diarios de los próximos días en los cinco juegos.
 
 Abre cada juego en un Chrome sin interfaz con la fecha simulada y revisa:
 - ¿Dónde está?: el lugar tiene nombre, provincia y dos pistas, y ninguna pista contiene el nombre.
@@ -6,6 +6,7 @@ Abre cada juego en un Chrome sin interfaz con la fecha simulada y revisa:
 - Cifras del día: tres rondas con solución exacta, y la solución mostrada llega de verdad al objetivo.
 - Grupos del día: cuatro grupos (niveles 1 a 4) de cuatro palabras distintas, y ninguna palabra está en la lista
   de otra categoría del mismo día (si no, habría dos respuestas posibles).
+- Línea del tiempo: nueve sucesos distintos, con años enteros y bastante separados para que el orden no sea una lotería.
 Además avisa si un lugar o una palabra se repite dentro del periodo.
 
 Uso: python tests/comprobar_retos.py [días]   (por defecto 30, empezando hoy)
@@ -70,7 +71,7 @@ def main():
             pg.clock.set_fixed_time(datetime.datetime(d.year, d.month, d.day, 12, 0))
             etiqueta = d.isoformat()
             # ¿Dónde está?
-            pg.goto(base + "index.html"); pg.wait_for_timeout(150)
+            pg.goto(base + "donde.html"); pg.wait_for_timeout(150)
             tc = pg.evaluate("typeof TC!=='undefined'?TC.slice(0,6):null")
             if not tc or not tc[0]:
                 errores.append(f"{etiqueta} ¿Dónde está?: no hay lugar")
@@ -122,6 +123,19 @@ def main():
                     for w in x["w"]:
                         otras = [y["n"] for y in g["g"] if y is not x and w in listas.get(y["n"], [])]
                         if otras: errores.append(f"{etiqueta} Grupos: {w} ({x['n']}) también encaja en {', '.join(otras)}")
+            # Línea del tiempo
+            pg.goto(base + "linea.html"); pg.wait_for_timeout(150)
+            t = pg.evaluate("typeof EV!=='undefined'?{e:EV,sep:EV.map(a=>EV.map(b=>lineaSeparacion(a.y,b.y))),tema:TEMA}:null")
+            if not t or len(t["e"]) != 9:
+                errores.append(f"{etiqueta} Línea: no hay nueve sucesos")
+            else:
+                ev = t["e"]
+                if len({x["t"] for x in ev}) != 9: errores.append(f"{etiqueta} Línea: sucesos repetidos")
+                for i, a in enumerate(ev):
+                    if not isinstance(a["y"], int): errores.append(f"{etiqueta} Línea: año raro en «{a['t']}»")
+                    for j in range(i + 1, 9):
+                        if abs(a["y"] - ev[j]["y"]) < t["sep"][i][j]:
+                            errores.append(f"{etiqueta} Línea ({t['tema']}): «{a['t']}» ({a['y']}) y «{ev[j]['t']}» ({ev[j]['y']}) están demasiado cerca")
             for e in fallos_js:
                 errores.append(f"{etiqueta}: error de JavaScript: {e}")
             fallos_js.clear()

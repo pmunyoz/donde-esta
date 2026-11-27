@@ -3,7 +3,7 @@
 (function () {
   const RPC = "https://lnqigozwqraprajvaoiv.supabase.co/rest/v1/rpc/clase_enviar";
   const KEY = "sb_publishable_T2XYHn31Yyt5cwPQ_q_JNQ_7ZgMXqPN";
-  const JUEGO = /grupos/.test(location.pathname) ? "grupos" : /letras/.test(location.pathname) ? "letras" : /cifras/.test(location.pathname) ? "cifras" : "donde";
+  const JUEGO = /linea/.test(location.pathname) ? "linea" : /grupos/.test(location.pathname) ? "grupos" : /letras/.test(location.pathname) ? "letras" : /cifras/.test(location.pathname) ? "cifras" : "donde";
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
   // Las variables de cada juego son globales del documento (const de nivel superior)
@@ -11,6 +11,7 @@
   function resultado() {
     try {
       if (JUEGO === "donde") return { puntos: PTS(st.won, st.guesses.length), aciertos: st.won ? 1 : 0, segundos: null };
+      if (JUEGO === "linea") return { puntos: score(), aciertos: aciertos(), segundos: usedSecs() };
       if (JUEGO === "grupos") return { puntos: score(), aciertos: st.found.length, segundos: usedSecs() };
       if (JUEGO === "letras") return { puntos: score(), aciertos: st.res.filter((r) => r.ok).length, segundos: usedSecs() };
       return { puntos: score(), aciertos: exact(), segundos: usedSecs() };

@@ -43,6 +43,8 @@ a{color:var(--ink)}
 .filtros{display:flex;flex-direction:column;gap:8px}
 .filtros .lbl{font-size:.8rem;font-weight:600;color:var(--muted);margin:0}
 .tabs{display:flex;gap:4px;padding:4px;border-radius:12px;background:var(--card);border:1px solid var(--line)}
+#juegos{flex-wrap:wrap}
+#juegos button{flex:1 1 30%}
 .tabs button{flex:1 1 auto;min-width:0;font:inherit;font-weight:600;font-size:.82rem;cursor:pointer;padding:6px 4px;border:0;border-radius:9px;background:transparent;color:var(--muted);min-height:40px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tabs button[aria-pressed="true"]{background:var(--bg);color:var(--ink);box-shadow:inset 0 -3px 0 var(--signal)}
 .tabs button:focus-visible{outline:2px solid var(--signal);outline-offset:1px}
@@ -62,7 +64,7 @@ a{color:var(--ink)}
 </head>
 <body>
 <div class="wrap">
-  <nav aria-label="Juegos"><ul class="games"><li><a href="./"><span aria-hidden="true">📍</span> ¿Dónde está?</a></li><li><a href="letras.html"><span aria-hidden="true">🔤</span> Letras</a></li><li><a href="cifras.html"><span aria-hidden="true">🔢</span> Cifras</a></li><li><a href="grupos.html"><span aria-hidden="true">🧩</span> Grupos</a></li></ul></nav>
+  <nav aria-label="Juegos"><ul class="games"><li><a href="./"><span aria-hidden="true">🏠</span>Inicio</a></li><li><a href="donde.html"><span aria-hidden="true">📍</span>Dónde</a></li><li><a href="letras.html"><span aria-hidden="true">🔤</span>Letras</a></li><li><a href="cifras.html"><span aria-hidden="true">🔢</span>Cifras</a></li><li><a href="grupos.html"><span aria-hidden="true">🧩</span>Grupos</a></li><li><a href="linea.html"><span aria-hidden="true">⏳</span>Línea</a></li></ul></nav>
   <h1>Clasificación</h1>
   <p class="how">Solo aparece quien lo pide al terminar el reto del día, con el apodo que elige. Para jugar con tus amigos sin salir aquí, usa la liga de amigos de cada juego.</p>
   <div class="filtros">
@@ -76,7 +78,7 @@ a{color:var(--ink)}
 </div>
 <script>
 {
-const J=[["donde","¿Dónde?",10],["letras","Letras",25],["cifras","Cifras",30],["grupos","Grupos",25],["lletres","Lletres",25]];
+const J=[["donde","¿Dónde?",10],["letras","Letras",25],["cifras","Cifras",30],["grupos","Grupos",25],["linea","Línea",25],["lletres","Lletres",25]];
 const q=new URLSearchParams(location.search);let juego=J.some(j=>j[0]===q.get("juego"))?q.get("juego"):"donde",semana=false;
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const mmss=s=>s==null?"":`${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`;
