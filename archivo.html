@@ -41,11 +41,11 @@ h1 span{color:var(--signal)}
 .how{font-size:.85rem;color:var(--muted);margin:0}
 a{color:var(--ink)}
 .days{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
-.day{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;align-items:center}
+.day{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;align-items:center}
 .day .d{grid-column:1/-1}
 .day .d{font-weight:600}
 .day .d small{display:block;font-family:var(--f-mono);font-size:.75rem;color:var(--muted);font-weight:500}
-.g{display:flex;justify-content:center;align-items:center;gap:6px;padding:8px 10px;border-radius:10px;border:1.5px solid var(--line);text-decoration:none;font-weight:600;font-size:.88rem;white-space:nowrap}
+.g{display:flex;justify-content:center;align-items:center;gap:4px;padding:8px 4px;border-radius:10px;border:1.5px solid var(--line);text-decoration:none;font-weight:600;font-size:.8rem;white-space:nowrap}
 .g:hover{border-color:var(--signal)}
 .g:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 .g.done{border-style:dashed;color:var(--muted);font-weight:500}
@@ -72,23 +72,24 @@ a.wa:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 </head>
 <body>
 <div class="wrap">
-  <nav aria-label="Juegos"><ul class="games"><li><a href="./"><span aria-hidden="true">📍</span> ¿Dónde está?</a></li><li><a href="letras.html"><span aria-hidden="true">🔤</span> Letras</a></li><li><a href="cifras.html"><span aria-hidden="true">🔢</span> Cifras</a></li></ul></nav>
+  <nav aria-label="Juegos"><ul class="games"><li><a href="./"><span aria-hidden="true">📍</span> ¿Dónde está?</a></li><li><a href="letras.html"><span aria-hidden="true">🔤</span> Letras</a></li><li><a href="cifras.html"><span aria-hidden="true">🔢</span> Cifras</a></li><li><a href="grupos.html"><span aria-hidden="true">🧩</span> Grupos</a></li></ul></nav>
   <h1>Días<br><span>anteriores</span></h1>
   <p class="how">¿Te perdiste algún día? Aquí están todos los retos pasados. Los que juegues aquí no cuentan para tus estadísticas ni para la liga.</p>
   <ol class="days" id="days"></ol>
   <div class="ad-slot"></div>
   <a class="cafe" href="https://ko-fi.com/pascualmunoz" target="_blank" rel="noopener"><span class="cup" aria-hidden="true">☕</span><span class="txt"><b>¿Te gustan los juegos? Invítame a un café</b><small>Los juegos son gratis. Con un café me ayudas a mantenerlos y a crear más.</small></span></a>
-<p class="recom"><a class="wa" href="https://wa.me/?text=Te%20recomiendo%20Piensa%20un%20rato%3A%20tres%20juegos%20diarios%20gratis%2C%20%C2%BFD%C3%B3nde%20est%C3%A1%3F%2C%20Letras%20y%20Cifras%20del%20d%C3%ADa.%20Sin%20registro%20%F0%9F%91%89%20https%3A//piensaunrato.es/" target="_blank" rel="noopener"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.3-.4.8-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s1 2.6 1.1 2.7c.1.2 1.9 2.9 4.6 4.1 1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.8-1.2.2-.6.2-1.1.1-1.2-.1-.1-.2-.2-.4-.3z"/></svg> Recomienda los juegos por WhatsApp</a></p>
+<p class="recom"><a class="wa" href="https://wa.me/?text=Te%20recomiendo%20Piensa%20un%20rato%3A%20cuatro%20juegos%20diarios%20gratis%2C%20%C2%BFD%C3%B3nde%20est%C3%A1%3F%2C%20Letras%2C%20Cifras%20y%20Grupos%20del%20d%C3%ADa.%20Sin%20registro%20%F0%9F%91%89%20https%3A//piensaunrato.es/" target="_blank" rel="noopener"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.3-.4.8-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s1 2.6 1.1 2.7c.1.2 1.9 2.9 4.6 4.1 1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.8-1.2.2-.6.2-1.1.1-1.2-.1-.1-.2-.2-.4-.3z"/></svg> Recomienda los juegos por WhatsApp</a></p>
   <p class="osm"><a href="soluciones.html">Soluciones de días anteriores</a> · <a href="https://ko-fi.com/pascualmunoz" target="_blank" rel="noopener">Invítame a un café</a> · <a href="profes.html">Retos para clase</a> · <a href="sugerencias.html?juego=general">Sugerencias</a> · <a href="acerca.html">Acerca de</a> · <a href="privacidad.html">Privacidad</a></p>
 </div>
 <script src="ads.js"></script>
 <script>
 // Mismas fechas de inicio y numeración que los juegos
-const DONDE0=new Date(2026,10,26),LETRAS0=new Date(2026,10,26),CIFRAS0=new Date(2026,10,26);
+const DONDE0=new Date(2026,10,26),LETRAS0=new Date(2026,10,26),CIFRAS0=new Date(2026,10,26),GRUPOS0=new Date(2026,10,27);
 const dkey=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
 const dnum=d=>Math.round((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())-Date.UTC(2026,10,26))/864e5)+1;
 const lnum=d=>Math.round((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())-Date.UTC(2026,10,26))/864e5)+1;
 const cnum=d=>Math.round((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())-Date.UTC(2026,10,26))/864e5)+1;
+const gnum=d=>Math.round((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())-Date.UTC(2026,10,27))/864e5)+1;
 const get=k=>{try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}};
 function donde(d){const s=get("dd-"+dkey(d)),u="./?dia="+dkey(d);
   if(s&&s.done){const p=s.won?Math.max(1,10-2*(s.guesses.length-1)):0;return`<a class="g done" href="${u}">📍 <b>${p}</b>/10</a>`}
@@ -101,10 +102,14 @@ function cifras(d){if(d<CIFRAS0)return`<span class="g na">🔢</span>`;
   const s=get("cf-"+dkey(d)),u="cifras.html?dia="+dkey(d);
   if(s&&s.done){const p=(s.res||[]).reduce((a,r)=>a+(r.pts||0),0);return`<a class="g done" href="${u}">🔢 <b>${p}</b>/30</a>`}
   return`<a class="g" href="${u}">🔢 Jugar</a>`}
+function grupos(d){if(d<GRUPOS0)return`<span class="g na">🧩</span>`;
+  const s=get("gr-"+dkey(d)),u="grupos.html?dia="+dkey(d);
+  if(s&&s.done){const p=(s.found||[]).length*5+(s.won?[5,3,1,0][Math.min(s.mist||0,3)]:0);return`<a class="g done" href="${u}">🧩 <b>${p}</b>/25</a>`}
+  return`<a class="g" href="${u}">🧩 Jugar</a>`}
 const out=[],d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()-1);
 for(;d>=DONDE0;d.setDate(d.getDate()-1)){
   const f=d.toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long"});
-  out.push(`<li class="day"><span class="d">${f[0].toUpperCase()+f.slice(1)}<small>¿Dónde está? nº ${dnum(d)}${d>=LETRAS0?` · Letras nº ${lnum(d)}`:""}${d>=CIFRAS0?` · Cifras nº ${cnum(d)}`:""}</small></span>${donde(new Date(d))}${letras(new Date(d))}${cifras(new Date(d))}</li>`)}
+  out.push(`<li class="day"><span class="d">${f[0].toUpperCase()+f.slice(1)}<small>¿Dónde está? nº ${dnum(d)}${d>=LETRAS0?` · Letras nº ${lnum(d)}`:""}${d>=CIFRAS0?` · Cifras nº ${cnum(d)}`:""}${d>=GRUPOS0?` · Grupos nº ${gnum(d)}`:""}</small></span>${donde(new Date(d))}${letras(new Date(d))}${cifras(new Date(d))}${grupos(new Date(d))}</li>`)}
 document.getElementById("days").innerHTML=out.join("")||`<li class="how">Todavía no hay días anteriores.</li>`;
 if(window.Ads)Ads.fill();
 </script>

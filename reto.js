@@ -22,7 +22,7 @@
     for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
     return (h >>> 0).toString(36);
   }
-  // type: "l" (Letras), "d" (¿Dónde está?) o "c" (Cifras). Devuelve null si no hay reto, {error:true} si el enlace está roto.
+  // type: "l" (Letras), "d" (¿Dónde está?), "c" (Cifras) o "g" (Grupos). Devuelve null si no hay reto, {error:true} si el enlace está roto.
   function read(type) {
     const p = new URLSearchParams(location.search).get("reto");
     if (!p) return null;

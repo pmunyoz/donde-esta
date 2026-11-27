@@ -111,11 +111,11 @@ button,.btnlink{font:inherit;cursor:pointer;border:0;border-radius:10px;text-dec
 </head>
 <body>
 <div class="wrap">
-  <nav aria-label="Juegos"><ul class="games"><li><a href="./"><span aria-hidden="true">📍</span> ¿Dónde está?</a></li><li><a href="letras.html"><span aria-hidden="true">🔤</span> Letras</a></li><li><a href="cifras.html"><span aria-hidden="true">🔢</span> Cifras</a></li></ul></nav>
+  <nav aria-label="Juegos"><ul class="games"><li><a href="./"><span aria-hidden="true">📍</span> ¿Dónde está?</a></li><li><a href="letras.html"><span aria-hidden="true">🔤</span> Letras</a></li><li><a href="cifras.html"><span aria-hidden="true">🔢</span> Cifras</a></li><li><a href="grupos.html"><span aria-hidden="true">🧩</span> Grupos</a></li></ul></nav>
   <header>
     <h1>Retos<br><span>para clase</span></h1>
   </header>
-  <p class="lead">Crea un reto con tus propias palabras, con el lugar que estéis estudiando o con operaciones para practicar cálculo mental, y compártelo con tus alumnos con un enlace o un código QR. No hace falta registrarse: el reto va dentro del propio enlace.</p>
+  <p class="lead">Crea un reto con tus propias palabras, con el lugar que estéis estudiando, con operaciones para practicar cálculo mental o con grupos de palabras de cualquier tema, y compártelo con tus alumnos con un enlace o un código QR. No hace falta registrarse: el reto va dentro del propio enlace.</p>
 
   <!-- Letras -->
   <section class="card" id="letras">
@@ -196,6 +196,37 @@ button,.btnlink{font:inherit;cursor:pointer;border:0;border-radius:10px;text-dec
     <div class="out" id="c-out" hidden></div>
   </section>
 
+  <!-- Grupos -->
+  <section class="card" id="grupos">
+    <h2><span class="ic" aria-hidden="true">🧩</span>Grupos: tus categorías</h2>
+    <p>Escribe tres o cuatro grupos de cuatro palabras con algo en común. Los alumnos verán todas las palabras mezcladas y tendrán que encontrar los grupos. Sirve para cualquier asignatura: clases de animales, tipos de palabras, ríos y montañas…</p>
+    <div class="grid2">
+      <div class="f"><label for="g-ti">Título del reto <span class="hint">(opcional)</span></label><input type="text" id="g-ti" maxlength="60" placeholder="Naturales: los vertebrados"></div>
+      <div class="f"><label for="g-au">Tu nombre <span class="hint">(opcional)</span></label><input type="text" id="g-au" maxlength="40" placeholder="Profe Ana"></div>
+    </div>
+    <div class="grid2 gr-row">
+      <div class="f"><label for="g-n1">Grupo 1</label><input type="text" id="g-n1" maxlength="40" placeholder="Mamíferos"></div>
+      <div class="f"><label for="g-w1">Sus 4 palabras <span class="hint">separadas por comas</span></label><input type="text" id="g-w1" maxlength="80" placeholder="PERRO, DELFÍN, MURCIÉLAGO, BALLENA" autocapitalize="characters"></div>
+    </div>
+    <div class="grid2 gr-row">
+      <div class="f"><label for="g-n2">Grupo 2</label><input type="text" id="g-n2" maxlength="40" placeholder="Aves"></div>
+      <div class="f"><label for="g-w2">Sus 4 palabras <span class="hint">separadas por comas</span></label><input type="text" id="g-w2" maxlength="80" placeholder="ÁGUILA, PINGÜINO, AVESTRUZ, GALLINA" autocapitalize="characters"></div>
+    </div>
+    <div class="grid2 gr-row">
+      <div class="f"><label for="g-n3">Grupo 3</label><input type="text" id="g-n3" maxlength="40" placeholder="Reptiles"></div>
+      <div class="f"><label for="g-w3">Sus 4 palabras <span class="hint">separadas por comas</span></label><input type="text" id="g-w3" maxlength="80" placeholder="LAGARTO, SERPIENTE, TORTUGA, COCODRILO" autocapitalize="characters"></div>
+    </div>
+    <div class="grid2 gr-row">
+      <div class="f"><label for="g-n4">Grupo 4 <span class="hint">(opcional)</span></label><input type="text" id="g-n4" maxlength="40" placeholder="Anfibios"></div>
+      <div class="f"><label for="g-w4">Sus 4 palabras <span class="hint">separadas por comas</span></label><input type="text" id="g-w4" maxlength="80" placeholder="RANA, SAPO, SALAMANDRA, TRITÓN" autocapitalize="characters"></div>
+    </div>
+    <p class="hint">El primer grupo se mostrará como el más fácil (amarillo) y el último como el más difícil (morado). Cada palabra solo puede estar en un grupo.</p>
+    <p class="err" id="g-err" role="alert"></p>
+    <label class="check"><input type="checkbox" id="g-live" checked> Ver los resultados de la clase en directo <span class="hint">(cada alumno escribe su nombre al terminar)</span></label>
+    <div class="row"><button class="btn" id="g-go">Crear enlace</button></div>
+    <div class="out" id="g-out" hidden></div>
+  </section>
+
   <section class="notes">
     <h2>Cómo usarlo en clase</h2>
     <ul>
@@ -237,6 +268,26 @@ const pageUrl=(file,code)=>new URL(file+"?reto="+code,location.href).href;
 const claseCode=()=>{const A="ABCDEFGHJKLMNPQRSTUVWXYZ23456789",r=crypto.getRandomValues(new Uint8Array(10));return[...r].map(x=>A[x%32]).join("")};
 const boardUrl=(reto,url)=>reto.cl?new URL("clase.html?c="+reto.cl+"&u="+encodeURIComponent(url)+(reto.ti?"&t="+encodeURIComponent(reto.ti):""),location.href).href:"";
 
+// ---- Grupos ----
+$("g-go").onclick=()=>{
+  const err=$("g-err");err.textContent="";
+  const g=[];
+  for(let i=1;i<=4;i++){
+    const n=$("g-n"+i).value.trim(),raw=$("g-w"+i).value.trim();
+    if(!n&&!raw){if(i<=3){err.textContent=`Rellena el grupo ${i}: su nombre y sus 4 palabras.`;$("g-n"+i).focus();return}continue}
+    const w=raw.split(/[,;\n]+/).map(x=>x.trim().toUpperCase()).filter(Boolean);
+    if(!n){err.textContent=`Ponle un nombre al grupo ${i}.`;$("g-n"+i).focus();return}
+    if(w.length!==4){err.textContent=`El grupo ${i} tiene ${w.length} palabra${w.length===1?"":"s"}. Escribe exactamente 4, separadas por comas.`;$("g-w"+i).focus();return}
+    const bad=w.filter(x=>x.length>14||!/^[A-ZÑÁÉÍÓÚÜÇ' -]+$/.test(x));
+    if(bad.length){err.textContent=`Revisa en el grupo ${i}: ${bad.join(", ")}. Usa palabras de hasta 14 letras, sin números.`;$("g-w"+i).focus();return}
+    g.push({n,w})}
+  const todas=g.flatMap(x=>x.w.map(normL)),rep=todas.find((x,i)=>todas.indexOf(x)!==i);
+  if(rep){err.textContent=`La palabra ${rep} está repetida. Cada palabra solo puede estar en un grupo.`;return}
+  const reto={k:"g",g};if($("g-live").checked)reto.cl=claseCode();
+  const ti=$("g-ti").value.trim(),au=$("g-au").value.trim();if(ti)reto.ti=ti;if(au)reto.au=au;
+  const url=pageUrl("grupos.html",Reto.encode(reto));
+  showOut($("g-out"),url,`Reto creado: ${g.length} grupos.`,`🧩 Reto de Grupos${ti?`: ${ti}`:""}${au?` (de ${au})`:""}. Encuentra los ${g.length} grupos de cuatro palabras:`,boardUrl(reto,url));
+};
 // ---- Letras ----
 $("l-go").onclick=()=>{
   const err=$("l-err");err.textContent="";

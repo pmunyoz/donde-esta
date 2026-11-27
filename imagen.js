@@ -3,8 +3,8 @@
 // la imagen a partir del mismo texto que se comparte (shareText() de cada juego).
 (function () {
   const W = 1080, H = 1350;
-  const JUEGO = /letras/.test(location.pathname) ? "letras" : /cifras/.test(location.pathname) ? "cifras" : "donde";
-  const NOMBRE = { donde: "¿Dónde está?", letras: "Letras del día", cifras: "Cifras del día" }[JUEGO];
+  const JUEGO = /grupos/.test(location.pathname) ? "grupos" : /letras/.test(location.pathname) ? "letras" : /cifras/.test(location.pathname) ? "cifras" : "donde";
+  const NOMBRE = { donde: "¿Dónde está?", letras: "Letras del día", cifras: "Cifras del día", grupos: "Grupos del día" }[JUEGO];
   const C = { fondo: "#1B2F45", tarjeta: "#22374E", amarillo: "#E3A21A", claro: "#E6EEF4", suave: "#93A6B8" };
   const DISP = '"Bricolage Grotesque", "Archivo", system-ui, sans-serif';
   const BODY = '"Archivo", system-ui, sans-serif';

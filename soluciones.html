@@ -40,6 +40,8 @@ h1{font-family:var(--f-display);font-weight:800;font-size:2.1rem;line-height:1;m
 h1 span{color:var(--signal)}
 .how{font-size:.9rem;color:var(--muted);margin:0}
 a{color:var(--ink)}
+.grupo{border-radius:8px;padding:6px 10px;color:#14212E;font-size:.88rem}.grupo b{text-transform:uppercase;letter-spacing:.03em;margin-right:4px}
+.grupo.g1{background:#F2C94C}.grupo.g2{background:#7FCB8A}.grupo.g3{background:#86BDEB}.grupo.g4{background:#BEA2EC}
 .day{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px}
 .day h2{font-family:var(--f-display);font-weight:800;font-size:1.25rem;margin:0}
 details{border-top:1px dashed var(--line);padding-top:10px}
@@ -68,14 +70,15 @@ summary:focus-visible{outline:2px solid var(--ink);outline-offset:2px;border-rad
 </head>
 <body>
 <div class="wrap">
-  <nav aria-label="Juegos"><ul class="games"><li><a href="./"><span aria-hidden="true">📍</span> ¿Dónde está?</a></li><li><a href="letras.html"><span aria-hidden="true">🔤</span> Letras</a></li><li><a href="cifras.html"><span aria-hidden="true">🔢</span> Cifras</a></li></ul></nav>
+  <nav aria-label="Juegos"><ul class="games"><li><a href="./"><span aria-hidden="true">📍</span> ¿Dónde está?</a></li><li><a href="letras.html"><span aria-hidden="true">🔤</span> Letras</a></li><li><a href="cifras.html"><span aria-hidden="true">🔢</span> Cifras</a></li><li><a href="grupos.html"><span aria-hidden="true">🧩</span> Grupos</a></li></ul></nav>
   <h1>Soluciones<br><span>de ayer</span></h1>
-  <p class="how">Aquí tienes las soluciones de los retos de días anteriores: el lugar de <a href="./">¿Dónde está?</a>, las cinco palabras de <a href="letras.html">Letras del día</a> y una forma de llegar a cada cifra en <a href="cifras.html">Cifras del día</a>. La solución de hoy aparece mañana, para no estropearle el reto a nadie.</p>
+  <p class="how">Aquí tienes las soluciones de los retos de días anteriores: el lugar de <a href="./">¿Dónde está?</a>, las cinco palabras de <a href="letras.html">Letras del día</a> y una forma de llegar a cada cifra en <a href="cifras.html">Cifras del día</a>, y los cuatro grupos de <a href="grupos.html">Grupos del día</a>. La solución de hoy aparece mañana, para no estropearle el reto a nadie.</p>
   <div id="days"></div>
   <button class="more" id="more" hidden>Ver días anteriores</button>
   <div class="ad-slot"></div>
   <p class="osm"><a href="archivo.html">Jugar días anteriores</a> · <a href="sugerencias.html">Sugerencias</a> · <a href="acerca.html">Acerca de</a> · <a href="privacidad.html">Privacidad</a></p>
 </div>
+<script src="grupos-datos.js"></script>
 <script>
 {
 // Las soluciones se leen de los propios juegos: cada juego se abre oculto con ?dia=AAAA-MM-DD
@@ -102,7 +105,9 @@ async function pintar(d){const k=dkey(d),n=num(d),f=d.toLocaleDateString("es-ES"
   sec.innerHTML=`<h2>${f[0].toUpperCase()+f.slice(1)} · reto nº ${n}</h2>
   <details${shown===0?" open":""}><summary>📍 Solución de ¿Dónde está? nº ${n}</summary><div class="sol">${tc?`<div class="big">${esc(tc[0])}</div><div class="muted">${esc(tc[1]||"")}</div>`:`<div class="muted">No se ha podido cargar.</div>`}<a class="play" href="./?dia=${k}">Jugar este reto</a></div></details>
   <details${shown===0?" open":""}><summary>🔤 Solución de Letras del día nº ${n}</summary><div class="sol">${disp?`<div class="words">${disp.map(w=>`<span>${esc(w)}</span>`).join("")}</div>`:`<div class="muted">No se ha podido cargar.</div>`}<a class="play" href="letras.html?dia=${k}">Jugar este reto</a></div></details>
-  <details${shown===0?" open":""}><summary>🔢 Solución de Cifras del día nº ${n}</summary><div class="sol">${rounds?rounds.map(r=>`<div class="round"><span><b>${r.target}</b> con ${r.n.join(", ")} <span class="muted">(${esc(r.name)})</span></span><span class="ops">${r.sol.map(esc).join(" · ")}</span></div>`).join(""):`<div class="muted">No se ha podido cargar.</div>`}<a class="play" href="cifras.html?dia=${k}">Jugar este reto</a></div></details>`;
+  <details${shown===0?" open":""}><summary>🔢 Solución de Cifras del día nº ${n}</summary><div class="sol">${rounds?rounds.map(r=>`<div class="round"><span><b>${r.target}</b> con ${r.n.join(", ")} <span class="muted">(${esc(r.name)})</span></span><span class="ops">${r.sol.map(esc).join(" · ")}</span></div>`).join(""):`<div class="muted">No se ha podido cargar.</div>`}<a class="play" href="cifras.html?dia=${k}">Jugar este reto</a></div></details>
+  ${d>=new Date(2026,10,27)?(()=>{const dia=Math.round((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())-Date.UTC(2026,10,14))/864e5),gn=Math.round((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())-Date.UTC(2026,10,27))/864e5)+1,G=window.gruposDelDia?gruposDelDia(dia):null;
+    return`<details${shown===0?" open":""}><summary>🧩 Solución de Grupos del día nº ${gn}</summary><div class="sol">${G?G.map(g=>`<div class="grupo g${g.l}"><b>${esc(g.n)}</b> ${g.w.map(esc).join(", ")}</div>`).join(""):`<div class="muted">No se ha podido cargar.</div>`}<a class="play" href="grupos.html?dia=${k}">Jugar este reto</a></div></details>`})():""}`;
   shown++}
 const more=document.getElementById("more");
 async function next(nd){const slice=days.slice(shown,shown+nd);for(const d of slice)await pintar(d);more.hidden=shown>=days.length}
