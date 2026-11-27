@@ -10,7 +10,7 @@
   function reto() { try { return typeof CUSTOM !== "undefined" && CUSTOM && /^[A-Z0-9]{8,12}$/.test(CUSTOM.cl || "") ? CUSTOM : null; } catch (e) { return null; } }
   function resultado() {
     try {
-      if (JUEGO === "donde") return { puntos: PTS(st.won, st.guesses.length), aciertos: st.won ? 1 : 0, segundos: null };
+      if (typeof PTS === "function" && Array.isArray(st.guesses)) return { puntos: PTS(st.won, st.guesses.length), aciertos: st.won ? 1 : 0, segundos: null };
       if (JUEGO === "linea") return { puntos: score(), aciertos: aciertos(), segundos: usedSecs() };
       if (JUEGO === "grupos") return { puntos: score(), aciertos: st.found.length, segundos: usedSecs() };
       if (JUEGO === "letras") return { puntos: score(), aciertos: st.res.filter((r) => r.ok).length, segundos: usedSecs() };
