@@ -1,0 +1,23 @@
+/* Estilo común de Piensa un rato: barra de juegos y botones con relieve.
+   Se carga después de los estilos de cada página. Solo añade el relieve (sombra inferior
+   y efecto de pulsar); los colores siguen siendo los de cada página. */
+
+/* Barra de juegos */
+.games{display:grid;grid-template-columns:1.35fr 1fr 1fr;gap:6px;margin:0 0 3px;padding:0;list-style:none}
+.games a{display:flex;align-items:center;justify-content:center;gap:5px;min-height:44px;padding:6px 4px;box-sizing:border-box;border-radius:12px;border:1.5px solid var(--line,color-mix(in srgb,var(--ink) 28%,transparent));background:var(--card,transparent);color:var(--ink);text-decoration:none;font-size:.82rem;font-weight:600;white-space:nowrap}
+.games a:hover{border-color:var(--signal)}
+.games a[aria-current]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.games a:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+
+/* Relieve: botones de color (sombra oscura) */
+.btn,.wa,.cafe,form button:not([type="button"]){box-shadow:0 3px 0 rgb(0 0 0 / .22)}
+/* Relieve: botones claros o con borde (sombra del color del borde) */
+.games a,.ghost,.img-share,.more,.off,.opb,.go-card,.chips label{box-shadow:0 3px 0 var(--line,color-mix(in srgb,var(--ink) 28%,transparent))}
+/* Seleccionado: borde inferior amarillo, como en la clasificación */
+.games a[aria-current],.opb.on,.chips label:has(input:checked){box-shadow:0 3px 0 var(--signal)}
+
+/* Efecto de pulsar */
+.btn,.wa,.cafe,.games a,.ghost,.img-share,.more,.off,.opb,.go-card,.chips label,form button{transition:transform .08s,box-shadow .08s}
+:is(.btn,.wa,.cafe,.games a,.ghost,.img-share,.more,.off,.opb,.go-card,.chips label,form button:not([type="button"])):active:not(:disabled){transform:translateY(2px);box-shadow:0 1px 0 rgb(0 0 0 / .22)}
+:is(.btn,.ghost,.opb,.more,.off,form button):disabled{box-shadow:none;transform:none}
+@media (prefers-reduced-motion: reduce){.btn,.wa,.cafe,.games a,.ghost,.img-share,.more,.off,.opb,.go-card,.chips label,form button{transition:none}}
