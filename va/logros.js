@@ -21,7 +21,7 @@
       if (m[1] === "dd") D.donde.push({ fecha, archivo, won: !!s.won, n: (s.guesses || []).length });
       else if (m[1] === "lt" || m[1] === "ll") { const r = s.res || []; D.letras.push({ fecha, archivo, pts: r.reduce((a, x) => a + (x.pts || 0), 0), ok: r.filter((x) => x.ok).length, rapida: Math.min(99, ...r.filter((x) => x.ok).map((x) => x.s ?? 99)) }); }
       else if (m[1] === "tl") D.linea.push({ fecha, archivo, ok: (s.res || []).filter(Boolean).length, won: !!s.won, mist: s.mist || 0 });
-      else if (m[1] === "gr") D.grupos.push({ fecha, archivo, pts: (s.found || []).length * 5, won: !!s.won, mist: s.mist || 0 });
+      else if (m[1] === "gr") D.grupos.push({ fecha, archivo, pts: s.score != null ? s.score : (s.found || []).length * 5, won: !!s.won, mist: s.mist || 0 });
       else { const r = s.res || []; D.cifras.push({ fecha, archivo, pts: r.reduce((a, x) => a + (x.pts || 0), 0), exactas: r.filter((x) => x.d === 0).length }); }
     }
     // Racha conjunta: días seguidos (por día de juego) con al menos un reto terminado

@@ -106,7 +106,7 @@ function cifras(d){if(d<CIFRAS0)return`<span class="g na">🔢</span>`;
   return`<a class="g" href="${u}"><span aria-hidden="true">🔢</span><span>Jugar</span></a>`}
 function grupos(d){if(d<GRUPOS0)return`<span class="g na">🧩</span>`;
   const s=get("gr-"+dkey(d)),u="grupos.html?dia="+dkey(d);
-  if(s&&s.done){const p=(s.found||[]).length*5+(s.won?[5,3,1,0][Math.min(s.mist||0,3)]:0);return`<a class="g done" href="${u}"><span aria-hidden="true">🧩</span><span><b>${p}</b>/25</span></a>`}
+  if(s&&s.done){const p=s.score!=null?s.score:(s.found||[]).length*5+(s.won?[5,3,1,0][Math.min(s.mist||0,3)]:0);return`<a class="g done" href="${u}"><span aria-hidden="true">🧩</span><span><b>${p}</b>/25</span></a>`}
   return`<a class="g" href="${u}"><span aria-hidden="true">🧩</span><span>Jugar</span></a>`}
 function linea(d){if(d<LINEA0)return`<span class="g na">⏳</span>`;
   const s=get("tl-"+dkey(d)),u="linea.html?dia="+dkey(d);

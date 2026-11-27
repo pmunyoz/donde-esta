@@ -123,7 +123,7 @@ const sum=a=>(a||[]).reduce((s,r)=>s+(r.pts||0),0);
 const PUNTOS={
   dd:s=>s.won?Math.max(1,10-2*((s.guesses||[]).length-1)):0,
   lt:s=>sum(s.res),cf:s=>sum(s.res),
-  gr:s=>(s.found||[]).length*5+(s.won?[5,3,1,0][Math.min(s.mist||0,3)]:0),
+  gr:s=>s.score!=null?s.score:(s.found||[]).length*5+(s.won?[5,3,1,0][Math.min(s.mist||0,3)]:0),
   tl:s=>(s.res||[]).filter(Boolean).length*3+(s.won&&!s.mist?1:0)};
 let hechos=0;
 document.querySelectorAll(".juego").forEach(a=>{const s=get(a.dataset.k+"-"+k),st=a.querySelector(".st");
