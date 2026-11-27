@@ -30,6 +30,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Archivo:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="barra.css">
 <style>
 /* Layout: una columna estrecha tipo hoja de ruta; el mapa es la pieza central, los intentos debajo como un cuaderno de bitácora */
 :root{
@@ -145,12 +146,6 @@ pre.share{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font-family:var(-
 .about p{margin:0;max-width:65ch}
 .about a{color:var(--ink);font-weight:600}
 
-/* Barra de juegos */
-.games{display:grid;grid-template-columns:1.35fr 1fr 1fr;gap:6px;margin:0;padding:0;list-style:none}
-.games a{display:flex;align-items:center;justify-content:center;gap:5px;padding:7px 4px;border-radius:999px;border:1.5px solid var(--line);color:var(--ink);text-decoration:none;font-size:.82rem;font-weight:600;white-space:nowrap}
-.games a:hover{border-color:var(--signal)}
-.games a[aria-current]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
-.games a:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 
 .cafe{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:12px;background:var(--signal);color:var(--signal-ink);text-decoration:none;box-shadow:0 3px 0 rgb(0 0 0 / .18)}
 .cafe:hover{filter:brightness(1.05)}

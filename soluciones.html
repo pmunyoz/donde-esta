@@ -23,6 +23,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Archivo:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="barra.css">
 <style>
 :root{
   --ink:#1B2F45; --muted:#5F7286; --line:#B9C9D4; --signal:#E3A21A; --bg:#EEF3F6; --card:#FFFFFF; --hot:#2E8B57;
@@ -40,8 +41,6 @@ h1{font-family:var(--f-display);font-weight:800;font-size:2.1rem;line-height:1;m
 h1 span{color:var(--signal)}
 .how{font-size:.9rem;color:var(--muted);margin:0}
 a{color:var(--ink)}
-.nav{display:flex;gap:6px;flex-wrap:wrap}
-.nav a{padding:7px 12px;border-radius:999px;border:1.5px solid var(--line);text-decoration:none;font-size:.82rem;font-weight:600}
 .day{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px}
 .day h2{font-family:var(--f-display);font-weight:800;font-size:1.25rem;margin:0}
 details{border-top:1px dashed var(--line);padding-top:10px}
@@ -65,11 +64,6 @@ summary:focus-visible{outline:2px solid var(--ink);outline-offset:2px;border-rad
 .osm a{font-weight:600}
 .loader{position:absolute;left:-9999px;top:0;width:10px;height:10px;border:0;opacity:0;pointer-events:none}
 
-/* Barra de juegos (igual que en los juegos) */
-.games{display:grid;grid-template-columns:1.35fr 1fr 1fr;gap:6px;margin:0 0 4px;padding:0;list-style:none}
-.games a{display:flex;align-items:center;justify-content:center;gap:5px;padding:7px 4px;border-radius:999px;border:1.5px solid var(--line,color-mix(in srgb,var(--ink) 28%,transparent));color:var(--ink);text-decoration:none;font-size:.82rem;font-weight:600;white-space:nowrap}
-.games a:hover{border-color:var(--signal)}
-.games a:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 </style>
 </head>
 <body>

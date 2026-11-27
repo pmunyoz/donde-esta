@@ -29,6 +29,7 @@
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Retos para clase", "url": "https://piensaunrato.es/profes.html", "description": "Herramienta gratuita para profesores: crea un juego de palabras desordenadas, de adivinar un lugar de España con tus pistas o de cálculo mental con tus números, y compártelo con tus alumnos con un enlace o un QR.", "applicationCategory": "GameApplication", "operatingSystem": "Cualquiera (navegador web)", "inLanguage": "es", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"}, "author": {"@type": "Person", "name": "Pascual Muñoz"}}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Archivo:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="barra.css">
 <style>
 /* Layout: una columna como los juegos; tres fichas de creación (Letras, ¿Dónde está? y Cifras) con el resultado debajo de cada una */
 :root{
@@ -52,8 +53,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);fo
 header{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
 h1{font-family:var(--f-display);font-weight:800;font-size:2.1rem;line-height:1;margin:0;letter-spacing:-.02em}
 h1 span{color:var(--signal)}
-.back{font-size:.85rem;color:var(--muted)}
-.back a,.lead a,.notes a,.osm a{color:var(--ink);font-weight:600}
+.lead a,.notes a,.osm a{color:var(--ink);font-weight:600}
 .lead{margin:0;color:var(--muted);max-width:65ch}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:12px}
 .card h2{font-family:var(--f-display);font-weight:800;font-size:1.35rem;margin:0;display:flex;align-items:center;gap:10px}
@@ -97,11 +97,6 @@ button,.btnlink{font:inherit;cursor:pointer;border:0;border-radius:10px;text-dec
 .notes p,.notes ul{margin:0;max-width:65ch}
 .osm{font-size:.72rem;color:var(--muted);text-align:center;margin:0}
 
-/* Barra de juegos (igual que en los juegos) */
-.games{display:grid;grid-template-columns:1.35fr 1fr 1fr;gap:6px;margin:0 0 4px;padding:0;list-style:none}
-.games a{display:flex;align-items:center;justify-content:center;gap:5px;padding:7px 4px;border-radius:999px;border:1.5px solid var(--line,color-mix(in srgb,var(--ink) 28%,transparent));color:var(--ink);text-decoration:none;font-size:.82rem;font-weight:600;white-space:nowrap}
-.games a:hover{border-color:var(--signal)}
-.games a:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 </style>
 </head>
 <body>
