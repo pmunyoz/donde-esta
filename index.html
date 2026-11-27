@@ -2,852 +2,143 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
+<script>
+// Enlaces antiguos de ¿Dónde está? (antes vivía en la portada): ?dia=, ?reto=, ?liga= y ?modo= siguen funcionando
+(function(){var q=location.search;if(/[?&](dia|reto|liga|modo)=/.test(q))location.replace("donde.html"+q+location.hash)})();
+</script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="google-adsense-account" content="ca-pub-8361369070531250">
 <link rel="manifest" href="/manifest.webmanifest">
 <meta name="application-name" content="Piensa un rato">
 <meta name="apple-mobile-web-app-title" content="Piensa un rato">
-<title>¿Dónde está? · Adivina el pueblo o la ciudad de España del día</title>
-<meta name="description" content="Cada día, una ciudad o pueblo de España. Adivínalo en 6 intentos con pistas, distancia y dirección en el mapa. Gratis, sin registro y con liga para jugar con amigos.">
+<title>Piensa un rato · Cinco juegos diarios gratis en español</title>
+<meta name="description" content="Cinco juegos diarios gratis, en español y sin registro: ¿Dónde está?, Letras del día, Cifras del día, Grupos del día y Línea del tiempo. Y retos para clase.">
 <link rel="canonical" href="https://piensaunrato.es/">
-<link rel="icon" href="icon-donde.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="icon-donde-180.png">
+<link rel="icon" href="icon-app.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="app-192.png">
 <meta name="theme-color" content="#1B2F45">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="es_ES">
-<meta property="og:site_name" content="¿Dónde está? · Letras del día">
-<meta property="og:title" content="¿Dónde está? · Adivina el pueblo o la ciudad de España del día">
-<meta property="og:description" content="Cada día, una ciudad o pueblo de España. Adivínalo en 6 intentos con pistas, distancia y dirección en el mapa. Gratis, sin registro y con liga para jugar con amigos.">
+<meta property="og:site_name" content="Piensa un rato">
+<meta property="og:title" content="Piensa un rato · Cinco juegos diarios gratis">
+<meta property="og:description" content="Cinco juegos diarios gratis, en español y sin registro: ¿Dónde está?, Letras del día, Cifras del día, Grupos del día y Línea del tiempo. Y retos para clase.">
 <meta property="og:url" content="https://piensaunrato.es/">
-<meta property="og:image" content="https://piensaunrato.es/og-donde.png">
+<meta property="og:image" content="https://piensaunrato.es/og-inicio.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="¿Dónde está? · Adivina el pueblo o la ciudad de España del día">
-<meta name="twitter:description" content="Cada día, una ciudad o pueblo de España. Adivínalo en 6 intentos con pistas, distancia y dirección en el mapa. Gratis, sin registro y con liga para jugar con amigos.">
-<meta name="twitter:image" content="https://piensaunrato.es/og-donde.png">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "¿Dónde está?", "url": "https://piensaunrato.es/", "description": "Cada día, una ciudad o pueblo de España. Adivínalo en 6 intentos con pistas, distancia y dirección en el mapa. Gratis, sin registro y con liga para jugar con amigos.", "applicationCategory": "GameApplication", "operatingSystem": "Cualquiera (navegador web)", "inLanguage": "es", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"}, "author": {"@type": "Person", "name": "Pascual Muñoz"}}</script>
-<meta name="claude:viewport-fit-sides" content="cover">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "Piensa un rato", "url": "https://piensaunrato.es/", "description": "Cinco juegos diarios gratis, en español y sin registro: ¿Dónde está?, Letras del día, Cifras del día, Grupos del día y Línea del tiempo. Y retos para clase.", "inLanguage": "es"}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Archivo:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
 <style>
-/* Layout: una columna estrecha tipo hoja de ruta; el mapa es la pieza central, los intentos debajo como un cuaderno de bitácora */
+/* Portada: los cinco juegos como tarjetas grandes, con cómo vas hoy en cada uno */
 :root{
-  --sea:#D7E3EA; --land:#FFFFFF; --ink:#1B2F45; --muted:#5F7286; --line:#B9C9D4;
-  --signal:#E3A21A; --signal-ink:#3A2600; --bg:#EEF3F6; --card:#FFFFFF;
-  --hot:#2E8B57; --warm:#D4A017; --cold:#9AAAB8; --bad:#C2453B;
+  --ink:#1B2F45; --muted:#5F7286; --line:#B9C9D4; --signal:#E3A21A; --signal-ink:#3A2600; --bg:#EEF3F6; --card:#FFFFFF; --sea:#D7E3EA; --hot:#2E8B57;
   --f-display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
   --f-body:"Archivo",ui-sans-serif,system-ui,sans-serif;
   --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
 }
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --sea:#13212F; --land:#22364A; --ink:#E6EEF4; --muted:#93A6B8; --line:#35506A;
-  --signal:#F0B43A; --signal-ink:#2A1B00; --bg:#0D1823; --card:#172636;
-  --hot:#4CC18A; --warm:#E8BE45; --cold:#5E7489; --bad:#E06A5F; color-scheme:dark}}
-:root[data-theme="dark"]{
-  --sea:#13212F; --land:#22364A; --ink:#E6EEF4; --muted:#93A6B8; --line:#35506A;
-  --signal:#F0B43A; --signal-ink:#2A1B00; --bg:#0D1823; --card:#172636;
-  --hot:#4CC18A; --warm:#E8BE45; --cold:#5E7489; --bad:#E06A5F; color-scheme:dark}
+@media (prefers-color-scheme: dark){:root{
+  --ink:#E6EEF4; --muted:#93A6B8; --line:#35506A; --signal:#F0B43A; --signal-ink:#2A1B00; --bg:#0D1823; --card:#172636; --sea:#13212F; --hot:#4CC18A; color-scheme:dark}}
 *{box-sizing:border-box}
-[hidden]{display:none!important}
-body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;
-  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 40px}
-.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;margin:0;
+  padding:20px max(16px,env(safe-area-inset-right,0px)) 40px max(16px,env(safe-area-inset-left,0px))}
+.wrap{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
 header{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
-h1{font-family:var(--f-display);font-weight:800;font-size:2.1rem;line-height:1;margin:0;letter-spacing:-.02em}
+h1{font-family:var(--f-display);font-weight:800;font-size:2.4rem;line-height:.95;margin:0;letter-spacing:-.02em}
 h1 span{color:var(--signal)}
-.num{font-family:var(--f-mono);font-size:.8rem;color:var(--muted);text-align:right}
-.map{background:var(--sea);border-radius:14px;overflow:hidden;border:1px solid var(--line)}
-.map svg{display:block;width:100%;height:auto}
-.clues{display:flex;flex-direction:column;gap:8px}
-.clue{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
-.clue .k{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding-top:2px;min-width:5.5em}
-.clue.locked{background:transparent;border-style:dashed;color:var(--muted)}
-.clue.new{animation:pop .35s ease-out}
-@keyframes pop{from{transform:translateY(4px);opacity:.4}to{transform:none;opacity:1}}
-.guessbox{position:relative}
-.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-input#guess{flex:1;min-width:0;font:inherit;font-size:16px;padding:12px 14px;border-radius:10px;border:1.5px solid var(--line);background:var(--card);color:var(--ink)}
-input#guess:focus{outline:none;border-color:var(--signal)}
-button{font:inherit;cursor:pointer;border:0;border-radius:10px}
-.btn{background:var(--signal);color:var(--signal-ink);font-weight:600;padding:12px 18px}
-a.wa{background:#25D366;color:#073B1C;font-weight:600;padding:12px 18px;border-radius:10px;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
-a.wa:hover{background:#20BD5A}
-.recom{display:flex;justify-content:center}
-.recom a.wa{width:100%;max-width:360px;justify-content:center}
-a.wa:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
-.btn:focus-visible,.sugg button:focus-visible,.ghost:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
-.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line);padding:10px 14px;font-weight:500}
-.sugg{position:absolute;left:0;right:0;top:calc(100% + 4px);background:var(--card);border:1px solid var(--line);border-radius:10px;z-index:5;overflow:hidden;box-shadow:0 8px 24px rgb(0 0 0 / .12)}
-.sugg button{display:block;width:100%;text-align:left;background:transparent;color:var(--ink);padding:10px 14px;border-radius:0}
-.sugg button:hover,.sugg button.on{background:var(--sea)}
-.worth{margin:0;font-size:.85rem;color:var(--muted)}
-.worth b{color:var(--ink);font-family:var(--f-display);font-size:1.05rem}
-.msg{min-height:1.2em;font-size:.88rem;color:var(--bad)}
-.guesses{display:flex;flex-direction:column;gap:6px}
-.g{display:grid;grid-template-columns:1.6em 1fr auto 2em 3.4em;gap:8px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-variant-numeric:tabular-nums}
-.g .i{font-family:var(--f-mono);font-size:.75rem;color:var(--muted)}
-.g .n{font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.g .d,.g .p{font-family:var(--f-mono);font-size:.85rem;text-align:right}
-.g .a svg{display:block;margin:auto}
-.g.win{border-color:var(--hot);border-width:2px}
-.g.empty{background:transparent;border-style:dashed;height:42px}
-.end{background:var(--card);border:2px solid var(--ink);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:12px}
-.end h2{font-family:var(--f-display);font-weight:800;font-size:1.5rem;margin:0;line-height:1.1;text-wrap:balance}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center}
-.stats b{display:block;font-family:var(--f-display);font-size:1.5rem;font-variant-numeric:tabular-nums}
-.stats small{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
-.end .row{flex-wrap:wrap;align-items:center}
-.next{font-family:var(--f-mono);font-size:.85rem;color:var(--muted)}
-a.next{color:var(--ink);font-weight:600}
-pre.share{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font-family:var(--f-mono);font-size:.8rem;background:var(--sea);padding:10px;border-radius:8px}
-.how{font-size:.85rem;color:var(--muted)}
-.liga{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:10px}
-.liga h3{font-family:var(--f-display);font-weight:800;font-size:1.25rem;margin:0}
-.liga h4{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:6px 0 0;font-weight:500}
-.liga p{margin:0}
-.liga input{font:inherit;font-size:16px;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);flex:1;min-width:0}
-.liga .row input{flex:1}
-.lbl{font-size:.8rem;color:var(--muted)}
-.lhead{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
-.who{font-size:.85rem;color:var(--muted)}
-.code{font-family:var(--f-mono);letter-spacing:.08em;color:var(--ink);background:var(--sea);padding:1px 6px;border-radius:5px}
-.wrapr{flex-wrap:wrap}
-.lmsg{font-size:.85rem;color:var(--bad);min-height:0}
-.lmsg:empty{display:none}
-.hint{font-size:.82rem;color:var(--muted)}
-.tbl{overflow-x:auto}
-.liga table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:.92rem}
-.liga th{text-align:left;font-weight:500;font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;padding:4px 6px;border-bottom:1px solid var(--line)}
-.liga td{padding:7px 6px;border-bottom:1px solid var(--line)}
-.liga td:first-child,.liga th:first-child{width:2em;color:var(--muted)}
-.liga tr.me td{font-weight:600;background:var(--sea)}
-.kofi{display:flex;align-items:center;justify-content:center;gap:8px;padding:11px 14px;border-radius:10px;border:1.5px dashed var(--line);color:var(--ink);text-decoration:none;font-weight:500;font-size:.92rem}
-.kofi:hover{border-color:var(--signal);border-style:solid}
-.kofi:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
-.sub{color:var(--muted);font-weight:400;font-size:.8em}
-.osm{font-size:.72rem;color:var(--muted);text-align:center}
-.osm a{color:inherit}
-@media (prefers-reduced-motion:reduce){.clue.new{animation:none}}
-.photo{margin:0;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
-.photo .img{aspect-ratio:16/10;max-width:100%;background:var(--sea);display:grid;place-items:center;color:var(--muted);font-size:.85rem}
-.photo img{width:100%;height:100%;object-fit:cover;display:block}
-.photo figcaption{font-size:.72rem;color:var(--muted);padding:6px 10px;overflow-wrap:anywhere}
-.photo figcaption a{color:inherit}
-.photo .clue{border:0;border-radius:0}
-.how a{color:var(--ink);font-weight:600}
-.retobox{background:var(--card);border:2px solid var(--signal);border-radius:12px;padding:10px 14px;display:flex;flex-direction:column;gap:2px;font-size:.88rem}
-.retobox b{font-family:var(--f-display);font-weight:800;font-size:1.05rem}
-.retobox a{color:var(--ink);font-weight:600}
-.retobox.err{border-color:var(--bad)}
-.about{border-top:1px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:6px;font-size:.86rem;color:var(--muted)}
-.about h2{font-family:var(--f-display);font-weight:800;font-size:1.05rem;color:var(--ink);margin:6px 0 0}
-.about p{margin:0;max-width:65ch}
-.about a{color:var(--ink);font-weight:600}
-
-
+.fecha{font-family:var(--f-mono);font-size:.8rem;color:var(--muted);text-align:right}
+.lead{margin:0;color:var(--muted);font-size:.95rem}
+.resumen{display:flex;gap:8px;flex-wrap:wrap;font-size:.88rem;font-weight:600}
+.resumen span{background:var(--card);border:1.5px solid var(--line);border-radius:999px;padding:5px 12px}
+.resumen:empty{display:none}
+.juegos{display:flex;flex-direction:column;gap:10px}
+.juego{display:grid;grid-template-columns:56px minmax(0,1fr) auto;gap:12px;align-items:center;padding:14px;border-radius:14px;background:var(--card);border:1.5px solid var(--line);color:var(--ink);text-decoration:none;box-shadow:0 3px 0 var(--line);transition:transform .08s,box-shadow .08s}
+.juego:hover{border-color:var(--signal)}
+.juego:active{transform:translateY(2px);box-shadow:0 1px 0 var(--line)}
+.juego:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.juego img{width:56px;height:56px;border-radius:12px;display:block}
+.juego .txt{display:flex;flex-direction:column;gap:2px;min-width:0}
+.juego b{font-family:var(--f-display);font-weight:800;font-size:1.15rem;line-height:1.15}
+.juego small{font-size:.84rem;color:var(--muted);line-height:1.35}
+.juego .st{font-size:.8rem;font-weight:600;text-align:right;white-space:nowrap}
+.juego .st.ok{color:var(--hot)}
+.juego .st.go{background:var(--signal);color:var(--signal-ink);border-radius:999px;padding:6px 12px}
+.juego.hecho{border-style:dashed;box-shadow:none}
+h2{font-family:var(--f-display);font-weight:800;font-size:1.1rem;margin:8px 0 0}
+.mas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.mas a{display:flex;align-items:center;gap:10px;padding:12px;border-radius:12px;background:var(--card);border:1.5px solid var(--line);color:var(--ink);text-decoration:none;font-weight:600;font-size:.9rem;box-shadow:0 3px 0 var(--line)}
+.mas a span[aria-hidden]{font-size:1.3rem;line-height:1}
+.mas a:hover{border-color:var(--signal)}
+.mas a.prof{grid-column:1/-1;border:2px solid var(--signal)}
+.mas a.prof small{display:block;font-weight:400;color:var(--muted);font-size:.8rem}
 .cafe{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:12px;background:var(--signal);color:var(--signal-ink);text-decoration:none;box-shadow:0 3px 0 rgb(0 0 0 / .18)}
-.cafe:hover{filter:brightness(1.05)}
-.cafe:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 .cafe .cup{font-size:1.9rem;line-height:1;flex:none}
 .cafe .txt{display:flex;flex-direction:column;gap:2px;min-width:0}
-.cafe b{font-size:1rem}
 .cafe small{font-size:.82rem;opacity:.85;line-height:1.35}
-#wa{flex:1 1 220px;justify-content:center}
-
-.go-list{display:flex;flex-direction:column;gap:8px}
-.go-list h3{margin:6px 0 0;font-size:.8rem;font-weight:600;color:var(--muted);text-transform:none}
-.go-card{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;background:var(--card);border:1.5px solid var(--line);color:var(--ink);text-decoration:none}
-.go-card:hover{border-color:var(--signal)}
-.go-card:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
-.go-card .ic{display:grid;place-items:center;width:40px;height:40px;border-radius:10px;background:var(--sea);font-size:1.3rem;flex:none}
-.go-card .txt{display:flex;flex-direction:column;gap:1px;min-width:0;flex:1}
-.go-card b{font-size:.98rem}
-.go-card small{font-size:.8rem;color:var(--muted);line-height:1.35}
-.go-card .arr{font-size:1.5rem;color:var(--muted);line-height:1}
+.recom{display:flex;justify-content:center;margin:0}
+a.wa{background:#25D366;color:#073B1C;font-weight:600;padding:12px 18px;border-radius:10px;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px;width:100%;max-width:360px}
+.osm{font-size:.78rem;color:var(--muted);margin:0;text-align:center}
+.osm a{color:var(--ink);font-weight:600}
+@media (prefers-reduced-motion:reduce){.juego{transition:none}}
 </style>
 <link rel="stylesheet" href="barra.css">
 </head>
 <body>
-
 <div class="wrap">
-  <nav aria-label="Juegos"><ul class="games"><li><a href="./" aria-current="page"><span aria-hidden="true">📍</span> ¿Dónde está?</a></li><li><a href="letras.html"><span aria-hidden="true">🔤</span> Letras</a></li><li><a href="cifras.html"><span aria-hidden="true">🔢</span> Cifras</a></li><li><a href="grupos.html"><span aria-hidden="true">🧩</span> Grupos</a></li></ul></nav>
+  <nav aria-label="Juegos"><ul class="games"><li><a href="./" aria-current="page"><span aria-hidden="true">🏠</span>Inicio</a></li><li><a href="donde.html"><span aria-hidden="true">📍</span>Dónde</a></li><li><a href="letras.html"><span aria-hidden="true">🔤</span>Letras</a></li><li><a href="cifras.html"><span aria-hidden="true">🔢</span>Cifras</a></li><li><a href="grupos.html"><span aria-hidden="true">🧩</span>Grupos</a></li><li><a href="linea.html"><span aria-hidden="true">⏳</span>Línea</a></li></ul></nav>
   <header>
-    <h1>¿Dónde<br><span>está?</span></h1>
-    <div class="num" id="num"></div>
+    <h1>Piensa<br><span>un rato</span></h1>
+    <div class="fecha" id="fecha"></div>
   </header>
-  <div class="retobox" id="retobox" hidden></div>
-  <p class="how">Cada día, una ciudad o pueblo de España que no es capital de provincia. Tienes 6 intentos: cada fallo destapa una pista y te dice a cuántos km estás y hacia dónde mirar. Acertar vale 10 puntos y cada fallo resta 2 (a la última, 1 punto).</p>
-
-  <div class="map" id="map"></div>
-
-  <div class="clues" id="clues"></div>
-  <figure class="photo" id="photo" hidden>
-    <div class="img" id="photoimg" hidden>Cargando…</div>
-    <div class="clue locked" id="photolock"><span class="k">Foto</span><span>Se destapa con el fallo 2</span></div>
-    <figcaption id="credit"></figcaption>
-  </figure>
-
-  <div class="guessbox" id="guessbox">
-    <form class="row" id="form" autocomplete="off">
-      <input id="guess" placeholder="Escribe una ciudad o pueblo…" aria-label="Tu respuesta">
-      <button class="btn" type="submit">Probar</button>
-    </form>
-    <div class="sugg" id="sugg" hidden></div>
+  <p class="lead">Cinco juegos nuevos cada día, iguales para todos. Gratis, en español y sin registro: unos minutos para pensar un rato.</p>
+  <div class="resumen" id="resumen"></div>
+  <div class="juegos" id="juegos">
+    <a class="juego" href="donde.html" data-k="dd" data-max="10"><img src="icon-donde.svg" alt=""><span class="txt"><b>¿Dónde está?</b><small>Adivina el pueblo o la ciudad de España del día.</small></span><span class="st"></span></a>
+    <a class="juego" href="letras.html" data-k="lt" data-max="25"><img src="icon-letras.svg" alt=""><span class="txt"><b>Letras del día</b><small>Cinco palabras con las letras mezcladas.</small></span><span class="st"></span></a>
+    <a class="juego" href="cifras.html" data-k="cf" data-max="30"><img src="icon-cifras.svg" alt=""><span class="txt"><b>Cifras del día</b><small>Seis números y una cifra objetivo.</small></span><span class="st"></span></a>
+    <a class="juego" href="grupos.html" data-k="gr" data-max="25"><img src="icon-grupos.svg" alt=""><span class="txt"><b>Grupos del día</b><small>Dieciséis palabras y cuatro grupos escondidos.</small></span><span class="st"></span></a>
+    <a class="juego" href="linea.html" data-k="tl" data-max="25"><img src="icon-linea.svg" alt=""><span class="txt"><b>Línea del tiempo</b><small>Ordena sucesos de la historia.</small></span><span class="st"></span></a>
   </div>
-  <div class="msg" id="msg" role="status"></div>
-  <p class="worth" id="worth"></p>
-
-  <div class="guesses" id="guesses"></div>
-  <div id="end"></div>
-  <section class="liga" id="liga" hidden></section>
-  <p class="recom"><a class="wa" href="https://wa.me/?text=Te%20recomiendo%20%C2%BFD%C3%B3nde%20est%C3%A1%3F%3A%20cada%20d%C3%ADa%20hay%20que%20adivinar%20un%20pueblo%20o%20ciudad%20de%20Espa%C3%B1a%20en%206%20intentos.%20Gratis%20y%20sin%20registro%20%F0%9F%91%89%20https%3A//piensaunrato.es/%0AY%20si%20te%20gusta%2C%20tambi%C3%A9n%20hay%20Letras%20y%20Cifras%20del%20d%C3%ADa." target="_blank" rel="noopener"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.3-.4.8-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s1 2.6 1.1 2.7c.1.2 1.9 2.9 4.6 4.1 1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.8-1.2.2-.6.2-1.1.1-1.2-.1-.1-.2-.2-.4-.3z"/></svg> Recomienda ¿Dónde está? por WhatsApp</a></p>
-  <p class="osm">Búsqueda de lugares: datos © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">colaboradores de OpenStreetMap</a>, vía Photon. Fotos: Wikimedia Commons. · <a href="https://ko-fi.com/pascualmunoz" target="_blank" rel="noopener">Invítame a un café</a> · Más juegos: <a href="letras.html">Letras del día</a> · <a href="cifras.html">Cifras del día</a> · <a href="grupos.html">Grupos del día</a> · <a href="archivo.html">Días anteriores</a> · <a href="soluciones.html">Soluciones</a> · <a href="sugerencias.html?juego=donde">Sugerencias</a> · <a href="ranking.html">Clasificación</a> · <a href="logros.html">Logros</a> · <a href="acerca.html">Acerca de</a> · <a href="privacidad.html">Privacidad</a></p>
-  <section class="about">
-    <h2>Cómo se juega a ¿Dónde está?</h2>
-    <p>Cada día hay una población de España distinta, la misma para todos: 365 ciudades y pueblos de la península y Baleares que no son capitales de provincia. Escribe un lugar y verás a cuántos kilómetros estás y en qué dirección mirar. Cada fallo destapa una pista nueva, y a partir del segundo aparece una foto. Tienes 6 intentos: acertar a la primera vale 10 puntos y cada fallo resta 2.</p>
-    <h2>Para profesores</h2>
-    <p>Elige un lugar, escribe tus pistas y compártelo con tus alumnos con un enlace o un código QR. Ideal para repasar Geografía o Historia. <a href="profes.html">Crear un reto para clase</a></p>
-  </section>
+  <h2>Y además</h2>
+  <div class="mas">
+    <a class="prof" href="profes.html"><span aria-hidden="true">🍎</span><span>Retos para clase<small>Crea un reto con tu vocabulario, tus lugares o tus sucesos y compártelo con un QR.</small></span></a>
+    <a href="archivo.html"><span aria-hidden="true">📅</span>Días anteriores</a>
+    <a href="soluciones.html"><span aria-hidden="true">💡</span>Soluciones</a>
+    <a href="ranking.html"><span aria-hidden="true">🏆</span>Clasificación</a>
+    <a href="logros.html"><span aria-hidden="true">🎖️</span>Tus logros</a>
+  </div>
+  <a class="cafe" href="https://ko-fi.com/pascualmunoz" target="_blank" rel="noopener"><span class="cup" aria-hidden="true">☕</span><span class="txt"><b>¿Te gustan los juegos? Invítame a un café</b><small>Los juegos son gratis. Con un café me ayudas a mantenerlos y a crear más.</small></span></a>
+  <p class="recom"><a class="wa" href="https://wa.me/?text=Te%20recomiendo%20Piensa%20un%20rato%3A%20cinco%20juegos%20diarios%20gratis%20y%20sin%20registro%20%F0%9F%91%89%20https%3A//piensaunrato.es/" target="_blank" rel="noopener"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.3-.4.8-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s1 2.6 1.1 2.7c.1.2 1.9 2.9 4.6 4.1 1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.8-1.2.2-.6.2-1.1.1-1.2-.1-.1-.2-.2-.4-.3z"/></svg> Recomienda los juegos por WhatsApp</a></p>
+  <div class="ad-slot"></div>
+  <p class="osm"><a href="va/lletres.html" lang="ca-ES-valencia" hreflang="ca-ES-valencia">En valencià: Lletres i Xifres</a> · <a href="sugerencias.html">Sugerencias</a> · <a href="acerca.html">Acerca de</a> · <a href="privacidad.html">Privacidad</a></p>
 </div>
-
-<script src="reto.js"></script>
-<script src="avisos.js"></script>
-<script src="imagen.js"></script>
-<script src="ads.js"></script>
 <script src="logros.js"></script>
-<script src="contador.js"></script>
-<script src="estadisticas.js"></script>
 <script>
-// [nombre, lat, lon, comunidad, pista1, pista2, alias]
-const C=[
-["Santiago de Compostela",42.880,-8.545,"A Coruña","Meta de una ruta de peregrinación milenaria.","Su catedral guarda el Pórtico de la Gloria del Maestro Mateo.",["santiago","compostela"]],
-["Vigo",42.240,-8.721,"Pontevedra","Es la ciudad más poblada de Galicia.","Frente a su ría están las islas Cíes.",[]],
-["Ferrol",43.484,-8.233,"A Coruña","Ciudad de astilleros y tradición naval militar.","Aquí nació Concepción Arenal.",[]],
-["Betanzos",43.280,-8.212,"A Coruña","Su tortilla de patatas, muy jugosa, tiene fama propia.","Cada agosto lanza un enorme globo de papel por San Roque.",[]],
-["Monforte de Lemos",42.521,-7.514,"Lugo","Su Colegio del Cardenal es llamado «el Escorial gallego».","Es puerta de entrada a la Ribeira Sacra.",["monforte"]],
-["Cambados",42.514,-8.813,"Pontevedra","Se presenta como capital del albariño.","Su pazo de Fefiñáns preside una gran plaza.",[]],
-["Gijón",43.532,-5.661,"Asturias","Es la ciudad más poblada de su comunidad.","Su playa urbana es la de San Lorenzo.",["xixon"]],
-["Avilés",43.556,-5.924,"Asturias","Tiene un centro cultural diseñado por Oscar Niemeyer.","Su ría tiene una larga historia siderúrgica.",["aviles"]],
-["Cangas de Onís",43.351,-5.129,"Asturias","De su puente medieval cuelga una cruz.","Fue la primera capital del reino de Asturias.",["cangas de onis"]],
-["Santillana del Mar",43.390,-4.106,"Cantabria","Dicen que no es santa, ni llana, ni tiene mar.","A su lado están las cuevas de Altamira.",["santillana"]],
-["Comillas",43.385,-4.291,"Cantabria","Tiene un edificio de Gaudí llamado El Capricho.","Una antigua Universidad Pontificia domina el pueblo.",[]],
-["Castro Urdiales",43.383,-3.214,"Cantabria","Su iglesia gótica y un castillo-faro miran al Cantábrico.","Los romanos la llamaron Flaviobriga.",["castro"]],
-["Getxo",43.357,-3.011,"Bizkaia","Un puente colgante Patrimonio de la Humanidad la une con la otra orilla.","Su Puerto Viejo de Algorta conserva casas de pescadores.",["guecho"]],
-["Gernika",43.317,-2.678,"Bizkaia","Su árbol es símbolo de las libertades vascas.","Picasso pintó su bombardeo de 1937.",["guernica","gernika lumo"]],
-["Hondarribia",43.368,-1.794,"Gipuzkoa","Solo el Bidasoa la separa de Francia.","Su casco amurallado sube hasta un castillo de Carlos V.",["fuenterrabia"]],
-["Eibar",43.184,-2.471,"Gipuzkoa","Famosa por fabricar armas y, después, bicicletas.","Su equipo de fútbol ha jugado en Primera División.",[]],
-["Tudela",42.065,-1.604,"Navarra","Capital de la Ribera, famosa por sus verduras.","Su plaza de los Fueros sirvió antes de plaza de toros.",[]],
-["Olite",42.482,-1.651,"Navarra","Su Palacio Real gótico parece de cuento.","Fue sede de la corte de los reyes de Navarra.",["erriberri"]],
-["Estella",42.671,-2.031,"Navarra","En la Edad Media la llamaron «la Toledo del Norte».","El Camino de Santiago pasa por su puente de la Cárcel.",["lizarra","estella lizarra"]],
-["Haro",42.577,-2.847,"La Rioja","Cada 29 de junio celebra una batalla de vino.","Su barrio de la Estación reúne bodegas centenarias.",[]],
-["Jaca",42.570,-0.549,"Huesca","Tiene una ciudadela con forma de estrella de cinco puntas.","Su catedral es de las primeras románicas de España.",[]],
-["Barbastro",42.035,0.126,"Huesca","Es cabecera de la denominación de origen Somontano.","Aquí nació San Josemaría Escrivá.",[]],
-["Calatayud",41.353,-1.643,"Zaragoza","Una famosa copla habla de «la Dolores» de aquí.","Su nombre viene del árabe: el castillo de Ayyub.",[]],
-["Albarracín",40.408,-1.444,"Teruel","Sus casas rojizas cuelgan sobre el río Guadalaviar.","Suele salir en las listas de pueblos más bonitos de España.",["albarracin"]],
-["Alcañiz",41.051,-0.133,"Teruel","Tiene un circuito de motociclismo, Motorland.","Un castillo calatravo domina la ciudad.",["alcaniz"]],
-["Figueres",42.266,2.961,"Girona","Aquí está el Teatro-Museo Dalí.","Su castillo de Sant Ferran es una fortaleza enorme.",["figueras"]],
-["Cadaqués",42.289,3.277,"Girona","Pueblo blanco junto al Cabo de Creus.","Dalí vivió en Portlligat, a un paseo.",["cadaques"]],
-["Vic",41.930,2.255,"Barcelona","Famosa por su salchichón y sus embutidos.","Su gran plaza mayor acoge un mercado semanal.",["vich"]],
-["Manresa",41.728,1.824,"Barcelona","San Ignacio de Loyola vivió un tiempo en una cueva aquí.","Está a los pies de Montserrat.",[]],
-["Sitges",41.235,1.811,"Barcelona","Su festival de cine fantástico es de los más importantes del mundo.","Su iglesia se asoma al mar desde un promontorio.",[]],
-["Reus",41.155,1.107,"Tarragona","Pasa por ser la ciudad natal de Gaudí.","Tiene una ruta modernista y mucha tradición de vermut.",[]],
-["Tortosa",40.812,0.521,"Tarragona","El Ebro la cruza poco antes de llegar a su delta.","Su castillo de la Suda es hoy Parador.",[]],
-["Peñíscola",40.358,0.406,"Castellón","Su castillo fue residencia del Papa Luna.","Su casco amurallado ocupa una pequeña península.",["peniscola"]],
-["Morella",40.620,-0.100,"Castellón","Ciudad amurallada coronada por un castillo sobre una muela.","Es una de las joyas del Maestrazgo.",[]],
-["Gandía",38.968,-0.181,"Valencia","Fue un ducado de los Borja.","Su playa es de las más concurridas de la costa valenciana.",["gandia"]],
-["Xàtiva",38.990,-0.519,"Valencia","Es cuna de los Borja.","En su museo, el retrato de Felipe V cuelga boca abajo.",["xativa","jativa"]],
-["Elche",38.267,-0.698,"Alicante","Tiene un palmeral Patrimonio de la Humanidad.","Cada agosto representa su Misteri.",["elx"]],
-["Benidorm",38.540,-0.131,"Alicante","Famosa por sus rascacielos frente al mar.","Sus dos playas son Levante y Poniente.",[]],
-["Alcoy",38.698,-0.474,"Alicante","Sus Moros y Cristianos son los más célebres.","Ciudad de puentes y de industria textil.",["alcoi"]],
-["Cartagena",37.605,-0.986,"Murcia","Su teatro romano apareció bajo el casco antiguo hace pocas décadas.","Expone el submarino de Isaac Peral.",[]],
-["Lorca",37.677,-1.701,"Murcia","En Semana Santa compiten «blancos» y «azules».","Sufrió un terremoto en 2011.",[]],
-["Caravaca de la Cruz",38.106,-1.861,"Murcia","Es ciudad santa con año jubilar perpetuo.","Cada mayo, sus Caballos del Vino suben a la carrera hasta el castillo.",["caravaca"]],
-["Ciutadella",40.001,3.840,"Islas Baleares (Menorca)","Fue la capital de su isla.","En Sant Joan los caballos bailan entre la gente.",["ciudadela"]],
-["Ibiza",38.907,1.432,"Islas Baleares (Ibiza)","Su Dalt Vila amurallada es Patrimonio de la Humanidad.","Su vida nocturna es famosa en medio mundo.",["eivissa"],"Ibiza (ciudad)"],
-["Sóller",39.766,2.715,"Islas Baleares (Mallorca)","Un tren de madera la une con la capital de la isla.","La rodean naranjos y la Serra de Tramuntana.",["soller"]],
-["Ponferrada",42.546,-6.598,"León","Su castillo fue de los templarios.","Es la capital del Bierzo.",[]],
-["Astorga",42.457,-6.055,"León","Gaudí diseñó su palacio episcopal.","Famosa por sus mantecadas.",[]],
-["Benavente",42.003,-5.678,"Zamora","Cruce de caminos hacia Galicia y Asturias.","Su Torre del Caracol forma parte de un Parador.",[]],
-["Tordesillas",41.501,-5.000,"Valladolid","En 1494 se firmó aquí un tratado que repartió el mundo.","Juana I de Castilla vivió encerrada aquí casi medio siglo.",[]],
-["Medina del Campo",41.311,-4.914,"Valladolid","Isabel la Católica murió aquí.","El castillo de la Mota se alza junto a la villa.",["medina"]],
-["Aranda de Duero",41.672,-3.689,"Burgos","Famosa por su lechazo asado en horno de leña.","Bajo su centro hay kilómetros de bodegas subterráneas.",["aranda"]],
-["Ciudad Rodrigo",40.598,-6.531,"Salamanca","Plaza fuerte amurallada cerca de Portugal.","Su carnaval es conocido como el Carnaval del Toro.",[]],
-["Alcalá de Henares",40.482,-3.364,"Madrid","Aquí nació Cervantes.","Su universidad, fundada por Cisneros, es Patrimonio de la Humanidad.",["alcala"]],
-["Aranjuez",40.032,-3.604,"Madrid","Sus jardines inspiraron un concierto para guitarra muy famoso.","Un tren histórico llamado «de la fresa» llega hasta aquí.",[]],
-["San Lorenzo de El Escorial",40.591,-4.147,"Madrid","Felipe II mandó construir aquí un gran monasterio.","Alberga el panteón de los reyes de España.",["el escorial","escorial","san lorenzo"]],
-["Chinchón",40.140,-3.422,"Madrid","Su plaza mayor porticada se convierte en plaza de toros.","Su anís tiene fama propia.",["chinchon"]],
-["Talavera de la Reina",39.963,-4.831,"Toledo","Famosa por su cerámica.","El Tajo atraviesa la ciudad.",["talavera"]],
-["Consuegra",39.462,-3.607,"Toledo","Una fila de molinos de viento corona su cerro.","Celebra la Fiesta de la Rosa del Azafrán.",[]],
-["Almagro",38.888,-3.712,"Ciudad Real","Conserva un corral de comedias del siglo XVII.","Famosa por sus berenjenas aliñadas.",[]],
-["Sigüenza",41.068,-2.643,"Guadalajara","Su catedral guarda la escultura del Doncel.","Un castillo convertido en Parador domina la villa.",["siguenza"]],
-["Almansa",38.869,-1.097,"Albacete","Su castillo se alza sobre una roca en plena ciudad.","Dio nombre a una batalla de 1707.",[]],
-["Mérida",38.916,-6.344,"Badajoz","Fue Emerita Augusta.","Su teatro romano acoge un festival de teatro clásico.",["merida"],"Mérida (España)"],
-["Zafra",38.425,-6.417,"Badajoz","La llaman «Sevilla la chica».","Su feria ganadera de octubre es muy antigua.",[]],
-["Trujillo",39.460,-5.882,"Cáceres","Cuna de Francisco Pizarro.","Su plaza mayor tiene una estatua ecuestre del conquistador.",[]],
-["Plasencia",40.030,-6.088,"Cáceres","Tiene dos catedrales pegadas, una vieja y otra nueva.","Es puerta del Valle del Jerte.",[]],
-["Guadalupe",39.452,-5.327,"Cáceres","Su real monasterio es Patrimonio de la Humanidad.","Su Virgen es patrona de Extremadura.",[],"Guadalupe (Cáceres)"],
-["Jerez de la Frontera",36.686,-6.136,"Cádiz","Sus vinos se conocen en el mundo como sherry.","Tiene una Real Escuela de Arte Ecuestre.",["jerez"]],
-["Sanlúcar de Barrameda",36.778,-6.352,"Cádiz","Famosa por la manzanilla y los langostinos.","Desde aquí partió la expedición de Magallanes y Elcano.",["sanlucar"]],
-["Algeciras",36.131,-5.453,"Cádiz","Tiene uno de los mayores puertos del Mediterráneo.","Paco de Lucía nació aquí.",[]],
-["Tarifa",36.014,-5.604,"Cádiz","Es el punto más al sur de la Europa continental.","El viento de levante la hace paraíso del kitesurf.",[]],
-["Ronda",36.742,-5.167,"Málaga","Un puente salva un tajo de más de cien metros.","Su plaza de toros es de las más antiguas de España.",[]],
-["Marbella",36.510,-4.883,"Málaga","Su Puerto Banús es famoso por los yates.","Su casco antiguo gira en torno a la plaza de los Naranjos.",[]],
-["Nerja",36.745,-3.876,"Málaga","Tiene una cueva con pinturas muy antiguas.","Su mirador se llama Balcón de Europa.",[]],
-["Antequera",37.019,-4.560,"Málaga","Sus dólmenes son Patrimonio de la Humanidad.","Tiene al lado las rocas kársticas de El Torcal.",[]],
-["Écija",37.541,-5.083,"Sevilla","La llaman «la sartén de Andalucía».","También la conocen como la ciudad de las torres.",["ecija"]],
-["Carmona",37.471,-5.646,"Sevilla","Su necrópolis romana es de las más importantes de España.","Su alcázar del rey Don Pedro es hoy Parador.",[]],
-["Osuna",37.237,-5.103,"Sevilla","Su plaza de toros salió en una serie de dragones muy famosa.","Su colegiata guarda cuadros de Ribera.",[]],
-["Úbeda",38.013,-3.370,"Jaén","Su conjunto renacentista es Patrimonio, junto con una vecina.","Tiene la Sacra Capilla del Salvador.",["ubeda"]],
-["Baeza",37.993,-3.470,"Jaén","Antonio Machado dio clases aquí.","Comparte declaración de Patrimonio renacentista con su vecina.",[]],
-["Linares",38.095,-3.636,"Jaén","Su riqueza vino de las minas de plomo.","Aquí nació el guitarrista Andrés Segovia.",[]],
-["Guadix",37.300,-3.138,"Granada","Mucha gente vive en casas-cueva.","Su catedral se alza entre paisajes áridos.",[]],
-["Mojácar",37.140,-1.851,"Almería","Pueblo blanco en lo alto de un cerro, cerca del mar.","De aquí es popular el indalo, un muñeco con un arco.",["mojacar"]],
-["Ribadeo",43.536,-7.04,"Lugo","En su término está la playa de las Catedrales, con arcos de roca que se ven con la marea baja.","Su ría hace de frontera con Asturias.",[]],
-["Viveiro",43.662,-7.594,"Lugo","Su Semana Santa es de Interés Turístico Internacional.","Conserva la Puerta de Carlos V de su antigua muralla.",["vivero"]],
-["Mondoñedo",43.428,-7.363,"Lugo","Fue capital de una de las siete provincias del antiguo Reino de Galicia.","Aquí nació el escritor Álvaro Cunqueiro.",[]],
-["Sarria",42.781,-7.414,"Lugo","Muchos peregrinos empiezan aquí para hacer los últimos 100 km del Camino.","Su calle Mayor está llena de anticuarios.",[]],
-["Vilalba",43.298,-7.681,"Lugo","Su torre de los Andrade es hoy un Parador.","Su capón es famoso en Navidad.",["villalba"]],
-["O Cebreiro",42.708,-7.043,"Lugo","Aldea de pallozas donde el Camino Francés entra en Galicia.","Da nombre a un queso con forma de gorro de cocinero.",["cebreiro","el cebreiro"]],
-["Ortigueira",43.686,-7.853,"A Coruña","Cada verano celebra uno de los festivales celtas más conocidos de Europa.","Está en la costa norte de su provincia, en la comarca de Ortegal.",[]],
-["Cedeira",43.66,-8.056,"A Coruña","En su término está el santuario de San Andrés de Teixido.","Es famosa por sus percebes.",[]],
-["Muros",42.776,-9.06,"A Coruña","Villa marinera de soportales en la ría que comparte con Noia.","Su casco histórico es conjunto histórico-artístico.",[]],
-["Noia",42.785,-8.888,"A Coruña","Su iglesia de Santa María a Nova guarda cientos de lápidas gremiales.","Una leyenda dice que la fundó una nieta de Noé.",["noya"]],
-["Fisterra",42.905,-9.263,"A Coruña","Los romanos creían que aquí se acababa el mundo.","Muchos peregrinos siguen hasta aquí después de Santiago.",["finisterre"]],
-["Camariñas",43.131,-9.181,"A Coruña","Es famosa por sus encajes de bolillos.","Su cementerio de los ingleses recuerda un naufragio de 1890.",["camarinas"]],
-["Malpica de Bergantiños",43.322,-8.811,"A Coruña","Enfrente tiene las islas Sisargas.","Es un puerto pesquero de la Costa da Morte.",["malpica"]],
-["Pontedeume",43.407,-8.17,"A Coruña","Su torreón de los Andrade se asoma al río Eume.","Es puerta de entrada a las Fragas do Eume.",["puentedeume"]],
-["Padrón",42.739,-8.66,"A Coruña","De sus pimientos, unos pican y otros no.","Aquí vivió Rosalía de Castro.",[]],
-["Baiona",42.118,-8.85,"Pontevedra","Fue el primer puerto europeo en recibir la noticia del descubrimiento de América.","Su fortaleza de Monterreal es hoy un Parador.",["bayona"]],
-["Sanxenxo",42.4,-8.807,"Pontevedra","Es uno de los destinos de playa más concurridos de Galicia.","Está en la ría de Pontevedra.",["sanjenjo"]],
-["O Grove",42.494,-8.865,"Pontevedra","Su Fiesta del Marisco es de las más antiguas de Galicia.","Un puente lo une con la isla de A Toxa.",["el grove","grove"]],
-["Combarro",42.432,-8.705,"Pontevedra","Sus hórreos se alinean junto al mar.","Es una parroquia del municipio de Poio.",[]],
-["Tui",42.047,-8.645,"Pontevedra","Su catedral fortaleza mira a Portugal al otro lado del Miño.","Un puente de hierro la une con Valença.",["tuy"]],
-["A Guarda",41.902,-8.874,"Pontevedra","Sobre ella está el castro de Santa Tegra.","Es famosa por su langosta.",["la guardia","guarda"]],
-["Lalín",42.661,-8.111,"Pontevedra","Cada febrero celebra la Feria del Cocido.","Se la considera el centro geográfico de Galicia.",["lalin"]],
-["Celanova",42.152,-7.957,"Ourense","Su gran monasterio de San Salvador tiene un claustro barroco.","Junto al monasterio está la capilla mozárabe de San Miguel.",[]],
-["Allariz",42.19,-7.802,"Ourense","Recuperó su casco histórico y las orillas del río Arnoia.","Su Festa do Boi recuerda una leyenda medieval.",[]],
-["Ribadavia",42.288,-8.143,"Ourense","Es la capital del vino del Ribeiro.","Conserva uno de los barrios judíos más conocidos de Galicia.",[]],
-["Verín",41.941,-7.436,"Ourense","Es famosa por sus aguas minerales, como Cabreiroá.","Su entroido, con los cigarróns, es muy conocido.",["verin"]],
-["O Barco de Valdeorras",42.415,-6.983,"Ourense","Es cabecera de la denominación de origen Valdeorras.","El río Sil la atraviesa.",["el barco","barco de valdeorras","o barco"]],
-["Llanes",43.42,-4.755,"Asturias","En su puerto están los Cubos de la Memoria, pintados por Agustín Ibarrola.","Su costa está llena de playas y bufones.",[]],
-["Ribadesella",43.461,-5.059,"Asturias","Cada agosto termina aquí el Descenso Internacional del Sella.","La cueva de Tito Bustillo guarda pinturas rupestres.",["ribeseya"]],
-["Cudillero",43.563,-6.146,"Asturias","Sus casas de colores bajan en anfiteatro hasta el puerto.","Sus vecinos tienen un habla propia, el pixueto.",["cuideiru"]],
-["Luarca",43.544,-6.536,"Asturias","La llaman la villa blanca de la Costa Verde.","Aquí nació Severo Ochoa.",[]],
-["Covadonga",43.309,-5.056,"Asturias","Su virgen se venera en una cueva sobre una cascada.","Desde aquí se sube a dos famosos lagos de montaña.",[]],
-["Tazones",43.543,-5.399,"Asturias","Carlos I desembarcó aquí en su primer viaje a España.","Es un pequeño puerto de pescadores del concejo de Villaviciosa.",[]],
-["Villaviciosa",43.481,-5.435,"Asturias","Se presenta como capital de la manzana y la sidra.","Su ría es una reserva natural.",[]],
-["Taramundi",43.36,-7.106,"Asturias","Es famosa por sus navajas y su artesanía del hierro.","Fue pionera del turismo rural en España.",[]],
-["Lastres",43.512,-5.267,"Asturias","Sus casas cuelgan sobre el mar y salió en la serie Doctor Mateo.","Muy cerca está el Museo del Jurásico de Asturias.",[]],
-["Cangas del Narcea",43.177,-6.549,"Asturias","Su vino es de los más antiguos de Asturias.","En su concejo está la reserva de Muniellos, un gran robledal.",[]],
-["Potes",43.153,-4.623,"Cantabria","Es la capital de Liébana, a los pies de los Picos de Europa.","Muy cerca está el monasterio de Santo Toribio, que guarda un trozo de la Cruz.",[]],
-["San Vicente de la Barquera",43.385,-4.399,"Cantabria","Su puente de la Maza cruza la ría.","Celebra La Folía, una procesión marinera.",["san vicente"]],
-["Laredo",43.41,-3.416,"Cantabria","Su playa de La Salvé mide unos 5 km.","Celebra la Batalla de Flores cada agosto.",[]],
-["Santoña",43.443,-3.457,"Cantabria","Es famosa por sus anchoas.","Se dice que aquí nació el cartógrafo Juan de la Cosa.",["santona"]],
-["Reinosa",43.002,-4.137,"Cantabria","Muy cerca, en Fontibre, nace el río Ebro.","Cerca está la estación de esquí de Alto Campoo.",[]],
-["Liérganes",43.345,-3.741,"Cantabria","La leyenda del hombre pez nació aquí.","Tiene un balneario y un puente sobre el río Miera.",["lierganes"]],
-["Torrelavega",43.35,-4.047,"Cantabria","Su feria de ganado es de las más importantes de España.","Es la segunda ciudad más poblada de su comunidad.",[]],
-["Zarautz",43.284,-2.17,"Gipuzkoa","Su playa, de unos 2,5 km, es de las más largas del País Vasco.","Karlos Arguiñano tiene aquí su restaurante.",["zarauz"]],
-["Getaria",43.303,-2.204,"Gipuzkoa","Aquí nació Juan Sebastián Elcano.","Su monte de San Antón tiene forma de ratón.",["guetaria"]],
-["Zumaia",43.296,-2.258,"Gipuzkoa","Sus acantilados de flysch salieron en Juego de Tronos.","Forma parte del Geoparque de la Costa Vasca.",["zumaya"]],
-["Oñati",43.033,-2.413,"Gipuzkoa","Tuvo la primera universidad del País Vasco, en un edificio renacentista.","En su término está el santuario de Arantzazu.",["oñate","onati"]],
-["Azpeitia",43.182,-2.266,"Gipuzkoa","Junto a ella está el santuario de Loyola.","San Ignacio nació en su término.",[]],
-["Tolosa",43.135,-2.077,"Gipuzkoa","Sus alubias negras son famosas.","Su carnaval es de los más conocidos de Euskadi.",[]],
-["Lekeitio",43.364,-2.505,"Bizkaia","Frente a su playa está la isla de San Nicolás.","En fiestas celebra el Antzar Eguna, el día de los gansos.",["lequeitio"]],
-["Bermeo",43.42,-2.722,"Bizkaia","En su término está San Juan de Gaztelugatxe.","Su puerto pesquero es de los más importantes de Bizkaia.",[]],
-["Mundaka",43.407,-2.698,"Bizkaia","Su ola izquierda es famosa entre los surfistas.","Está en la desembocadura de la ría de Urdaibai.",["mundaca"]],
-["Durango",43.17,-2.631,"Bizkaia","Cada diciembre acoge una gran feria del libro y el disco vasco.","Está a los pies de los montes del Duranguesado.",[]],
-["Portugalete",43.32,-3.02,"Bizkaia","Fue lugar de veraneo de la burguesía bilbaína.","Está en la margen izquierda de la ría del Nervión.",[]],
-["Laguardia",42.553,-2.585,"Álava","Villa amurallada de la Rioja Alavesa con bodegas bajo sus calles.","Su iglesia de Santa María de los Reyes tiene un pórtico policromado.",["biasteri"]],
-["Elciego",42.515,-2.618,"Álava","La bodega Marqués de Riscal tiene aquí un hotel de Frank Gehry.","Está en la Rioja Alavesa.",["eltziego"]],
-["Salinas de Añana",42.799,-2.983,"Álava","Lleva miles de años produciendo sal en eras escalonadas.","Su valle salado está a unos 30 km de Vitoria.",["añana","salinas de anana"]],
-["Elizondo",43.144,-1.516,"Navarra","Es la capital del valle de Baztán.","Dolores Redondo situó aquí su trilogía.",[]],
-["Roncesvalles",43.009,-1.32,"Navarra","Aquí empiezan muchos el Camino de Santiago en España.","En su paso murió Roldán, según la Chanson de Roland.",["orreaga"]],
-["Puente la Reina",42.672,-1.814,"Navarra","Aquí se unen los caminos navarro y aragonés de Santiago.","Le da nombre su puente románico de seis arcos.",["gares"]],
-["Sangüesa",42.575,-1.283,"Navarra","La portada de Santa María la Real es una joya del románico.","Cerca están el castillo de Javier y la foz de Lumbier.",["sanguesa","zangoza"]],
-["Viana",42.515,-2.372,"Navarra","César Borgia está enterrado aquí.","Es la última villa navarra del Camino antes de Logroño.",[]],
-["Ochagavía",42.906,-1.088,"Navarra","Es puerta de la selva de Irati.","Sus casas de piedra se reparten a ambos lados del río Anduña.",["otsagabia","ochagavia"]],
-["Santo Domingo de la Calzada",42.441,-2.953,"La Rioja","En su catedral viven un gallo y una gallina.","Recuerda el milagro del ahorcado del Camino.",["santo domingo"]],
-["San Millán de la Cogolla",42.328,-2.862,"La Rioja","En sus monasterios se escribieron las primeras palabras en castellano.","Yuso y Suso son Patrimonio de la Humanidad.",["san millan"]],
-["Ezcaray",42.326,-3.013,"La Rioja","Es famosa por sus mantas de lana y tiene muy cerca una estación de esquí.","Está a los pies de la sierra de la Demanda.",[]],
-["Calahorra",42.305,-1.965,"La Rioja","Se presenta como capital de la verdura.","Aquí nació el orador romano Quintiliano.",[]],
-["Nájera",42.416,-2.733,"La Rioja","Su monasterio de Santa María la Real guarda un panteón de reyes navarros.","En los siglos X y XI fue corte de los reyes de Pamplona.",["najera"]],
-["Arnedo",42.225,-2.1,"La Rioja","Es la ciudad del calzado de su comunidad.","Está junto al río Cidacos.",[]],
-["Aínsa",42.418,0.14,"Huesca","Su plaza mayor medieval está en lo alto de un cerro.","Mira al macizo de Peña Montañesa.",["ainsa"]],
-["Torla",42.627,-0.11,"Huesca","Es la puerta principal del parque nacional de Ordesa.","Sus casas de piedra miran al Mondarruego.",["torla-ordesa"]],
-["Benasque",42.604,0.523,"Huesca","Desde su valle se sube al Aneto, el pico más alto del Pirineo.","Está rodeado de montañas de más de 3.000 metros.",[]],
-["Alquézar",42.17,0.025,"Huesca","Su colegiata corona un peñón sobre el río Vero.","Es famoso por sus barrancos y pasarelas.",["alquezar"]],
-["Monzón",41.912,0.194,"Huesca","Su castillo fue de los templarios y allí se educó Jaime I.","Aquí se celebraron cortes generales de la Corona de Aragón.",["monzon"]],
-["Fraga",41.522,0.348,"Huesca","Es famosa por sus higos.","El río Cinca la atraviesa, muy cerca de Lleida.",[]],
-["Sos del Rey Católico",42.497,-1.215,"Zaragoza","Aquí nació Fernando el Católico.","En sus calles se rodó la película La vaquilla.",["sos"]],
-["Tarazona",41.905,-1.725,"Zaragoza","Su catedral mudéjar se restauró durante décadas.","En fiestas, el Cipotegato corre bajo una lluvia de tomates.",[]],
-["Borja",41.833,-1.533,"Zaragoza","En su santuario de Misericordia está el Ecce Homo cuya restauración dio la vuelta al mundo.","Su comarca tiene una denominación de origen famosa por la garnacha.",[]],
-["Caspe",41.235,0.04,"Zaragoza","Aquí se firmó en 1412 el Compromiso que eligió rey de Aragón.","Está junto a un gran embalse, el Mar de Aragón.",[]],
-["Daroca",41.114,-1.414,"Zaragoza","Conserva unos 4 km de murallas con más de cien torres.","Su Corpus recuerda el milagro de los Corporales.",[]],
-["Ejea de los Caballeros",42.126,-1.137,"Zaragoza","Es la capital de las Cinco Villas.","Su nombre recuerda a los caballeros que la reconquistaron.",["ejea"]],
-["Rubielos de Mora",40.188,-0.653,"Teruel","Villa de piedra y escudos en la comarca de Gúdar-Javalambre.","Conserva dos portales de su muralla.",["rubielos"]],
-["Valderrobres",40.873,0.155,"Teruel","Su puente gótico lleva hasta un castillo-palacio y una iglesia en lo alto.","Está en la comarca del Matarraña.",["vall-de-roures"]],
-["Cantavieja",40.526,-0.404,"Teruel","Fue cuartel del general carlista Cabrera.","Su plaza porticada está en el Maestrazgo.",[]],
-["Besalú",42.199,2.699,"Girona","Su puente románico fortificado cruza el río Fluvià.","Conserva un baño ritual judío medieval, un micvé.",["besalu"]],
-["Olot",42.181,2.49,"Girona","Está rodeada de volcanes apagados.","Es la capital de la Garrotxa.",[]],
-["Ripoll",42.201,2.191,"Girona","Su monasterio de Santa María es llamado la cuna de Cataluña.","Allí está enterrado Guifré el Pilós.",[]],
-["Puigcerdà",42.432,1.928,"Girona","Es la capital de la Cerdanya, en la frontera con Francia.","Tiene un lago junto al centro.",["puigcerda"]],
-["Llívia",42.464,1.981,"Girona","Es un enclave español rodeado de territorio francés.","Conserva una de las farmacias más antiguas de Europa.",["llivia"]],
-["Tossa de Mar",41.72,2.932,"Girona","Su recinto amurallado medieval, la Vila Vella, está junto a la playa.","Ava Gardner rodó aquí una película en 1951.",["tossa"]],
-["Palafrugell",41.917,3.163,"Girona","Calella, Llafranc y Tamariu son sus playas.","Cada verano celebra el festival de Cap Roig.",[]],
-["Pals",41.971,3.149,"Girona","Su barrio medieval de piedra está en lo alto de un cerro.","Es famosa por su arroz.",[]],
-["Roses",42.262,3.176,"Girona","Su ciudadela guarda restos de la colonia griega de Rhode.","En su término estaba el restaurante El Bulli.",["rosas"]],
-["Banyoles",42.117,2.766,"Girona","Tiene el lago natural más grande de Cataluña.","Allí se celebró el remo de los Juegos de 1992.",["bañolas"]],
-["L'Escala",42.125,3.132,"Girona","Es famosa por sus anchoas.","Junto a ella están las ruinas de Empúries.",["escala","la escala","lescala"]],
-["Terrassa",41.561,2.008,"Barcelona","Sus iglesias de Sant Pere forman un conjunto visigodo y románico.","Tiene un museo de la ciencia y la técnica en una antigua fábrica modernista.",["tarrasa"]],
-["Sabadell",41.548,2.107,"Barcelona","Fue una gran ciudad textil.","Comparte con Terrassa la capitalidad del Vallès Occidental.",[]],
-["Mataró",41.54,2.444,"Barcelona","Hasta aquí llegó el primer tren de la Península, en 1848.","Es la capital del Maresme.",["mataro"]],
-["Cardona",41.914,1.68,"Barcelona","Tiene una montaña de sal.","Su castillo es hoy Parador.",[]],
-["Berga",42.104,1.846,"Barcelona","Su fiesta de La Patum es Patrimonio de la Humanidad.","Está a los pies de la sierra de Queralt.",[]],
-["Vilafranca del Penedès",41.346,1.698,"Barcelona","Es la capital del vino del Penedès.","Sus castellers son de los más famosos.",["vilafranca","villafranca del penedes"]],
-["Sant Sadurní d'Anoia",41.426,1.785,"Barcelona","Se presenta como capital del cava.","Bajo sus calles hay kilómetros de bodegas.",["sant sadurni","san sadurni de noya"]],
-["Igualada",41.58,1.617,"Barcelona","Es famosa por sus curtidos y por su festival europeo de globos.","Es la capital de la Anoia.",[]],
-["Badalona",41.45,2.247,"Barcelona","Fue la ciudad romana de Baetulo.","Su club de baloncesto es conocido como la Penya.",[]],
-["Salou",41.076,1.141,"Tarragona","Junto a ella está PortAventura.","Desde su costa partió la flota de Jaime I hacia Mallorca en 1229.",[]],
-["Valls",41.286,1.25,"Tarragona","Aquí nacieron los castellers.","Es famosa por sus calçotades.",[]],
-["Montblanc",41.375,1.161,"Tarragona","Según la leyenda, Sant Jordi mató aquí al dragón.","Conserva gran parte de su muralla.",[]],
-["Gandesa",41.053,0.437,"Tarragona","Fue escenario de la batalla del Ebro.","Su bodega cooperativa es una catedral del vino modernista.",[]],
-["Deltebre",40.721,0.718,"Tarragona","Está en pleno delta del Ebro.","Se cruza el río en transbordador.",[]],
-["La Seu d'Urgell",42.358,1.461,"Lleida","Su obispo es copríncipe de Andorra.","Tiene un canal de aguas bravas de los Juegos de 1992.",["seu d'urgell","la seu","seo de urgel"]],
-["Vielha",42.702,0.795,"Lleida","Es la capital del Valle de Arán.","Está muy cerca de la estación de Baqueira.",["viella"]],
-["Balaguer",41.79,0.81,"Lleida","Su castillo Formós fue de los condes de Urgell.","El río Segre pasa junto a ella.",[]],
-["Cervera",41.668,1.272,"Lleida","Felipe V le dio la única universidad de Cataluña durante más de un siglo.","Es la capital de la Segarra.",[]],
-["Sort",42.413,1.131,"Lleida","Su administración de lotería atrae a gente por su nombre.","Es famosa por el rafting en el Noguera Pallaresa.",[]],
-["Taüll",42.517,0.849,"Lleida","Su iglesia de Sant Climent tenía un famoso Pantocrátor.","Está en la Vall de Boí.",["taull","tahull"]],
-["Vinaròs",40.47,0.475,"Castellón","Es famosa por sus langostinos.","Es la población más al norte de la costa valenciana.",["vinaros","vinaroz"]],
-["Benicàssim",40.055,0.064,"Castellón","Cada verano acoge un gran festival de música, el FIB.","Sus villas de principios del siglo XX miran al mar.",["benicasim"]],
-["Vila-real",39.938,-0.101,"Castellón","Su equipo de fútbol es conocido como el Submarino Amarillo.","Es una capital de la cerámica.",["villarreal","vilareal"]],
-["Segorbe",39.851,-0.489,"Castellón","Su entrada de toros y caballos es de Interés Turístico Internacional.","Tiene catedral y un acueducto medieval.",[]],
-["Sagunto",39.68,-0.278,"Valencia","Fue Arse, la ciudad sitiada por Aníbal.","Tiene un teatro romano restaurado y un gran castillo.",["sagunt"]],
-["Requena",39.488,-1.101,"Valencia","Su barrio medieval, La Villa, tiene cuevas bajo las casas.","Es famosa por sus embutidos y su vino.",[]],
-["Cullera",39.165,-0.254,"Valencia","Un castillo corona su monte junto al mar.","Está en la desembocadura del Júcar.",[]],
-["Alzira",39.15,-0.435,"Valencia","El Júcar la rodeaba antiguamente como una isla.","Es la capital de la Ribera Alta.",["alcira"]],
-["Ontinyent",38.821,-0.606,"Valencia","Su campanario es de los más altos de la Comunidad Valenciana.","Celebra Moros y Cristianos a finales de agosto.",["onteniente"]],
-["Bocairent",38.766,-0.613,"Valencia","Tiene las Covetes dels Moros, ventanas excavadas en la roca.","Su casco antiguo cuelga sobre un barranco.",["bocairente"]],
-["Villena",38.635,-0.866,"Alicante","Allí se encontró un tesoro de oro de la Edad del Bronce.","Su castillo de la Atalaya domina la ciudad.",[]],
-["Dénia",38.84,0.106,"Alicante","Desde su puerto salen barcos hacia Ibiza.","Es famosa por su gamba roja.",["denia"]],
-["Xàbia",38.789,0.164,"Alicante","El cabo de la Nao está en su término.","El Montgó la separa de Dénia.",["javea","xabia"]],
-["Altea",38.599,-0.051,"Alicante","Su iglesia de cúpulas azules corona un pueblo blanco.","Está entre Benidorm y Calpe.",[]],
-["Calpe",38.644,0.045,"Alicante","El peñón de Ifach se alza junto a la ciudad.","Tiene unas salinas en pleno casco urbano.",["calp"]],
-["Guadalest",38.676,-0.198,"Alicante","Se entra al pueblo por un túnel excavado en la roca.","Su embalse tiene aguas turquesas.",["el castell de guadalest"]],
-["Orihuela",38.085,-0.944,"Alicante","Aquí nació Miguel Hernández.","Tiene catedral y el gran colegio de Santo Domingo.",["oriola"]],
-["Torrevieja",37.978,-0.682,"Alicante","Sus lagunas salinas se tiñen de rosa.","Celebra un certamen internacional de habaneras.",[]],
-["Novelda",38.385,-0.768,"Alicante","Su santuario de Santa María Magdalena recuerda a Gaudí.","Es famosa por el mármol y el azafrán.",[]],
-["Santa Pola",38.192,-0.565,"Alicante","Desde su puerto salen barcos a la isla de Tabarca.","Sus salinas son parque natural y atraen flamencos.",[]],
-["Águilas",37.406,-1.583,"Murcia","Su carnaval es de Interés Turístico Internacional.","El castillo de San Juan vigila su puerto.",["aguilas"]],
-["Mazarrón",37.598,-1.314,"Murcia","Tuvo minas de plata y alumbre desde época romana.","En su costa aparecieron dos barcos fenicios.",["mazarron"]],
-["Jumilla",38.475,-1.325,"Murcia","Su vino de uva monastrell tiene denominación de origen.","Su castillo se alza sobre la ciudad.",[]],
-["Yecla",38.613,-1.115,"Murcia","Es famosa por su industria del mueble.","Tiene vino con denominación de origen propia.",[]],
-["Cieza",38.24,-1.419,"Murcia","Sus melocotoneros en flor atraen visitantes cada primavera.","El río Segura la atraviesa.",[]],
-["Totana",37.769,-1.502,"Murcia","Es famosa por su alfarería.","El santuario de Santa Eulalia está en la sierra de Espuña.",[]],
-["Mula",38.042,-1.491,"Murcia","En Semana Santa sus tambores suenan toda la noche.","Su castillo domina el casco antiguo.",[]],
-["San Javier",37.806,-0.838,"Murcia","Allí está la Academia General del Aire.","Está a orillas del Mar Menor.",[]],
-["Pollença",39.877,3.016,"Islas Baleares (Mallorca)","Una escalinata de 365 escalones sube al Calvario.","En su término está el cabo de Formentor.",["pollensa"]],
-["Alcúdia",39.853,3.121,"Islas Baleares (Mallorca)","Conserva su muralla medieval y las ruinas romanas de Pollentia.","Su bahía está al norte de la isla.",["alcudia"]],
-["Valldemossa",39.711,2.622,"Islas Baleares (Mallorca)","Chopin y George Sand pasaron aquí un invierno.","Es el pueblo de Santa Catalina Thomàs.",["valldemosa"]],
-["Deià",39.748,2.648,"Islas Baleares (Mallorca)","El poeta Robert Graves vivió y está enterrado aquí.","Sus casas de piedra miran al mar desde la Tramuntana.",["deia","deya"]],
-["Manacor",39.57,3.209,"Islas Baleares (Mallorca)","Aquí nació Rafa Nadal.","Es famosa por sus perlas.",[]],
-["Inca",39.721,2.911,"Islas Baleares (Mallorca)","Su feria del Dijous Bo es de las más conocidas de la isla.","Es famosa por su industria del calzado.",[]],
-["Artà",39.694,3.35,"Islas Baleares (Mallorca)","Su santuario de Sant Salvador corona el pueblo.","Cerca, en el cabo Vermell, hay unas cuevas famosas que se abren al mar.",["arta"]],
-["Mahón",39.888,4.265,"Islas Baleares (Menorca)","Su puerto natural es de los más grandes del mundo.","Tiene fama de haber dado nombre a la mayonesa.",["mao","maó","mahon"]],
-["Sant Antoni de Portmany",38.981,1.303,"Islas Baleares (Ibiza)","Sus puestas de sol atraen a gente de todo el mundo.","Es el segundo municipio más poblado de su isla.",["sant antoni","san antonio","san antonio abad"]],
-["Villafranca del Bierzo",42.606,-6.811,"León","Los peregrinos enfermos ganaban el jubileo en su iglesia de Santiago.","La llaman la pequeña Compostela.",["villafranca"]],
-["Sahagún",42.371,-5.03,"León","Tuvo uno de los monasterios benedictinos más poderosos de España.","Es famosa por su arte mudéjar en ladrillo.",["sahagun"]],
-["La Bañeza",42.298,-5.898,"León","Su carnaval es muy conocido.","Celebra un gran premio de motociclismo por sus calles.",["la baneza","bañeza"]],
-["Las Médulas",42.461,-6.769,"León","Los romanos derribaron montañas para sacar oro.","Su paisaje rojizo es Patrimonio de la Humanidad.",["medulas","las medulas"]],
-["Riaño",42.972,-5.012,"León","El pueblo antiguo quedó bajo un embalse.","Sus montañas y su embalse recuerdan a los fiordos.",["riano"]],
-["Toro",41.522,-5.395,"Zamora","Su vino tiene denominación de origen propia.","Su colegiata tiene una portada policromada, la de la Majestad.",[]],
-["Puebla de Sanabria",42.054,-6.635,"Zamora","Cerca está el lago glaciar más grande de la Península.","Su castillo corona la villa.",[]],
-["Covarrubias",42.059,-3.519,"Burgos","Aquí está enterrada una princesa noruega, Kristina.","Su torreón de Fernán González es del siglo X.",[]],
-["Lerma",42.026,-3.757,"Burgos","Un duque, valido de Felipe III, la llenó de palacios y conventos.","Su palacio ducal es hoy Parador.",[]],
-["Frías",42.762,-3.293,"Burgos","Presume de ser la ciudad más pequeña de España.","Su castillo se alza sobre una roca.",["frias"]],
-["Medina de Pomar",42.932,-3.488,"Burgos","Su alcázar de los Condestables domina la villa.","Está en la comarca de Las Merindades.",[]],
-["Miranda de Ebro",42.687,-2.947,"Burgos","Es un gran nudo ferroviario.","El Ebro la atraviesa.",["miranda"]],
-["Santo Domingo de Silos",41.962,-3.418,"Burgos","Sus monjes grabaron un disco de canto gregoriano que fue éxito mundial.","Un ciprés famoso crece en su claustro románico.",["silos"]],
-["Castrojeriz",42.288,-4.138,"Burgos","El Camino de Santiago la recorre de punta a punta.","Las ruinas de un castillo coronan el cerro sobre la villa.",[]],
-["Peñafiel",41.596,-4.122,"Valladolid","Su castillo parece un barco sobre el cerro.","Dentro del castillo hay un museo del vino.",["penafiel"]],
-["Simancas",41.591,-4.828,"Valladolid","Su castillo guarda el Archivo General.","Está junto al río Pisuerga.",[]],
-["Medina de Rioseco",41.883,-5.042,"Valladolid","La llamaban la ciudad de los almirantes.","Allí termina un ramal del Canal de Castilla.",["rioseco"]],
-["Urueña",41.725,-5.202,"Valladolid","Es una villa del libro, llena de librerías.","Su muralla se puede recorrer por arriba.",["uruena"]],
-["Sepúlveda",41.297,-3.744,"Segovia","Cerca están las hoces del río Duratón.","Su fuero fue de los primeros de Castilla.",["sepulveda"]],
-["Pedraza",41.13,-3.811,"Segovia","Dos noches de julio se ilumina solo con velas.","Se entra por una única puerta en la muralla.",[]],
-["Cuéllar",41.401,-4.316,"Segovia","Sus encierros son de los más antiguos de España.","Tiene un castillo de los duques de Alburquerque.",["cuellar"]],
-["La Granja de San Ildefonso",40.898,-4.004,"Segovia","Felipe V construyó aquí un palacio con jardines a la francesa.","Tiene una Real Fábrica de Cristales.",["la granja","san ildefonso"]],
-["El Burgo de Osma",41.586,-3.068,"Soria","Su catedral gótica preside una villa episcopal.","Celebra unas conocidas jornadas de la matanza.",["burgo de osma"]],
-["Medinaceli",41.172,-2.434,"Soria","Tiene un arco romano de tres vanos.","Fue cabeza de un ducado.",[]],
-["Ágreda",41.855,-1.921,"Soria","La llaman la villa de las tres culturas.","Está a los pies del Moncayo.",["agreda"]],
-["Arenas de San Pedro",40.211,-5.087,"Ávila","Está en la cara sur de la sierra de Gredos.","Cerca está la cueva del Águila.",["arenas"]],
-["Arévalo",41.065,-4.718,"Ávila","Isabel la Católica pasó aquí su infancia.","Es famosa por su cochinillo y sus iglesias mudéjares.",["arevalo"]],
-["Madrigal de las Altas Torres",41.088,-5.002,"Ávila","Aquí nació Isabel la Católica.","Su muralla circular conserva puertas y torres.",["madrigal"]],
-["La Alberca",40.488,-6.11,"Salamanca","Un cerdo pasea libre por el pueblo durante meses, el marrano de San Antón.","Fue el primer pueblo declarado conjunto histórico de España.",["alberca"]],
-["Béjar",40.386,-5.763,"Salamanca","Fue una gran ciudad textil.","Tiene un jardín renacentista llamado El Bosque.",["bejar"]],
-["Alba de Tormes",40.825,-5.512,"Salamanca","Allí está enterrada Santa Teresa.","El Tormes pasa bajo su puente medieval.",["alba"]],
-["Mogarraz",40.492,-6.052,"Salamanca","Sus fachadas muestran retratos de sus vecinos.","Está en la sierra de Francia.",[]],
-["Aguilar de Campoo",42.793,-4.26,"Palencia","Es famosa por sus galletas.","Su comarca está llena de templos románicos.",["aguilar"]],
-["Frómista",42.267,-4.406,"Palencia","Su iglesia de San Martín es un modelo del románico.","El Canal de Castilla pasa por la villa.",["fromista"]],
-["Carrión de los Condes",42.339,-4.603,"Palencia","Es parada clásica del Camino de Santiago.","De aquí eran los infantes que se casaron con las hijas del Cid, según el Cantar.",["carrion"]],
-["Buitrago del Lozoya",40.991,-3.636,"Madrid","Su recinto amurallado está rodeado por el río Lozoya.","Tiene un museo con obras de Picasso.",["buitrago"]],
-["Manzanares el Real",40.726,-3.862,"Madrid","Su castillo es de los mejor conservados de la Comunidad.","Está junto a La Pedriza.",["manzanares"]],
-["Patones",40.887,-3.479,"Madrid","Cuenta la leyenda que tuvo un rey propio.","Sus casas son de pizarra negra.",["patones de arriba"]],
-["Getafe",40.305,-3.731,"Madrid","En su término está el Cerro de los Ángeles, tenido por centro geográfico de la Península.","Tiene una base aérea histórica.",[]],
-["Móstoles",40.322,-3.865,"Madrid","Su alcalde declaró la guerra a Napoleón en 1808.","Es una de las ciudades más pobladas de su comunidad.",["mostoles"]],
-["Almadén",38.774,-4.838,"Ciudad Real","Tuvo las minas de mercurio más grandes del mundo.","Su plaza de toros es hexagonal.",["almaden"]],
-["Valdepeñas",38.762,-3.385,"Ciudad Real","Su vino es de los más conocidos de La Mancha.","Tiene un museo dedicado al pintor Gregorio Prieto.",["valdepenas"]],
-["Villanueva de los Infantes",38.738,-3.014,"Ciudad Real","Quevedo murió aquí.","Algunos estudios la señalan como el lugar de La Mancha del Quijote.",["infantes"]],
-["Campo de Criptana",39.405,-3.125,"Ciudad Real","Sus molinos de viento se alinean en lo alto de la sierra.","Aquí nació Sara Montiel.",["criptana"]],
-["Puertollano",38.687,-4.107,"Ciudad Real","Es la ciudad industrial de su provincia.","Tuvo minas de carbón.",[]],
-["El Toboso",39.513,-3.0,"Toledo","Aquí vivía Dulcinea.","Tiene un museo con ediciones del Quijote en muchos idiomas.",["toboso"]],
-["Oropesa",39.919,-5.175,"Toledo","Su castillo es hoy Parador.","Está entre Talavera y Extremadura.",[]],
-["Illescas",40.122,-3.848,"Toledo","Guarda cinco cuadros del Greco en un hospital-santuario.","Está a medio camino entre Madrid y Toledo.",[]],
-["Ocaña",39.957,-3.499,"Toledo","Su plaza mayor es de las más grandes de Castilla.","Dio nombre a una batalla de 1809.",["ocana"]],
-["Belmonte",39.557,-2.705,"Cuenca","Su castillo gótico tiene planta de estrella.","Aquí nació fray Luis de León.",[]],
-["Alarcón",39.546,-2.083,"Cuenca","Su castillo, sobre un meandro del Júcar, es Parador.","Una de sus iglesias está cubierta de murales gigantes de Jesús Mateo.",["alarcon"]],
-["Uclés",39.979,-2.862,"Cuenca","Su monasterio es llamado el Escorial de La Mancha.","Fue sede de la Orden de Santiago.",["ucles"]],
-["Atienza",41.198,-2.871,"Guadalajara","Su fiesta de La Caballada recuerda la huida de Alfonso VIII niño.","Un castillo sobre una peña domina la villa.",[]],
-["Pastrana",40.418,-2.922,"Guadalajara","La princesa de Éboli vivió encerrada aquí.","Su colegiata guarda tapices góticos.",[]],
-["Molina de Aragón",40.844,-1.886,"Guadalajara","Su gran castillo tiene una torre llamada de Aragón.","Su comarca tiene algunos de los inviernos más fríos de España.",["molina"]],
-["Brihuega",40.761,-2.869,"Guadalajara","Sus campos de lavanda florecen en julio.","Dio nombre a una batalla de 1710.",[]],
-["Hellín",38.51,-1.701,"Albacete","Sus tamboradas de Semana Santa son Patrimonio Inmaterial.","Cerca hay pinturas rupestres en Minateda.",["hellin"]],
-["Alcaraz",38.666,-2.488,"Albacete","Su plaza tiene dos torres gemelas, la Trinidad y el Tardón.","Está en la sierra que lleva su nombre.",[]],
-["Chinchilla de Montearagón",38.92,-1.72,"Albacete","Su castillo vigila la llanura.","Fue más importante que Albacete hasta el siglo XIX.",["chinchilla"]],
-["Villarrobledo",39.268,-2.601,"Albacete","Es famosa por sus tinajas.","Acoge el festival de música Viña Rock.",[]],
-["Jerez de los Caballeros",38.321,-6.773,"Badajoz","Aquí nació Vasco Núñez de Balboa.","Sus torres barrocas destacan sobre el caserío.",[]],
-["Olivenza",38.682,-7.101,"Badajoz","Fue portuguesa hasta 1801.","Su iglesia de la Magdalena es de estilo manuelino.",["olivença"]],
-["Almendralejo",38.683,-6.407,"Badajoz","Es la capital del vino de Tierra de Barros.","Aquí nació el poeta Espronceda.",[]],
-["Llerena",38.237,-6.016,"Badajoz","Zurbarán vivió aquí muchos años.","Fue sede de la Inquisición en Extremadura.",[]],
-["Medellín",38.963,-5.958,"Badajoz","Aquí nació Hernán Cortés.","Tiene un teatro romano bajo el castillo.",["medellin"]],
-["Coria",39.985,-6.537,"Cáceres","Su catedral se asoma a la vega del Alagón.","Sus fiestas de San Juan incluyen encierros.",[]],
-["Hervás",40.271,-5.861,"Cáceres","Tiene uno de los barrios judíos mejor conservados de España.","Está en el valle del Ambroz.",["hervas"]],
-["Jarandilla de la Vera",40.129,-5.663,"Cáceres","Carlos V vivió aquí mientras acababan su retiro de Yuste.","Está en la comarca de La Vera.",["jarandilla"]],
-["Alcántara",39.718,-6.884,"Cáceres","Su puente romano sobre el Tajo es de los más grandes del Imperio.","Dio nombre a una orden militar.",["alcantara"]],
-["Vejer de la Frontera",36.252,-5.966,"Cádiz","Es un pueblo blanco en lo alto de un cerro, cerca del mar.","Sus mujeres vestían el cobijado, que les tapaba el rostro.",["vejer"]],
-["Conil de la Frontera",36.276,-6.088,"Cádiz","Sus playas son largas y de arena fina.","Su torre de Guzmán preside el pueblo.",["conil"]],
-["Barbate",36.192,-5.922,"Cádiz","En su término está el cabo de Trafalgar.","Su atún rojo de almadraba es famoso.",[]],
-["Arcos de la Frontera",36.751,-5.806,"Cádiz","Está colgada sobre una peña cortada por el Guadalete.","Es puerta de la ruta de los pueblos blancos.",["arcos"]],
-["Grazalema",36.759,-5.369,"Cádiz","Es uno de los lugares más lluviosos de España.","Sus mantas de lana son famosas.",[]],
-["Zahara de la Sierra",36.84,-5.391,"Cádiz","Su castillo mira a un embalse de color turquesa.","Es uno de los pueblos blancos de la sierra.",["zahara"]],
-["Setenil de las Bodegas",36.864,-5.18,"Cádiz","Sus casas están metidas bajo grandes rocas.","Es uno de los pueblos blancos de su provincia.",["setenil"]],
-["El Puerto de Santa María",36.598,-6.233,"Cádiz","Juan de la Cosa dibujó aquí su famoso mapamundi.","Sus bodegas y su marisco son famosos.",["el puerto","puerto de santa maria"]],
-["Chipiona",36.737,-6.437,"Cádiz","Tiene el faro más alto de España.","Aquí nació Rocío Jurado.",[]],
-["San Fernando",36.466,-6.198,"Cádiz","Aquí se reunieron las Cortes por primera vez en 1810.","Aquí nació Camarón de la Isla.",["la isla"]],
-["Medina-Sidonia",36.457,-5.928,"Cádiz","Sus alfajores son famosos.","Da nombre a un antiguo ducado.",["medina sidonia"]],
-["La Línea de la Concepción",36.168,-5.348,"Cádiz","Está pegada a Gibraltar.","Es la segunda ciudad más poblada del Campo de Gibraltar.",["la linea"]],
-["Mijas",36.596,-4.637,"Málaga","Sus burros-taxi son famosos.","El pueblo está en la sierra, sobre la costa.",[]],
-["Frigiliana",36.791,-3.895,"Málaga","Sus calles blancas suben por la ladera.","Aquí se libró una batalla de la rebelión morisca de 1569.",[]],
-["Estepona",36.427,-5.146,"Málaga","Sus calles están decoradas con macetas de colores.","Está en la Costa del Sol occidental.",[]],
-["Archidona",37.096,-4.389,"Málaga","Tiene una plaza ochavada del siglo XVIII.","Su ermita de la Virgen de Gracia está en lo alto de la sierra, junto al castillo.",[]],
-["Vélez-Málaga",36.783,-4.1,"Málaga","Es la capital de la Axarquía.","La torre de su fortaleza domina la ciudad.",["velez malaga","velez"]],
-["Fuengirola",36.54,-4.625,"Málaga","Su castillo de Sohail está en la desembocadura del río.","Tiene un parque zoológico, Bioparc.",[]],
-["Benalmádena",36.598,-4.516,"Málaga","Tiene una gran estupa budista.","Su teleférico sube al monte Calamorro.",["benalmadena"]],
-["Torremolinos",36.621,-4.5,"Málaga","Fue pionera del turismo de sol y playa en los años 50.","Su calle San Miguel es una de las más concurridas de la costa.",[]],
-["El Rocío",37.131,-6.485,"Huelva","Sus calles son de arena.","Cada Pentecostés recibe una gran romería.",["rocio","el rocio"]],
-["Aracena",37.893,-6.561,"Huelva","Su gruta de las Maravillas tiene lagos subterráneos.","Su sierra es famosa por el jamón.",[]],
-["Jabugo",37.917,-6.727,"Huelva","Su nombre es sinónimo de jamón ibérico.","Está en la sierra de Aracena.",[]],
-["Moguer",37.274,-6.837,"Huelva","Aquí nació Juan Ramón Jiménez.","Colón veló en su monasterio de Santa Clara.",[]],
-["Palos de la Frontera",37.228,-6.893,"Huelva","De su puerto zarparon las carabelas en 1492.","Junto a ella está el monasterio de La Rábida.",["palos"]],
-["Ayamonte",37.213,-7.407,"Huelva","Está en la frontera con Portugal, junto al Guadiana.","Un puente la une con el Algarve.",[]],
-["Minas de Riotinto",37.692,-6.594,"Huelva","Su río es rojo por los minerales.","Sus minas se explotan desde hace milenios.",["riotinto","rio tinto"]],
-["Lepe",37.255,-7.204,"Huelva","Es famosa por sus chistes y sus fresas.","Está entre Huelva y Ayamonte.",[]],
-["Utrera",37.183,-5.781,"Sevilla","Presume de ser la cuna del mostachón.","Es tierra de cantaores flamencos.",[]],
-["Estepa",37.293,-4.877,"Sevilla","Sus mantecados y polvorones se venden en toda España.","Su cerro está coronado por una torre medieval.",[]],
-["Santiponce",37.434,-6.044,"Sevilla","Junto al pueblo están las ruinas de Itálica.","En esa ciudad romana nacieron Trajano y Adriano.",[]],
-["Lebrija",36.92,-6.076,"Sevilla","Aquí nació Antonio de Nebrija.","Es tierra de cante flamenco y cerámica.",[]],
-["Alcalá de Guadaíra",37.338,-5.839,"Sevilla","Fue famosa por su pan.","Su castillo almohade es de los más grandes de Andalucía.",["alcala de guadaira"]],
-["Montilla",37.585,-4.638,"Córdoba","Da nombre, junto con Moriles, a una denominación de origen de vinos finos.","El Inca Garcilaso vivió aquí.",[]],
-["Priego de Córdoba",37.437,-4.195,"Córdoba","Su Fuente del Rey tiene 139 caños.","Su barrio de la Villa es de calles blancas y floridas.",["priego"]],
-["Lucena",37.409,-4.485,"Córdoba","Fue llamada la Perla de Sefarad.","Es famosa por sus muebles.",[]],
-["Cabra",37.472,-4.442,"Córdoba","Aquí nació Juan Valera.","Tiene un instituto, el Aguilar y Eslava, de los más antiguos de España.",[]],
-["Almodóvar del Río",37.81,-5.02,"Córdoba","Su castillo salió en Juego de Tronos.","Está junto al Guadalquivir.",["almodovar del rio"]],
-["Baena",37.617,-4.322,"Córdoba","Su aceite de oliva tiene denominación de origen.","Sus tambores de Semana Santa son famosos.",[]],
-["Montoro",38.024,-4.381,"Córdoba","Su puente de las Donadas cruza el Guadalquivir.","Sus casas de piedra rojiza suben por un cerro.",[]],
-["Puente Genil",37.389,-4.767,"Córdoba","Es famosa por su carne de membrillo.","Su Semana Santa tiene figuras bíblicas, la Mananta.",[]],
-["Cazorla",37.914,-3.003,"Jaén","Es puerta de un gran parque natural donde nace el Guadalquivir.","Las ruinas de Santa María están sobre un río abovedado.",[]],
-["Andújar",38.039,-4.051,"Jaén","Cada abril sube una romería al santuario de la Virgen de la Cabeza.","El Guadalquivir pasa junto a la ciudad.",["andujar"]],
-["Alcalá la Real",37.461,-3.924,"Jaén","La fortaleza de la Mota corona la ciudad.","Fue frontera con el reino nazarí de Granada.",[]],
-["La Carolina",38.276,-3.615,"Jaén","Se fundó en tiempos de Carlos III para colonos centroeuropeos.","Cerca se libró la batalla de las Navas de Tolosa.",[]],
-["Segura de la Sierra",38.298,-2.651,"Jaén","Su castillo domina la sierra.","Da nombre a la sierra donde nace el río Segura.",[]],
-["Loja",37.169,-4.151,"Granada","La llamaban la llave de la Vega de Granada.","Es famosa por sus roscos.",[]],
-["Montefrío",37.322,-4.01,"Granada","National Geographic elogió sus vistas entre las mejores del mundo.","Una iglesia corona la peña sobre el pueblo.",["montefrio"]],
-["Almuñécar",36.733,-3.69,"Granada","Fue la colonia fenicia de Sexi.","Sus chirimoyas son famosas.",["almunecar"]],
-["Salobreña",36.745,-3.587,"Granada","Su caserío blanco sube hasta un castillo nazarí.","Está rodeada de antiguos cañaverales.",["salobrena"]],
-["Capileira",36.961,-3.359,"Granada","Está en lo alto del barranco del Poqueira, en la Alpujarra.","Sus casas tienen tejados planos de launa.",[]],
-["Lanjarón",36.92,-3.479,"Granada","Su agua mineral se vende en toda España.","Es la puerta de la Alpujarra.",["lanjaron"]],
-["Baza",37.49,-2.773,"Granada","Allí se encontró una famosa dama íbera sentada en un trono, hoy en Madrid.","En sus fiestas sale el Cascamorras.",[]],
-["Níjar",36.966,-2.207,"Almería","Es famosa por sus jarapas y su cerámica.","Su término incluye gran parte del parque de Cabo de Gata.",["nijar"]],
-["Vélez-Blanco",37.692,-2.095,"Almería","El patio de su castillo está hoy en un museo de Nueva York.","Cerca está la Cueva de los Letreros, con el indalo.",["velez blanco"]],
-["Roquetas de Mar",36.764,-2.615,"Almería","Tiene un castillo de Santa Ana junto al puerto.","Está rodeada de invernaderos.",["roquetas"]],
-["Tabernas",37.05,-2.391,"Almería","Su desierto es uno de los pocos de Europa.","Conserva poblados del oeste de antiguas películas.",[]],
-["Llíria",39.627,-0.596,"Valencia","La llaman la ciudad de la música por sus bandas.","Tiene un mausoleo romano.",["liria"]],
-["Castro Caldelas",42.375,-7.416,"Ourense","Su castillo domina los cañones del Sil.","Su bica, un bizcocho, es muy conocida.",[]],
-["Benicarló",40.417,0.427,"Castellón","Su alcachofa tiene denominación de origen.","Está entre Vinaròs y Peñíscola.",["benicarlo"]],
-["Ubrique",36.678,-5.448,"Cádiz","Es famosa por su marroquinería de piel.","Está en plena sierra de Grazalema.",[]]
-];
-const norm=s=>s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-zñ ]/g," ").replace(/\s+/g," ").trim();
-// Reto personalizado (enlace de un profesor): si el lugar no está en la lista, se añade al final
-const RETO=window.Reto?Reto.read("d"):null;
-const CUSTOM=RETO&&!RETO.error&&RETO.nm&&isFinite(RETO.la)&&isFinite(RETO.lo)?RETO:null;
-const escH=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-let CT=-1;
-if(CUSTOM){const nm=String(CUSTOM.nm).replace(/[<>&"']/g,"").trim();CUSTOM.nm=nm;
-  CT=C.findIndex(c=>norm(c[0])===norm(nm)&&Math.abs(c[1]-CUSTOM.la)<0.15&&Math.abs(c[2]-CUSTOM.lo)<0.15);
-  if(CT<0){C.push([nm,+CUSTOM.la,+CUSTOM.lo,escH(CUSTOM.pr||""),"","",[]]);CT=C.length-1}}
-const IDX=C.map((c,i)=>({i,keys:[norm(c[0]),...c[6].map(norm)]}));
-function find(s){const n=norm(s);if(!n)return -1;const h=IDX.find(x=>x.keys.includes(n));return h?h.i:-1}
-
-// Selección diaria determinista
-function mulberry(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
-// Reto del día. Hasta el 20/11/2026 se usa el orden antiguo de 82 poblaciones; desde el 21/11 se recorre la lista
-// completa y cada vuelta se baraja de nuevo, sin repetir ninguna dentro de la vuelta ni el mismo lugar dos días seguidos.
-const N0=82,START=Math.round((Date.UTC(2026,10,21)-Date.UTC(2026,0,1))/864e5);
-function perm(n,seed){const r=mulberry(seed),o=[...Array(n).keys()];for(let i=o.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[o[i],o[j]]=[o[j],o[i]]}return o}
-function cycleOrder(c){const o=perm(C.length,7000+c);if(c>0){const prev=perm(C.length,7000+c-1);if(o[0]===prev[prev.length-1])[o[0],o[1]]=[o[1],o[0]]}return o}
-function pickDay(d){if(d<START){const o=perm(N0,2026);return o[((d%N0)+N0)%N0]}
-  const k=d-START,c=Math.floor(k/C.length);return cycleOrder(c)[k%C.length]}
-const ARCH=(()=>{const p=new URLSearchParams(location.search).get("dia");if(CUSTOM||!p||!/^\d{4}-\d{2}-\d{2}$/.test(p))return null;const[y,m,d]=p.split("-").map(Number);const t=new Date(y,m-1,d,12),h=new Date();h.setHours(0,0,0,0);return t.getDate()===d&&t>=new Date(2026,10,26,12)&&t<h?t:null})();
-const now=ARCH||new Date();const key=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}-${String(now.getDate()).padStart(2,"0")}`;
-const DAY=Math.round((Date.UTC(now.getFullYear(),now.getMonth(),now.getDate())-Date.UTC(2026,0,1))/864e5);
-const NUM=Math.round((Date.UTC(now.getFullYear(),now.getMonth(),now.getDate())-Date.UTC(2026,10,26))/864e5)+1; // nº de reto visible: el 26/11/2026 es el nº 1
-const T=CUSTOM?CT:pickDay(DAY);const TC=C[T];
-document.getElementById("num").innerHTML=CUSTOM?`Reto para clase${CUSTOM.au?`<br>de ${escH(CUSTOM.au)}`:""}`:`Reto nº ${NUM}<br>${now.toLocaleDateString("es-ES",{day:"numeric",month:"long"})}`;
-const SHARE_URL=CUSTOM?location.href:location.origin+location.pathname+(ARCH?"?dia="+key:"");
-{const rb=document.getElementById("retobox");
- if(CUSTOM){rb.hidden=false;rb.innerHTML=`<b>${escH(CUSTOM.ti||"Reto personalizado")}</b><span>${CUSTOM.au?`Creado por ${escH(CUSTOM.au)}. `:""}Adivina el lugar en 6 intentos. <a href="./">Ir al reto del día</a></span>`;
-   document.querySelector(".how").textContent="Escribe un lugar de España y verás a cuántos km estás y hacia dónde mirar. Cada fallo destapa una pista. Acertar a la primera vale 10 puntos y cada fallo resta 2."}
-
- else if(ARCH){rb.hidden=false;rb.innerHTML=`<b>Reto de un día anterior</b><span>No cuenta para tus estadísticas ni para la liga. <a href="archivo.html">Ver todos los días</a> · <a href="./">Ir al reto de hoy</a></span>`}
- else if(RETO&&RETO.error){rb.hidden=false;rb.classList.add("err");rb.innerHTML="<b>Este enlace de reto no funciona</b><span>Puede que se haya copiado incompleto. Mientras tanto, aquí tienes el reto del día.</span>"}}
-
-// Geometría
-const R=6371,rad=d=>d*Math.PI/180;
-function dist(a,b){const dl=rad(b[1]-a[1]),dg=rad(b[2]-a[2]);const h=Math.sin(dl/2)**2+Math.cos(rad(a[1]))*Math.cos(rad(b[1]))*Math.sin(dg/2)**2;return 2*R*Math.asin(Math.sqrt(h))}
-function bearing(a,b){const y=Math.sin(rad(b[2]-a[2]))*Math.cos(rad(b[1]));const x=Math.cos(rad(a[1]))*Math.sin(rad(b[1]))-Math.sin(rad(a[1]))*Math.cos(rad(b[1]))*Math.cos(rad(b[2]-a[2]));return(Math.atan2(y,x)*180/Math.PI+360)%360}
-const MAXD=1100;
-const G=g=>typeof g==="number"?C[g]:[g.n,g.lat,g.lon];
-const fmt=d=>d<1?Math.round(d*1000)+" m":Math.round(d).toLocaleString("es-ES")+" km";const prox=d=>Math.max(0,Math.round(100*(1-d/MAXD)));
-
-// Estado
-const MAX=6;const PTS=(won,n)=>won?Math.max(1,10-2*(n-1)):0;const MODE="dificil";const SK=CUSTOM?"dd-r-"+CUSTOM.id:"dd-"+key;let st={guesses:[],done:false,won:false};let stats={played:0,wins:0,streak:0,best:0,last:null};
-try{const s=JSON.parse(localStorage.getItem(SK));if(s)st=s}catch(e){}
-try{const s=JSON.parse(localStorage.getItem("dd-stats"));if(s)stats=s}catch(e){}
-const save=()=>{try{localStorage.setItem(SK,JSON.stringify(st));localStorage.setItem("dd-stats",JSON.stringify(stats))}catch(e){}};
-
-// Mapa
-const OUT=[[43.78,-7.69],[43.55,-6.2],[43.47,-5.0],[43.46,-3.8],[43.4,-3.0],[43.36,-1.79],[43.05,-1.3],[42.82,-0.6],[42.7,0.4],[42.6,1.4],[42.45,2.2],[42.43,3.17],[42.3,3.3],[41.9,3.2],[41.4,2.25],[41.1,1.2],[40.75,0.9],[40.5,0.5],[39.9,0.02],[39.4,-0.3],[38.8,0.22],[38.3,-0.5],[37.9,-0.75],[37.6,-0.7],[37.4,-1.6],[36.9,-1.9],[36.72,-2.2],[36.75,-3.0],[36.72,-4.4],[36.42,-5.2],[36.01,-5.61],[36.3,-6.2],[36.8,-6.4],[37.2,-7.4],[37.9,-7.3],[38.5,-7.1],[38.9,-7.05],[39.4,-7.3],[39.7,-7.0],[40.1,-6.9],[40.6,-6.8],[41.0,-6.9],[41.6,-6.35],[41.95,-6.6],[41.88,-8.1],[42.1,-8.85],[42.5,-8.95],[42.9,-9.27],[43.2,-9.0],[43.4,-8.4]];
-const ISL=[[[39.95,2.4],[39.85,3.1],[39.6,3.45],[39.3,3.05],[39.45,2.5],[39.65,2.35]],[[40.05,3.8],[40.0,4.3],[39.85,4.25],[39.9,3.85]],[[39.08,1.35],[39.0,1.6],[38.87,1.4],[38.95,1.2]]];
-const W=400,LON0=-9.6,LAT1=44.0,K=W/((4.6-LON0)*Math.cos(rad(40)));
-const px=(la,lo)=>[((lo-LON0)*Math.cos(rad(40))*K).toFixed(1),((LAT1-la)*K).toFixed(1)];
-const H=Math.round((LAT1-35.8)*K);
-const poly=p=>p.map(q=>px(q[0],q[1]).join(",")).join(" ");
-function colorFor(p){return p>=90?"var(--hot)":p>=65?"var(--warm)":"var(--cold)"}
-function drawMap(){
-  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Mapa de España con tus intentos"><polygon points="${poly(OUT)}" fill="var(--land)" stroke="var(--line)" stroke-width="1.5" stroke-linejoin="round"/>`;
-  ISL.forEach(i=>s+=`<polygon points="${poly(i)}" fill="var(--land)" stroke="var(--line)" stroke-width="1.5" stroke-linejoin="round"/>`);
-  
-  if(st.done){const[x,y]=px(TC[1],TC[2]);s+=`<circle cx="${x}" cy="${y}" r="14" fill="none" stroke="var(--signal)" stroke-width="2.5"/><circle cx="${x}" cy="${y}" r="5" fill="var(--signal)"/><text x="${x}" y="${+y-20}" text-anchor="middle" font-family="Bricolage Grotesque,sans-serif" font-weight="800" font-size="14" fill="var(--ink)">${TC[0]}</text>`}
-  st.guesses.forEach((g,k)=>{if(g===T)return;const c=G(g);if(c[1]<35.8||c[2]<-9.6)return;const[x,y]=px(c[1],c[2]);const p=prox(dist(c,TC));s+=`<circle cx="${x}" cy="${y}" r="9" fill="${colorFor(p)}" stroke="var(--land)" stroke-width="2"/><text x="${x}" y="${+y+3.5}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="var(--land)" font-weight="500">${k+1}</text>`});
-  document.getElementById("map").innerHTML=s+"</svg>";
+{
+const d=new Date(),k=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+document.getElementById("fecha").textContent=d.toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long"});
+const get=x=>{try{return JSON.parse(localStorage.getItem(x))}catch(e){return null}};
+const sum=a=>(a||[]).reduce((s,r)=>s+(r.pts||0),0);
+// Puntos de hoy en cada juego, con la misma cuenta que usa cada juego
+const PUNTOS={
+  dd:s=>s.won?Math.max(1,10-2*((s.guesses||[]).length-1)):0,
+  lt:s=>sum(s.res),cf:s=>sum(s.res),
+  gr:s=>(s.found||[]).length*5+(s.won?[5,3,1,0][Math.min(s.mist||0,3)]:0),
+  tl:s=>(s.res||[]).filter(Boolean).length*3+(s.won&&!s.mist?1:0)};
+let hechos=0;
+document.querySelectorAll(".juego").forEach(a=>{const s=get(a.dataset.k+"-"+k),st=a.querySelector(".st");
+  if(s&&s.done){hechos++;a.classList.add("hecho");st.classList.add("ok");st.textContent=`✓ ${PUNTOS[a.dataset.k](s)}/${a.dataset.max}`}
+  else{st.classList.add("go");st.textContent="Jugar"}});
+const R=[];
+if(hechos)R.push(`Hoy llevas ${hechos} de 5`);
+try{const e=window.Logros&&Logros.estado();if(e&&e.D.rachaActual>1)R.push(`🔥 ${e.D.rachaActual} días seguidos`)}catch(e){}
+if(hechos===5)R.push("🃏 ¡Todos hechos!");
+document.getElementById("resumen").innerHTML=R.map(x=>`<span>${x}</span>`).join("");
 }
-
-// Pistas
-function clues(){const l=(TC[0].match(/\p{L}/gu)||[]).length;
-  if(CUSTOM){const out=(Array.isArray(CUSTOM.c)?CUSTOM.c:[]).filter(Boolean).slice(0,4).map(x=>["Pista",escH(x)]);
-    if(CUSTOM.pr)out.push(["Provincia",escH(CUSTOM.pr)]);out.push(["Nombre",`Empieza por «${TC[0][0]}» y tiene ${l} letras.`]);return out.slice(0,6)}
-  return[["Pista",TC[4]],["Pista",TC[5]],["Provincia",TC[3]],["Nombre",`Empieza por «${TC[0][0]}» y tiene ${l} letras.`]]}
-const TH=()=>CUSTOM?clues().map((_,i)=>i):photo?[0,1,3,4]:[0,1,2,3];
-let shown=0;
-function drawClues(){const cl=clues(),th=TH(),f=st.guesses.length;
-  document.getElementById("clues").innerHTML=cl.map((c,i)=>(st.done||f>=th[i])?`<div class="clue${i>=shown&&i>0?" new":""}"><span class="k">${c[0]}</span><span>${c[1]}</span></div>`:`<div class="clue locked"><span class="k">${c[0]}</span><span>Se destapa con el fallo ${th[i]}</span></div>`).join("");
-  shown=cl.filter((c,i)=>st.done||f>=th[i]).length;
-  const ph=document.getElementById("photo");if(photo){const open=st.done||f>=2;ph.hidden=false;document.getElementById("photoimg").hidden=!open;document.getElementById("credit").hidden=!open;document.getElementById("photolock").hidden=open}}
-
-const arrow=b=>`<svg width="20" height="20" viewBox="0 0 20 20" style="transform:rotate(${b}deg)"><path d="M10 2 L16 12 H12 V18 H8 V12 H4 Z" fill="var(--ink)"/></svg>`;
-const EM=["⬆️","↗️","➡️","↘️","⬇️","↙️","⬅️","↖️"];const em=b=>EM[Math.round(b/45)%8];
-function drawGuesses(){let h="";for(let k=0;k<MAX;k++){const g=st.guesses[k];
-  if(g===undefined){h+=`<div class="g empty"></div>`;continue}
-  const c=G(g);if(g===T){h+=`<div class="g win"><span class="i">${k+1}</span><span class="n">${c[0]}</span><span class="d">0 km</span><span class="a">🎯</span><span class="p" style="color:var(--hot)">100%</span></div>`;continue}
-  const d=dist(c,TC),p=prox(d);h+=`<div class="g"><span class="i">${k+1}</span><span class="n" title="${c[0]}">${c[0]}${typeof g==="number"?"":`<small class="sub"> · fuera de la lista</small>`}</span><span class="d">${fmt(d)}</span><span class="a">${arrow(bearing(c,TC))}</span><span class="p" style="color:${colorFor(p)}">${p}%</span></div>`}
-  document.getElementById("guesses").innerHTML=h}
-
-function shareText(){const rows=st.guesses.map(g=>{if(g===T)return"🟩🟩🟩🟩🟩🎯";const p=prox(dist(G(g),TC));const f=Math.floor(p/20);return"🟩".repeat(f)+(p%20>=10?"🟨":"")+"⬜".repeat(5-f-(p%20>=10?1:0))+em(bearing(G(g),TC))});
-  const head=CUSTOM?`¿Dónde está? · ${CUSTOM.ti||"Reto para clase"}`:`¿Dónde está? nº ${NUM}`;
-  return`${head} — ${PTS(st.won,st.guesses.length)}/10 puntos (${st.won?st.guesses.length:"X"}/${MAX})\n${rows.join("\n")}\n${SHARE_URL}`}
-function drawWorth(){const w=document.getElementById("worth");if(st.done){w.hidden=true;return}w.hidden=false;const v=PTS(true,st.guesses.length+1);w.innerHTML=`Si aciertas ahora: <b>${v}</b> punto${v===1?"":"s"}`}
-function drawEnd(){drawWorth();const e=document.getElementById("end");if(!st.done){e.innerHTML="";return}
-  document.getElementById("guessbox").hidden=true;
-  const pct=stats.played?Math.round(100*stats.wins/stats.played):0;const avg=stats.ptsN?(stats.pts/stats.ptsN).toFixed(1).replace(".",",").replace(",0",""):"–";
-  e.innerHTML=`<div class="end"><h2>${st.won?`¡Era ${TC[0]}! +${PTS(true,st.guesses.length)} puntos, en ${st.guesses.length} intento${st.guesses.length>1?"s":""}.`:`Era ${TC[0]}. 0 puntos, ${CUSTOM||ARCH?"otra vez será":"mañana más"}.`}</h2>
-  ${CUSTOM||ARCH?"":`<div class="stats"><div><b>${stats.played}</b><small>Jugados</small></div><div><b>${pct}%</b><small>Aciertos</small></div><div><b>${avg}</b><small>Puntos media</small></div><div><b>${stats.streak}</b><small>Racha</small></div></div>`}
-  ${CUSTOM?"":`<div class="global" id="global"></div>`}
-  <pre class="share" id="sharetxt">${shareText()}</pre>
-  <div class="row"><a class="wa" id="wa" href="https://wa.me/?text=${encodeURIComponent(shareText())}" target="_blank" rel="noopener"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.3-.4.8-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s1 2.6 1.1 2.7c.1.2 1.9 2.9 4.6 4.1 1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.8-1.2.2-.6.2-1.1.1-1.2-.1-.1-.2-.2-.4-.3z"/></svg> Compartir por WhatsApp</a>${CUSTOM?"":ARCH?`<a class="next" href="./">Ir al reto de hoy</a>`:`<span class="next" id="next"></span>`}</div>
-  <a class="cafe" href="https://ko-fi.com/pascualmunoz" target="_blank" rel="noopener"><span class="cup" aria-hidden="true">☕</span><span class="txt"><b>¿Te ha gustado? Invítame a un café</b><small>Los juegos son gratis. Con un café me ayudas a mantenerlos y a crear más.</small></span></a>
-  <div class="go-list"><h3>Más juegos</h3>
-  <div class="go-mini"><a href="letras.html"><span aria-hidden="true">🔤</span>Letras</a><a href="cifras.html"><span aria-hidden="true">🔢</span>Cifras</a><a href="grupos.html"><span aria-hidden="true">🧩</span>Grupos</a></div>
-  <h3>Y además</h3>
-  <a class="go-card" href="archivo.html"><span class="ic" aria-hidden="true">📅</span><span class="txt"><b>Juega los días anteriores</b><small>¿Te perdiste algún reto? Todavía puedes jugarlo.</small></span><span class="arr" aria-hidden="true">›</span></a>
-  <a class="go-card" href="profes.html"><span class="ic" aria-hidden="true">🍎</span><span class="txt"><b>¿Eres profe?</b><small>Crea tu propio reto y compártelo con tu clase.</small></span><span class="arr" aria-hidden="true">›</span></a>
-  </div>
-  <div class="ad-slot"></div></div>`;
-  if(window.Logros&&!CUSTOM)Logros.avisar(document.querySelector("#end .end"));
-  if(window.Ads)Ads.fill();
-  if(window.Estadisticas&&!CUSTOM)Estadisticas.mostrar(document.getElementById("global"),"donde",key,st.won?PTS(true,st.guesses.length):0,10,!!ARCH);
-  tick()}
-function tick(){const el=document.getElementById("next");if(!el)return;const n=new Date(),m=new Date(n);m.setHours(24,0,0,0);let s=Math.max(0,Math.floor((m-n)/1000));
-  el.textContent=`Siguiente en ${String(Math.floor(s/3600)).padStart(2,"0")}:${String(Math.floor(s/60)%60).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`}
-setInterval(tick,1000);
-
-function render(){drawMap();drawClues();drawGuesses();drawEnd();drawCredit()}
-
-// Foto: imagen principal del artículo de la ciudad en Wikipedia; se destapa con el fallo 2
-let photo=null;
-const BAD=/\.svg$|escudo|bandera|mapa|flag|map|coat|localizaci|location|logo/i;
-async function wiki(title){
-  const u="https://es.wikipedia.org/w/api.php?action=query&prop=pageimages&piprop=name|thumbnail&pithumbsize=1200&redirects=1&format=json&origin=*&titles="+encodeURIComponent(title);
-  const j=await (await fetch(u)).json();const p=Object.values(j.query.pages)[0];
-  return p&&p.thumbnail&&p.pageimage&&!BAD.test(p.pageimage)?{src:p.thumbnail.source,file:p.pageimage}:null}
-async function credit(file){
-  try{const u="https://commons.wikimedia.org/w/api.php?action=query&prop=imageinfo&iiprop=extmetadata&format=json&origin=*&titles="+encodeURIComponent("File:"+file);
-    const j=await (await fetch(u)).json();const m=Object.values(j.query.pages)[0].imageinfo[0].extmetadata;
-    const strip=h=>{const d=document.createElement("div");d.innerHTML=h||"";return d.textContent.trim()};
-    return{artist:strip(m.Artist&&m.Artist.value)||"autor desconocido",lic:strip(m.LicenseShortName&&m.LicenseShortName.value)}}
-  catch(e){return{artist:"",lic:""}}}
-async function loadPhoto(){if(CUSTOM)return;
-  const box=document.getElementById("photoimg");
-  for(const t of [TC[7]||TC[0]+" ("+TC[3].replace(/ \(.*\)/,"")+")",TC[0]]){try{const r=await wiki(t);if(r){photo=r;Object.assign(photo,await credit(r.file));
-    box.innerHTML="";const im=new Image();im.alt="Foto de la ciudad del día";im.src=r.src;box.appendChild(im);render();return}}catch(e){}}
-  document.getElementById("photo").hidden=true}
-function drawCredit(){if(!photo)return;const c=document.getElementById("credit");
-  const who=[photo.artist&&("Foto: "+photo.artist),photo.lic].filter(Boolean).join(" · ");
-  // El enlace incluye el nombre del archivo (puede delatar la respuesta), así que se muestra al terminar
-  c.innerHTML="";c.append(who||"Foto: Wikimedia Commons");
-  if(st.done){const a=document.createElement("a");a.href="https://commons.wikimedia.org/wiki/File:"+encodeURIComponent(photo.file);a.target="_blank";a.rel="noopener";a.textContent="Ver en Wikimedia Commons";c.append(" · ",a)}}
-loadPhoto();
-
-// Entrada y sugerencias: primero la lista del juego; si no está, cualquier población de España (OpenStreetMap vía Photon)
-const inp=document.getElementById("guess"),sg=document.getElementById("sugg"),msg=document.getElementById("msg");let sel=-1,list=[],tmr=null,req=0;
-const PLACES=["city","town","village","municipality","hamlet","suburb","neighbourhood","locality"];
-async function geo(q,limit){
-  const u="https://photon.komoot.io/api/?limit="+limit+"&bbox=-18.3,27.6,4.4,43.9&q="+encodeURIComponent(q);
-  const j=await (await fetch(u)).json();const seen=new Set();
-  return j.features.filter(f=>f.properties&&f.properties.countrycode==="ES"&&f.properties.osm_key==="place"&&PLACES.includes(f.properties.osm_value)&&f.properties.name)
-    .map(f=>({n:f.properties.name,s:f.properties.county||f.properties.state||"",lat:+f.geometry.coordinates[1].toFixed(4),lon:+f.geometry.coordinates[0].toFixed(4)}))
-    .filter(o=>{const k=norm(o.n)+"|"+o.s;if(seen.has(k)||find(o.n)>=0)return false;seen.add(k);return true})}
-function label(it){return it.i!==undefined?C[it.i][0]:it.o.n}
-function drawSugg(){if(!list.length){sg.hidden=true;return}sel=-1;sg.innerHTML="";
-  list.forEach((it,k)=>{const b=document.createElement("button");b.type="button";b.dataset.k=k;b.textContent=label(it);
-    if(it.o&&it.o.s){const sm=document.createElement("small");sm.className="sub";sm.textContent=" · "+it.o.s;b.append(sm)}sg.append(b)});sg.hidden=false}
-function showSugg(){const raw=inp.value,n=norm(raw);clearTimeout(tmr);if(!n){list=[];sg.hidden=true;return}
-  list=IDX.filter(x=>x.keys.some(k=>k.startsWith(n)||k.split(" ").some(w=>w.startsWith(n)))).slice(0,5).map(x=>({i:x.i}));drawSugg();
-  if(n.length<3||list.length>=5)return;const id=++req;
-  tmr=setTimeout(async()=>{try{const r=await geo(raw,10);if(id!==req)return;list=list.concat(r.slice(0,6-list.length).map(o=>({o})));drawSugg()}catch(e){}},300)}
-inp.addEventListener("input",()=>{msg.textContent="";showSugg()});
-inp.addEventListener("keydown",e=>{if(sg.hidden)return;const b=[...sg.querySelectorAll("button")];
-  if(e.key==="ArrowDown"||e.key==="ArrowUp"){e.preventDefault();sel=(sel+(e.key==="ArrowDown"?1:-1)+b.length)%b.length;b.forEach((x,k)=>x.classList.toggle("on",k===sel))}
-  else if(e.key==="Enter"&&sel>=0){e.preventDefault();pick(list[sel])}
-  else if(e.key==="Escape")sg.hidden=true});
-sg.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;pick(list[+b.dataset.k])});
-document.addEventListener("click",e=>{if(!e.target.closest("#guessbox"))sg.hidden=true});
-document.getElementById("form").addEventListener("submit",e=>{e.preventDefault();submit()});
-function pick(it){sg.hidden=true;req++;clearTimeout(tmr);guess(it.i!==undefined?it.i:it.o)}
-async function submit(){if(st.done)return;sg.hidden=true;req++;clearTimeout(tmr);const q=inp.value.trim();if(!q)return;
-  const i=find(q);if(i>=0)return guess(i);
-  msg.textContent="Buscando "+q+"…";
-  try{const r=await geo(q,10);if(!r.length){msg.textContent="No encuentro «"+q+"» en España. Revisa cómo se escribe o elige una sugerencia.";return}
-    guess(r.find(o=>norm(o.n)===norm(q))||r[0])}
-  catch(e){msg.textContent="Ahora mismo no puedo comprobar lugares fuera de la lista. Elige una de las sugerencias."}}
-function guess(g){if(st.done)return;const nm=G(g)[0];
-  if(st.guesses.some(x=>norm(G(x)[0])===norm(nm))){msg.textContent=`Ya probaste ${nm}.`;return}
-  st.guesses.push(g);inp.value="";msg.textContent="";
-  if(g===T||st.guesses.length>=MAX){st.done=true;st.won=g===T;st.t1=Date.now();if(window.contarPartida)contarPartida("donde",CUSTOM?"reto":ARCH?"archivo":"diario",key,g===T?Math.max(1,10-2*(st.guesses.length-1)):0);if(!CUSTOM&&!ARCH){stats.played++;
-    const y=new Date(now);y.setDate(y.getDate()-1);const yk=`${y.getFullYear()}-${String(y.getMonth()+1).padStart(2,"0")}-${String(y.getDate()).padStart(2,"0")}`;
-    if(st.won){stats.wins++;stats.streak=stats.last===yk?stats.streak+1:1;stats.best=Math.max(stats.best,stats.streak)}else stats.streak=0;
-    stats.last=st.won?key:stats.last;stats.pts=(stats.pts||0)+PTS(st.won,st.guesses.length);stats.ptsN=(stats.ptsN||0)+1}}
-  save();render();if(st.done)sendResult();else inp.focus()}
-render();
-
-// ===== Liga de amigos (Supabase) =====
-// Pega aquí la URL de tu proyecto y su clave pública (anon o publishable). Mientras estén vacías, la liga no aparece.
-const SUPA={url:"https://lnqigozwqraprajvaoiv.supabase.co",key:"sb_publishable_T2XYHn31Yyt5cwPQ_q_JNQ_7ZgMXqPN"};
-let liga={code:"",nick:""},rows=[],ligaErr="";
-try{const l=JSON.parse(localStorage.getItem("liga"));if(l&&l.code)liga=l}catch(e){}
-const urlLiga=(new URLSearchParams(location.search).get("liga")||"").toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,12);
-const saveLiga=()=>{try{localStorage.setItem("liga",JSON.stringify(liga))}catch(e){}};
-const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const dkey=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
-const mmss=s=>s==null?"–":`${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`;
-const invite=()=>location.origin+location.pathname+"?liga="+liga.code;
-const invText=()=>`Únete a mi liga de ¿Dónde está? (código ${liga.code}): ${invite()}`;
-async function api(path,opt={}){
-  const h={apikey:SUPA.key,"Content-Type":"application/json",...(opt.headers||{})};
-  if(SUPA.key.startsWith("eyJ"))h.Authorization="Bearer "+SUPA.key;
-  const r=await fetch(SUPA.url.replace(/\/$/,"")+"/rest/v1/"+path,{...opt,headers:h});
-  if(r.status===409)return null;if(!r.ok)throw new Error("HTTP "+r.status);
-  const t=await r.text();return t?JSON.parse(t):null}
-async function sendResult(){
-  if(CUSTOM||ARCH||!SUPA.url||!liga.code||!st.done||st.sent===liga.code)return;
-  const seg=st.t0&&st.t1?Math.max(0,Math.round((st.t1-st.t0)/1000)):null;
-  try{await api("resultados",{method:"POST",headers:{Prefer:"return=minimal"},body:JSON.stringify({liga:liga.code,apodo:liga.nick,modo:MODE,fecha:key,intentos:st.won?st.guesses.length:7,ganado:st.won,segundos:seg})});
-    st.sent=liga.code;save();ligaErr=""}
-  catch(e){ligaErr="No se pudo enviar tu resultado. Se reintentará al volver a abrir la página."}
-  loadRank()}
-async function loadRank(){
-  if(CUSTOM||ARCH||!SUPA.url||!liga.code)return;const f=new Date(now);f.setDate(f.getDate()-6);
-  try{rows=await api(`resultados?liga=eq.${liga.code}&modo=eq.${MODE}&fecha=gte.${dkey(f)}&select=apodo,fecha,intentos,ganado,segundos`)||[]}
-  catch(e){ligaErr="No se pudo cargar la clasificación."}
-  drawLiga(true)}
-function drawLiga(force){
-  const el=document.getElementById("liga");if(!SUPA.url||CUSTOM||ARCH){el.hidden=true;return}el.hidden=false;
-  if(!liga.code){if(el.dataset.v==="form"&&!force)return;el.dataset.v="form";
-    el.innerHTML=`<h3>Liga de amigos</h3>
-    ${urlLiga?`<p>Te han invitado a la liga <b class="code">${esc(urlLiga)}</b>. Elige un apodo para entrar.</p>`:`<p>Compite con tus amigos: crea una liga y pásales el enlace, o únete con su código.</p>`}
-    <label class="lbl" for="nick">Tu apodo</label>
-    <input id="nick" maxlength="20" placeholder="Por ejemplo, Paco" value="${esc(liga.nick||"")}">
-    ${urlLiga?`<button class="btn" data-act="join" data-code="${esc(urlLiga)}">Entrar en la liga</button>`:
-    `<div class="row"><button class="btn" data-act="create">Crear liga</button></div>
-     <label class="lbl" for="code">¿Ya tienes un código?</label>
-     <div class="row"><input id="code" maxlength="12" placeholder="Código" autocapitalize="characters"><button class="ghost" data-act="join">Unirme</button></div>`}
-    <p class="lmsg" id="lmsg">${esc(ligaErr)}</p>`;return}
-  el.dataset.v="liga";
-  const rp=r=>PTS(r.ganado,r.intentos);
-  const today=rows.filter(r=>r.fecha===key).sort((a,b)=>(rp(b)-rp(a))||(b.ganado-a.ganado)||((a.segundos??1e9)-(b.segundos??1e9)));
-  const week={};rows.forEach(r=>{const w=week[r.apodo]||(week[r.apodo]={a:r.apodo,p:0,d:0,v:0});w.p+=rp(r);w.d++;w.v+=r.ganado?1:0});
-  const wk=Object.values(week).sort((a,b)=>b.p-a.p||b.v-a.v);
-  const me=a=>a===liga.nick?' class="me"':"";
-  el.innerHTML=`<div class="lhead"><h3>Liga <span class="code">${esc(liga.code)}</span></h3><span class="who">Juegas como <b>${esc(liga.nick)}</b></span></div>
-  <div class="row wrapr"><button class="ghost" data-act="invite">Copiar invitación</button><a class="wa" href="https://wa.me/?text=${encodeURIComponent(invText())}" target="_blank" rel="noopener"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.3-.4.8-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s1 2.6 1.1 2.7c.1.2 1.9 2.9 4.6 4.1 1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.8-1.2.2-.6.2-1.1.1-1.2-.1-.1-.2-.2-.4-.3z"/></svg> Invitar por WhatsApp</a><button class="ghost" data-act="refresh">Actualizar</button><button class="ghost" data-act="leave">Salir</button></div>
-  <p class="lmsg" id="lmsg">${esc(ligaErr)}</p>
-  <h4>Hoy</h4>
-  ${!st.done?`<p class="hint">Termina el reto para ver cómo han quedado los demás.</p>`:
-    today.length?`<div class="tbl"><table><thead><tr><th>#</th><th>Apodo</th><th>Puntos</th><th>Intentos</th><th>Tiempo</th></tr></thead><tbody>${today.map((r,i)=>`<tr${me(r.apodo)}><td>${i+1}</td><td>${esc(r.apodo)}</td><td>${rp(r)}</td><td>${r.ganado?r.intentos+"/6":"X/6"}</td><td>${mmss(r.segundos)}</td></tr>`).join("")}</tbody></table></div>`:`<p class="hint">Aún no hay resultados de hoy.</p>`}
-  <h4>Últimos 7 días</h4>
-  ${wk.length?`<div class="tbl"><table><thead><tr><th>#</th><th>Apodo</th><th>Puntos</th><th>Aciertos</th></tr></thead><tbody>${wk.map((w,i)=>`<tr${me(w.a)}><td>${i+1}</td><td>${esc(w.a)}</td><td>${w.p}</td><td>${w.v}/${w.d}</td></tr>`).join("")}</tbody></table></div>
-  <p class="hint">Acertar vale 10 puntos y cada fallo resta 2: a la primera son 10, a la quinta 2 y a la sexta 1. Si no aciertas, 0. Si hay empate hoy, gana quien tarde menos. El tiempo cuenta desde que abres el reto del día.</p>`:`<p class="hint">Todavía nadie ha jugado esta semana.</p>`}`}
-document.getElementById("liga").addEventListener("click",async e=>{
-  const b=e.target.closest("[data-act]");if(!b)return;const act=b.dataset.act,m=document.getElementById("lmsg");
-  if(act==="create"||act==="join"){
-    const nick=(document.getElementById("nick").value||"").trim().slice(0,20);
-    if(!nick){m.textContent="Escribe un apodo para que tus amigos te reconozcan.";return}
-    let code=act==="create"?Array.from({length:6},()=>"ABCDEFGHJKLMNPQRSTUVWXYZ23456789"[Math.floor(Math.random()*32)]).join(""):
-      (b.dataset.code||(document.getElementById("code").value||"")).toUpperCase().replace(/[^A-Z0-9]/g,"");
-    if(code.length<4){m.textContent="El código de liga tiene al menos 4 letras o números.";return}
-    liga={code,nick};saveLiga();ligaErr="";drawLiga(true);
-    if(st.done)sendResult();else loadRank()}
-  else if(act==="invite"){const t=invText();
-    try{await navigator.clipboard.writeText(t);b.textContent="Enlace copiado"}catch(_){prompt("Copia este enlace:",t);b.textContent="Copia el enlace"}}
-  else if(act==="refresh"){b.textContent="Actualizando…";await loadRank()}
-  else if(act==="leave"){liga={code:"",nick:liga.nick};saveLiga();rows=[];drawLiga(true)}});
-if(!st.t0&&!st.done){st.t0=Date.now();save()}
-if(liga.code&&urlLiga&&urlLiga!==liga.code){/* invitación a otra liga: se muestra para que decida */}
-drawLiga(true);if(st.done)sendResult();else loadRank();
 </script>
-
+<script src="ads.js"></script>
+<script>if(window.Ads)Ads.fill();</script>
 <script data-goatcounter="https://pmunyoz.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
-<script src="ranking.js"></script>
-<script src="clase.js"></script>
 </body>
 </html>

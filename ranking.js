@@ -3,7 +3,7 @@
   const RPC = "https://lnqigozwqraprajvaoiv.supabase.co/rest/v1/rpc/ranking_enviar";
   const KEY = "sb_publishable_T2XYHn31Yyt5cwPQ_q_JNQ_7ZgMXqPN";
   const P = location.pathname;
-  const JUEGO = /grupos/.test(P) ? "grupos" : /lletres/.test(P) ? "lletres" : /letras/.test(P) ? "letras" : /cifras|xifres/.test(P) ? "cifras" : "donde";
+  const JUEGO = /linea/.test(P) ? "linea" : /grupos/.test(P) ? "grupos" : /lletres/.test(P) ? "lletres" : /letras/.test(P) ? "letras" : /cifras|xifres/.test(P) ? "cifras" : "donde";
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const ls = { get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
 

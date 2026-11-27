@@ -5,7 +5,7 @@
 (function () {
   const W = 1080, H = 1350;
   const JUEGO = /lletres/.test(location.pathname) ? "letras" : /xifres/.test(location.pathname) ? "cifras" : "donde";
-  const NOMBRE = { donde: "¿Dónde está?", letras: "Lletres del dia", cifras: "Xifres del dia", grupos: "Grups del dia" }[JUEGO];
+  const NOMBRE = { donde: "¿Dónde está?", letras: "Lletres del dia", cifras: "Xifres del dia", grupos: "Grups del dia", linea: "Línia del temps" }[JUEGO];
   const C = { fondo: "#1B2F45", tarjeta: "#22374E", amarillo: "#E3A21A", claro: "#E6EEF4", suave: "#93A6B8" };
   const DISP = '"Bricolage Grotesque", "Archivo", system-ui, sans-serif';
   const BODY = '"Archivo", system-ui, sans-serif';

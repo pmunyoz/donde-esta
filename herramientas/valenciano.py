@@ -95,17 +95,20 @@ PEU_ES = re.compile(r'<p class="osm">Más juegos:.*?</p>', re.S)
 def peu(actual):
     altres = {"xifres": '<a href="va/lletres.html">Lletres del dia</a>', "lletres": '<a href="va/xifres.html">Xifres del dia</a>'}[actual]
     castella = {"xifres": "cifras.html", "lletres": "letras.html"}[actual]
-    return ('<p class="osm">Més jocs: <a href="./">¿Dónde está?</a> · ' + altres +
-            ' · <a href="grupos.html">Grupos del día</a> · <a href="archivo.html">Dies anteriors</a> · <a href="soluciones.html">Solucions</a> · <a href="https://ko-fi.com/pascualmunoz" target="_blank" rel="noopener">Convida\'m a un café</a>'
+    return ('<p class="osm">Més jocs: <a href="donde.html">¿Dónde está?</a> · ' + altres +
+            ' · <a href="grupos.html">Grupos del día</a> · <a href="linea.html">Línea del tiempo</a> · <a href="archivo.html">Dies anteriors</a> · <a href="soluciones.html">Solucions</a> · <a href="https://ko-fi.com/pascualmunoz" target="_blank" rel="noopener">Convida\'m a un café</a>'
             ' · <a href="sugerencias.html">Suggeriments</a> · <a href="ranking.html">Classificació</a> · <a href="logros.html">Assoliments</a> · <a href="acerca.html">Qui som</a> · <a href="privacidad.html">Privacitat</a>'
             f' · <a href="{castella}" lang="es" hreflang="es">En castellano</a></p>')
 
 def nav(actual):
+    # La mateixa barra que en castellà: Inici i els cinc jocs (Lletres i Xifres en valencià)
     a = lambda k: ' aria-current="page"' if k == actual else ""
-    return ('<nav aria-label="Jocs"><ul class="games"><li><a href="./"><span aria-hidden="true">📍</span> ¿Dónde está?</a></li>'
-            f'<li><a href="va/lletres.html"{a("lletres")}><span aria-hidden="true">🔤</span> Lletres</a></li>'
-            f'<li><a href="va/xifres.html"{a("xifres")}><span aria-hidden="true">🔢</span> Xifres</a></li>'
-            '<li><a href="grupos.html"><span aria-hidden="true">🧩</span> Grupos</a></li></ul></nav>')
+    return ('<nav aria-label="Jocs"><ul class="games"><li><a href="./"><span aria-hidden="true">🏠</span>Inici</a></li>'
+            '<li><a href="donde.html"><span aria-hidden="true">📍</span>Dónde</a></li>'
+            f'<li><a href="va/lletres.html"{a("lletres")}><span aria-hidden="true">🔤</span>Lletres</a></li>'
+            f'<li><a href="va/xifres.html"{a("xifres")}><span aria-hidden="true">🔢</span>Xifres</a></li>'
+            '<li><a href="grupos.html"><span aria-hidden="true">🧩</span>Grupos</a></li>'
+            '<li><a href="linea.html"><span aria-hidden="true">⏳</span>Línea</a></li></ul></nav>')
 
 def scripts_va(html, fitxer):
     # Rutes des de l'arrel (amb <base href="/">) i scripts compartits traduïts
@@ -324,7 +327,11 @@ JS = {
          '${n.length > 1 ? `${n.length} assoliments nous!` : "Assoliment nou!"} ${n.map((l) => l.nombre).join(", ")}</b><small>Vore tots els teus assoliments (en castellà)</small>'),
         ('"Primer paso", "Termina tu primer reto."', '"Primer pas", "Acaba el teu primer repte."'),
         ('"Trío del día", "Juega tres juegos distintos el mismo día."', '"Trio del dia", "Juga tres jocs diferents el mateix dia."'),
-        ('"Póker del día", "Juega los cuatro juegos el mismo día."', '"Pòquer del dia", "Juga els quatre jocs el mateix dia."'),
+        ('"Póker del día", "Juega cuatro juegos distintos el mismo día."', '"Pòquer del dia", "Juga quatre jocs diferents el mateix dia."'),
+        ('"Pleno del día", "Juega los cinco juegos el mismo día."', '"Ple del dia", "Juga els cinc jocs el mateix dia."'),
+        ('"Viajero en el tiempo", "Completa una Línea del tiempo."', '"Viatger en el temps", "Completa una Línea del tiempo."'),
+        ('"Historiador", "Completa una Línea del tiempo sin fallar."', '"Historiador", "Completa una Línea del tiempo sense fallar."'),
+        ('"Memoria de elefante", "Coloca bien 50 sucesos en Línea del tiempo."', '"Memòria d\'elefant", "Col·loca bé 50 fets en Línea del tiempo."'),
         ('"Todo encaja", "Descubre los cuatro grupos de Grupos del día."', '"Tot encaixa", "Descobrix els quatre grups de Grupos del día."'),
         ('"Sin un fallo", "Descubre los cuatro grupos sin fallar ni una vez."', '"Sense cap error", "Descobrix els quatre grups sense fallar ni una vegada."'),
         ('"Gran clasificador", "Descubre los cuatro grupos en 10 retos."', '"Gran classificador", "Descobrix els quatre grups en 10 reptes."'),
@@ -345,9 +352,9 @@ JS = {
         ('"Calculadora humana", "Llega exacto 25 veces en Cifras."', '"Calculadora humana", "Arriba exacte 25 vegades en Xifres."'),
     ],
     "imagen.js": [
-        ('const JUEGO = /grupos/.test(location.pathname) ? "grupos" : /letras/.test(location.pathname) ? "letras" : /cifras/.test(location.pathname) ? "cifras" : "donde";',
+        ('const JUEGO = /linea/.test(location.pathname) ? "linea" : /grupos/.test(location.pathname) ? "grupos" : /letras/.test(location.pathname) ? "letras" : /cifras/.test(location.pathname) ? "cifras" : "donde";',
          'const JUEGO = /lletres/.test(location.pathname) ? "letras" : /xifres/.test(location.pathname) ? "cifras" : "donde";'),
-        ('{ donde: "¿Dónde está?", letras: "Letras del día", cifras: "Cifras del día", grupos: "Grupos del día" }', '{ donde: "¿Dónde está?", letras: "Lletres del dia", cifras: "Xifres del dia", grupos: "Grups del dia" }'),
+        ('{ donde: "¿Dónde está?", letras: "Letras del día", cifras: "Cifras del día", grupos: "Grupos del día", linea: "Línea del tiempo" }', '{ donde: "¿Dónde está?", letras: "Lletres del dia", cifras: "Xifres del dia", grupos: "Grups del dia", linea: "Línia del temps" }'),
         ('const inv = "¿Te atreves? Juega gratis en";', 'const inv = "T\'atrevixes? Juga gratis a";'),
         ('text: `Juega en piensaunrato.es`', 'text: `Juga a piensaunrato.es`'),
         ('"Preparando…"', '"Preparant…"'), ('"Imagen descargada"', '"Imatge baixada"'),
@@ -365,7 +372,7 @@ JS = {
         ('"No se ha podido activar ahora. Inténtalo de nuevo más tarde."', '"Ara no s\'ha pogut activar. Torna-ho a provar més tard."'),
     ],
     "clase.js": [
-        ('const JUEGO = /grupos/.test(location.pathname) ? "grupos" : /letras/.test(location.pathname) ? "letras" : /cifras/.test(location.pathname) ? "cifras" : "donde";',
+        ('const JUEGO = /linea/.test(location.pathname) ? "linea" : /grupos/.test(location.pathname) ? "grupos" : /letras/.test(location.pathname) ? "letras" : /cifras/.test(location.pathname) ? "cifras" : "donde";',
          'const JUEGO = /lletres/.test(location.pathname) ? "letras" : /xifres/.test(location.pathname) ? "cifras" : "donde";'),
         ('`<h3>Resultado enviado</h3><p class="ok">✓ Tu profe ya tiene tu resultado como «${esc(enviado.nombre)}».</p>`', '`<h3>Resultat enviat</h3><p class="ok">✓ El teu profe ja té el teu resultat com a «${esc(enviado.nombre)}».</p>`'),
         ('<h3>Envía tu resultado a tu profe</h3>', '<h3>Envia el teu resultat al teu profe</h3>'),

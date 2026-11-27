@@ -2,13 +2,15 @@
    Se carga después de los estilos de cada página. Solo añade el relieve (sombra inferior
    y efecto de pulsar); los colores siguen siendo los de cada página. */
 
-/* Barra de juegos */
-.games{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:6px;margin:0 0 3px;padding:0;list-style:none}
-@media (max-width:379px){.games a span[aria-hidden]{display:none}}
-.games a{display:flex;align-items:center;justify-content:center;gap:5px;min-height:44px;padding:6px 4px;box-sizing:border-box;border-radius:12px;border:1.5px solid var(--line,color-mix(in srgb,var(--ink) 28%,transparent));background:var(--card,transparent);color:var(--ink);text-decoration:none;font-size:.8rem;font-weight:600;white-space:nowrap;overflow:hidden}
+/* Barra de juegos: Inicio y los cinco juegos, icono arriba y nombre corto debajo */
+.games{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px;margin:0 0 3px;padding:0;list-style:none}
+.games a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;min-height:50px;padding:5px 2px;box-sizing:border-box;border-radius:12px;border:1.5px solid var(--line,color-mix(in srgb,var(--ink) 28%,transparent));background:var(--card,transparent);color:var(--ink);text-decoration:none;font-size:.68rem;font-weight:600;line-height:1.15;white-space:nowrap;overflow:hidden}
+.games a span{font-size:1.15rem;line-height:1.1}
 .games a:hover{border-color:var(--signal)}
 .games a[aria-current]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
 .games a:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+@media (max-width:379px){.games{gap:4px}.games a{font-size:.64rem;padding:5px 1px}}
+@media (min-width:480px){.games{gap:6px}.games a{font-size:.74rem}}
 
 /* Relieve: botones de color (sombra oscura) */
 .btn,.wa,.cafe,form button:not([type="button"]){box-shadow:0 3px 0 rgb(0 0 0 / .22)}
@@ -24,8 +26,8 @@
 @media (prefers-reduced-motion: reduce){.btn,.wa,.cafe,.games a,.ghost,.img-share,.more,.off,.opb,.go-card,.chips label,form button{transition:none}}
 
 /* Más juegos (pantalla final): fila compacta en lugar de tarjetas grandes */
-.go-mini{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
-.go-mini a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:64px;padding:8px 4px;border-radius:12px;border:1.5px solid var(--line,color-mix(in srgb,var(--ink) 28%,transparent));background:var(--card,transparent);color:var(--ink);text-decoration:none;font-size:.8rem;font-weight:600;text-align:center;box-shadow:0 3px 0 var(--line,color-mix(in srgb,var(--ink) 28%,transparent));transition:transform .08s,box-shadow .08s}
+.go-mini{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.go-mini a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:64px;padding:8px 2px;border-radius:12px;border:1.5px solid var(--line,color-mix(in srgb,var(--ink) 28%,transparent));background:var(--card,transparent);color:var(--ink);text-decoration:none;font-size:.74rem;font-weight:600;line-height:1.2;text-align:center;box-shadow:0 3px 0 var(--line,color-mix(in srgb,var(--ink) 28%,transparent));transition:transform .08s,box-shadow .08s}
 .go-mini a span{font-size:1.35rem;line-height:1}
 .go-mini a:hover{border-color:var(--signal)}
 .go-mini a:active{transform:translateY(2px);box-shadow:0 1px 0 rgb(0 0 0 / .22)}

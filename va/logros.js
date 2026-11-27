@@ -1,17 +1,17 @@
 // Generat per herramientas/valenciano.py a partir de ../logros.js. No l'edites a mà.
 // Logros de Piensa un rato. Se calculan con las partidas guardadas en este navegador
-// (dd-AAAA-MM-DD, lt-…, cf-… y gr-…), así que no hace falta cuenta ni servidor.
+// (dd-AAAA-MM-DD, lt-…, cf-…, gr-… y tl-…), así que no hace falta cuenta ni servidor.
 (function () {
   const VISTOS = "logros-vistos";
   const ymd = (t) => { const d = new Date(t); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; };
   const get = (k) => { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } };
 
   function datos() {
-    const D = { donde: [], letras: [], cifras: [], grupos: [], jugados: new Set(), porFecha: {} };
+    const D = { donde: [], letras: [], cifras: [], grupos: [], linea: [], jugados: new Set(), porFecha: {} };
     let keys = [];
     try { keys = Object.keys(localStorage); } catch (e) {}
     for (const k of keys) {
-      const m = k.match(/^(dd|lt|ll|cf|gr)-(\d{4}-\d{2}-\d{2})$/);  // ll = Lletres del dia (valencià)
+      const m = k.match(/^(dd|lt|ll|cf|gr|tl)-(\d{4}-\d{2}-\d{2})$/);  // ll = Lletres del dia (valencià)
       if (!m) continue;
       const s = get(k);
       if (!s || !s.done) continue;
@@ -20,6 +20,7 @@
       (D.porFecha[fecha] = D.porFecha[fecha] || new Set()).add(m[1] === "ll" ? "lt" : m[1]);
       if (m[1] === "dd") D.donde.push({ fecha, archivo, won: !!s.won, n: (s.guesses || []).length });
       else if (m[1] === "lt" || m[1] === "ll") { const r = s.res || []; D.letras.push({ fecha, archivo, pts: r.reduce((a, x) => a + (x.pts || 0), 0), ok: r.filter((x) => x.ok).length, rapida: Math.min(99, ...r.filter((x) => x.ok).map((x) => x.s ?? 99)) }); }
+      else if (m[1] === "tl") D.linea.push({ fecha, archivo, ok: (s.res || []).filter(Boolean).length, won: !!s.won, mist: s.mist || 0 });
       else if (m[1] === "gr") D.grupos.push({ fecha, archivo, pts: (s.found || []).length * 5, won: !!s.won, mist: s.mist || 0 });
       else { const r = s.res || []; D.cifras.push({ fecha, archivo, pts: r.reduce((a, x) => a + (x.pts || 0), 0), exactas: r.filter((x) => x.d === 0).length }); }
     }
@@ -36,8 +37,9 @@
     D.rachaMax = max;
     D.trios = Object.values(D.porFecha).filter((s) => s.size >= 3).length;
     D.pokers = Object.values(D.porFecha).filter((s) => s.size >= 4).length;
-    D.archivo = [...D.donde, ...D.letras, ...D.cifras, ...D.grupos].filter((x) => x.archivo).length;
-    D.total = D.donde.length + D.letras.length + D.cifras.length + D.grupos.length;
+    D.plenos = Object.values(D.porFecha).filter((s) => s.size >= 5).length;
+    D.archivo = [...D.donde, ...D.letras, ...D.cifras, ...D.grupos, ...D.linea].filter((x) => x.archivo).length;
+    D.total = D.donde.length + D.letras.length + D.cifras.length + D.grupos.length + D.linea.length;
     // Aciertos seguidos en ¿Dónde está? (por fecha del reto diario)
     let seg = 0, segMax = 0, p = null;
     for (const r of D.donde.filter((x) => !x.archivo).sort((a, b) => a.fecha < b.fecha ? -1 : 1)) {
@@ -54,7 +56,8 @@
   const LISTA = [
     ["primero", "🌱", "Primer pas", "Acaba el teu primer repte.", (D) => [D.total, 1]],
     ["trio", "🎯", "Trio del dia", "Juga tres jocs diferents el mateix dia.", (D) => [D.trios, 1]],
-    ["poker", "🃏", "Pòquer del dia", "Juga els quatre jocs el mateix dia.", (D) => [D.pokers, 1]],
+    ["poker", "🃏", "Pòquer del dia", "Juga quatre jocs diferents el mateix dia.", (D) => [D.pokers, 1]],
+    ["pleno", "🌟", "Ple del dia", "Juga els cinc jocs el mateix dia.", (D) => [D.plenos, 1]],
     ["trio7", "🏆", "Setmana completa", "Fes el trio del dia 7 dies diferents.", (D) => [D.trios, 7]],
     ["racha3", "🔥", "Escalfant", "Juga 3 dies seguits.", (D) => [D.rachaMax, 3]],
     ["racha7", "📆", "Una setmana sense fallar", "Juga 7 dies seguits.", (D) => [D.rachaMax, 7]],
@@ -72,7 +75,10 @@
     ["cifras25", "🤖", "Calculadora humana", "Arriba exacte 25 vegades en Xifres.", (D) => [sum(D.cifras, (x) => x.exactas), 25]],
     ["grupos1", "🧩", "Tot encaixa", "Descobrix els quatre grups de Grupos del día.", (D) => [D.grupos.some((x) => x.won) ? 1 : 0, 1]],
     ["grupos0", "🌈", "Sense cap error", "Descobrix els quatre grups sense fallar ni una vegada.", (D) => [D.grupos.some((x) => x.won && x.mist === 0) ? 1 : 0, 1]],
-    ["grupos10", "🗂️", "Gran classificador", "Descobrix els quatre grups en 10 reptes.", (D) => [D.grupos.filter((x) => x.won).length, 10]]
+    ["grupos10", "🗂️", "Gran classificador", "Descobrix els quatre grups en 10 reptes.", (D) => [D.grupos.filter((x) => x.won).length, 10]],
+    ["linea1", "⏳", "Viatger en el temps", "Completa una Línea del tiempo.", (D) => [D.linea.some((x) => x.won) ? 1 : 0, 1]],
+    ["linea0", "📜", "Historiador", "Completa una Línea del tiempo sense fallar.", (D) => [D.linea.some((x) => x.won && x.mist === 0) ? 1 : 0, 1]],
+    ["linea50", "🏛️", "Memòria d'elefant", "Col·loca bé 50 fets en Línea del tiempo.", (D) => [D.linea.reduce((a, x) => a + x.ok, 0), 50]]
   ];
 
   function estado() {
