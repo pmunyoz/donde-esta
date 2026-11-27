@@ -91,6 +91,13 @@ button:disabled{opacity:.45;cursor:default}
 .band span{font-size:.84rem}
 .band.g1{background:#F2C94C}.band.g2{background:#7FCB8A}.band.g3{background:#86BDEB}.band.g4{background:#BEA2EC}
 .band.miss{opacity:.6}
+.reloj{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:.88rem;font-variant-numeric:tabular-nums}
+.reloj b{color:var(--hot)}.reloj small{color:var(--muted)}
+.gridwrap{position:relative}
+.board.espera .grid{filter:blur(7px);pointer-events:none;user-select:none}
+.empieza{position:absolute;inset:0;z-index:2;min-height:240px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:20px;text-align:center}
+.empieza .btn{font-size:1.05rem;padding:14px 32px}
+.empieza small{max-width:260px;font-size:.84rem;color:var(--ink);background:var(--card);border-radius:10px;padding:6px 10px}
 .vidas{display:flex;align-items:center;justify-content:center;gap:6px;font-size:.82rem;color:var(--muted)}
 .vidas i{width:12px;height:12px;border-radius:50%;background:var(--ink)}
 .vidas i.off{background:transparent;border:1.5px solid var(--line)}
@@ -172,7 +179,7 @@ pre.share{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font-family:var(-
     <div class="num" id="num"></div>
   </header>
   <div class="retobox" id="retobox" hidden></div>
-  <p class="how" id="how">Dieciséis palabras escondidas en cuatro grupos de cuatro. Elige cuatro que tengan algo en común y comprueba. Puedes fallar cuatro veces.</p>
+  <p class="how" id="how">Dieciséis palabras escondidas en cuatro grupos de cuatro. Elige cuatro que tengan algo en común y comprueba. Puedes fallar cuatro veces, y cuanto antes acabes, más puntos.</p>
   <section id="play"></section>
   <div id="end"></div>
   <section class="liga" id="liga" hidden></section>
@@ -181,7 +188,7 @@ pre.share{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font-family:var(-
   <section class="about">
     <h2>Cómo se juega a Grupos del día</h2>
     <p>Cada día hay dieciséis palabras nuevas, iguales para todos. Esconden cuatro grupos de cuatro palabras con algo en común: animales, ríos, sinónimos, cosas que tienen dientes… Toca cuatro palabras y pulsa «Comprobar». Si aciertas, el grupo se descubre con su color: amarillo es el más fácil y morado el más difícil. Puedes fallar cuatro veces.</p>
-    <p>Cada grupo acertado vale 5 puntos, y si los descubres todos sumas hasta 5 más según los fallos: 5 sin fallos, 3 con uno y 1 con dos. Máximo, 25 puntos.</p>
+    <p>Cada grupo acertado vale 4 puntos. Si los descubres todos, sumas además hasta 4 puntos según los fallos (4 sin fallos, 2 con uno y 1 con dos) y hasta 5 por rapidez: el bono de tiempo empieza en 5 y baja un punto cada 30 segundos. Máximo, 25 puntos.</p>
     <h2>Para profesores</h2>
     <p>Crea tus propios grupos con el vocabulario de clase (por ejemplo, vertebrados e invertebrados, o tipos de palabras) y compártelos con tus alumnos con un enlace o un código QR. <a href="profes.html#grupos">Crear un reto para clase</a></p>
   </section>
@@ -212,7 +219,7 @@ const escH=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;
 const cap=s=>String(s).trim().toUpperCase().slice(0,24);
 // Grupos del reto: [{l: nivel 1-4, n: nombre, w: [4 palabras]}], del más fácil al más difícil
 const GRUPOS=CUSTOM?CUSTOM.g.slice(0,4).map((g,i)=>({l:i+1,n:String(g.n||`Grupo ${i+1}`).slice(0,60),w:g.w.map(cap)})):gruposDelDia(DAY);
-const NG=GRUPOS.length,MAXP=NG*5+5,VIDAS=4,SEED=CUSTOM?parseInt(CUSTOM.id,36)%100000:DAY*53+11;
+const NG=GRUPOS.length,MAXP=NG*4+9,VIDAS=4,SEED=CUSTOM?parseInt(CUSTOM.id,36)%100000:DAY*53+11;
 const TILES=shuffled(GRUPOS.flatMap((g,gi)=>g.w.map(w=>({w,g:gi}))),SEED);
 const SHARE_URL=CUSTOM?location.href:location.origin+location.pathname+(ARCH?"?dia="+key:"");
 document.getElementById("num").innerHTML=CUSTOM?`Reto para clase${CUSTOM.au?`<br>de ${escH(CUSTOM.au)}`:""}`:`Reto nº ${NUM}<br>${now.toLocaleDateString("es-ES",{day:"numeric",month:"long"})}`;
@@ -230,9 +237,12 @@ try{const s=JSON.parse(localStorage.getItem(SK));if(s)st=s}catch(e){}
 try{const s=JSON.parse(localStorage.getItem("gr-stats"));if(s)stats=s}catch(e){}
 const save=()=>{try{localStorage.setItem(SK,JSON.stringify(st));localStorage.setItem("gr-stats",JSON.stringify(stats))}catch(e){}};
 let sel=[],order=TILES.map((_,i)=>i),msgText="",msgCls="",busy=false;
-const BONO=[5,3,1,0];
-const score=()=>st.found.length*5+(st.won?BONO[Math.min(st.mist,3)]:0);
+// Puntos: 4 por grupo; si se completan, bono por fallos (4/2/1/0) y bono de tiempo (5, baja 1 cada 30 s)
+const BONO=[4,2,1,0],TRAMO=30;
 const usedSecs=()=>st.t0?Math.round(((st.t1||Date.now())-st.t0)/1000):null;
+const bonoTiempo=()=>Math.max(0,5-Math.floor((usedSecs()||0)/TRAMO));
+const score=()=>st.score!=null?st.score:st.done?st.found.length*5+(st.won?[5,3,1,0][Math.min(st.mist,3)]:0) // partidas terminadas antes del bono de tiempo
+  :st.found.length*4+(st.won?BONO[Math.min(st.mist,3)]+bonoTiempo():0);
 const mmss=s=>s==null?"–":`${Math.floor(s/60)}:${String(Math.round(s)%60).padStart(2,"0")}`;
 
 function bandas(lista){return lista.map(gi=>{const g=GRUPOS[gi];return`<div class="band g${g.l}"><b>${escH(g.n)}</b><span>${g.w.map(escH).join(", ")}</span></div>`}).join("")}
@@ -240,19 +250,24 @@ function drawPlay(){
   const el=document.getElementById("play");
   if(st.done){el.innerHTML="";return}
   const quedan=order.filter(i=>!st.found.includes(TILES[i].g));
-  el.innerHTML=`<div class="board">
+  el.innerHTML=`<div class="board${st.t0?"":" espera"}">
+    ${st.t0?`<div class="reloj" id="reloj" aria-live="off">${reloj()}</div>`:""}
     ${st.found.length?`<div class="bands">${bandas(st.found)}</div>`:""}
-    <div class="grid" id="grid">${quedan.map(i=>`<button class="tile${sel.includes(i)?" on":""}" data-i="${i}" aria-pressed="${sel.includes(i)}" style="--n:${Math.max(4,TILES[i].w.length)}"><span>${escH(TILES[i].w)}</span></button>`).join("")}</div>
-    <div class="vidas" aria-label="Fallos que te quedan: ${VIDAS-st.mist}">Fallos que te quedan: ${Array.from({length:VIDAS},(_,k)=>`<i class="${k<VIDAS-st.mist?"":"off"}"></i>`).join("")}</div>
-    <div class="actions"><button class="ghost" id="mix">Mezclar</button><button class="ghost" id="none"${sel.length?"":" disabled"}>Quitar selección</button><button class="btn" id="check"${sel.length===4?"":" disabled"}>Comprobar</button></div>
+    <div class="gridwrap">${st.t0?"":`<div class="empieza"><button class="btn" id="go">Empezar</button><small>El reloj corre desde que empiezas: el bono de tiempo baja un punto cada 30 segundos.</small></div>`}
+    <div class="grid" id="grid"${st.t0?"":` aria-hidden="true"`}>${quedan.map(i=>`<button class="tile${sel.includes(i)?" on":""}" data-i="${i}" aria-pressed="${sel.includes(i)}" style="--n:${Math.max(4,TILES[i].w.length)}"><span>${escH(TILES[i].w)}</span></button>`).join("")}</div></div>
+    ${st.t0?"":"<!--"}<div class="vidas" aria-label="Fallos que te quedan: ${VIDAS-st.mist}">Fallos que te quedan: ${Array.from({length:VIDAS},(_,k)=>`<i class="${k<VIDAS-st.mist?"":"off"}"></i>`).join("")}</div>
+    <div class="actions"><button class="ghost" id="mix">Mezclar</button><button class="ghost" id="none"${sel.length?"":" disabled"}>Quitar selección</button><button class="btn" id="check"${sel.length===4?"":" disabled"}>Comprobar</button></div>${st.t0?"":"-->"}
     <p class="msg ${msgCls}" id="msg" role="status">${msgText}</p></div>`;
-  document.getElementById("grid").onclick=e=>{const b=e.target.closest("[data-i]");if(!b||busy)return;const i=+b.dataset.i;
-    if(!st.t0){st.t0=Date.now();save()}
+  const go=document.getElementById("go");if(go){go.onclick=()=>{st.t0=Date.now();save();drawPlay()};return}
+  document.getElementById("grid").onclick=e=>{const b=e.target.closest("[data-i]");if(!b||busy||!st.t0)return;const i=+b.dataset.i;
     if(sel.includes(i))sel.splice(sel.indexOf(i),1);else if(sel.length<4)sel.push(i);else return;
     msgText="";msgCls="";drawPlay()};
   document.getElementById("mix").onclick=()=>{order=shuffled(order,Date.now()%1e9);drawPlay()};
   document.getElementById("none").onclick=()=>{sel=[];msgText="";drawPlay()};
   document.getElementById("check").onclick=comprobar}
+function reloj(){const b=bonoTiempo(),s=usedSecs()||0,r=TRAMO-s%TRAMO;
+  return`<span>⏱ ${mmss(s)}</span><span>Bono de tiempo: <b>+${b}</b>${b>0?` <small>(baja en ${r} s)</small>`:""}</span>`}
+setInterval(()=>{const r=document.getElementById("reloj");if(r&&!st.done)r.innerHTML=reloj()},1000);
 function setMsg(t,c){msgText=t;msgCls=c||"";const m=document.getElementById("msg");if(m){m.textContent=t;m.className="msg "+msgCls}}
 function comprobar(){
   if(sel.length!==4||busy||st.done)return;
@@ -269,7 +284,7 @@ function comprobar(){
     GRUPOS.forEach((_,gi)=>{if(!st.found.includes(gi))(st.rev=st.rev||[]).push(gi)});terminar();return}
   save();drawPlay();setMsg(max===3?"¡Casi! Te falta una.":"No es un grupo.","bad");
   const g=document.getElementById("grid");g.classList.remove("shake");void g.offsetWidth;g.classList.add("shake")}
-function terminar(){st.done=true;st.t1=Date.now();endStats();save();render();sendResult()}
+function terminar(){st.done=true;st.t1=Date.now();st.score=st.found.length*4+(st.won?BONO[Math.min(st.mist,3)]+bonoTiempo():0);endStats();save();render();sendResult()}
 function endStats(){if(window.contarPartida)contarPartida("grupos",CUSTOM?"reto":ARCH?"archivo":"diario",key,score());if(CUSTOM||ARCH)return;const y=new Date(now);y.setDate(y.getDate()-1);
   stats.played++;stats.total+=score();stats.best=Math.max(stats.best,score());if(st.won)stats.wins=(stats.wins||0)+1;
   stats.streak=stats.last===dkey(y)?stats.streak+1:1;stats.maxStreak=Math.max(stats.maxStreak||0,stats.streak);stats.last=key}
@@ -278,14 +293,14 @@ function endStats(){if(window.contarPartida)contarPartida("grupos",CUSTOM?"reto"
 const EMO=["","🟨","🟩","🟦","🟪"];
 function shareText(){const head=CUSTOM?`Grupos · ${CUSTOM.ti||"Reto para clase"}`:`Grupos del día nº ${NUM}`;
   return`${head} — ${score()}/${MAXP}\n${st.tries.map(t=>t.l.map(l=>EMO[l]).join("")).join("\n")}\n${SHARE_URL}`}
-function verdict(){if(st.won&&st.mist===0)return"Perfecto";if(st.won&&st.mist===1)return"Muy bien";if(st.won)return"¡Lo has sacado!";
+function verdict(){if(score()>=MAXP)return"Perfecto";if(st.won&&st.mist===0)return"Sin un fallo";if(st.won&&st.mist===1)return"Muy bien";if(st.won)return"¡Lo has sacado!";
   return st.found.length>=2?"Por poco":CUSTOM||ARCH?"Otra vez será":"Mañana más"}
 function drawEnd(){const e=document.getElementById("end");if(!st.done){e.innerHTML="";return}
   const avg=stats.played?(stats.total/stats.played).toFixed(1).replace(".",","):"0";
   const orden=[...st.found,...(st.rev||[])];
   e.innerHTML=`<div class="end"><h2><span>${score()}</span> de ${MAXP} puntos. ${verdict()}.</h2>
   <div class="bands">${orden.map(gi=>{const g=GRUPOS[gi],ok=st.found.includes(gi);return`<div class="band g${g.l}${ok?"":" miss"}"><b>${ok?"":"✕ "}${escH(g.n)}</b><span>${g.w.map(escH).join(", ")}</span></div>`}).join("")}</div>
-  <p class="hint">${st.found.length} de ${NG} grupos · ${st.mist} fallo${st.mist===1?"":"s"}${usedSecs()!=null?` · ${mmss(usedSecs())}`:""}</p>
+  <p class="hint">${st.found.length} de ${NG} grupos (${st.found.length*4}) · ${st.mist} fallo${st.mist===1?"":"s"}${st.won?` (+${BONO[Math.min(st.mist,3)]})`:""}${usedSecs()!=null?` · ${mmss(usedSecs())}${st.won?` (+${Math.max(0,5-Math.floor(usedSecs()/TRAMO))})`:""}`:""}</p>
   ${CUSTOM||ARCH?"":`<div class="stats"><div><b>${stats.played}</b><small>Jugados</small></div><div><b>${avg}</b><small>Media</small></div><div><b>${stats.best}</b><small>Mejor</small></div><div><b>${stats.streak}</b><small>Racha</small></div></div>`}
   ${CUSTOM?"":`<div class="global" id="global"></div>`}
   <pre class="share" id="sharetxt">${shareText()}</pre>
