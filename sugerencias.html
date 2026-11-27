@@ -37,10 +37,17 @@ button:disabled{opacity:.5;cursor:default}
 .msg{min-height:1.4em;margin-top:12px;font-weight:600}
 .msg.bad{color:#C0392B}
 .ok{border:1.5px solid var(--signal);border-radius:12px;padding:16px;margin-top:16px}
+
+/* Barra de juegos (igual que en los juegos) */
+.games{display:grid;grid-template-columns:1.35fr 1fr 1fr;gap:6px;margin:0 0 4px;padding:0;list-style:none}
+.games a{display:flex;align-items:center;justify-content:center;gap:5px;padding:7px 4px;border-radius:999px;border:1.5px solid var(--line,color-mix(in srgb,var(--ink) 28%,transparent));color:var(--ink);text-decoration:none;font-size:.82rem;font-weight:600;white-space:nowrap}
+.games a:hover{border-color:var(--signal)}
+.games a:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 </style>
 </head>
 <body>
 <div class="wrap">
+  <nav aria-label="Juegos"><ul class="games"><li><a href="./"><span aria-hidden="true">📍</span> ¿Dónde está?</a></li><li><a href="letras.html"><span aria-hidden="true">🔤</span> Letras</a></li><li><a href="cifras.html"><span aria-hidden="true">🔢</span> Cifras</a></li></ul></nav>
 <h1>Sugerencias y errores</h1>
 <small>¿Una idea para mejorar los juegos o algo que no funciona bien? Cuéntamelo aquí.</small>
 
@@ -75,7 +82,7 @@ button:disabled{opacity:.5;cursor:default}
 </form>
 
 <p><small>Lo que envíes solo lo leo yo. Si dejas un contacto, lo usaré únicamente para responderte. Más información en la <a href="privacidad.html">página de privacidad</a>.</small></p>
-<p><a href="./">¿Dónde está?</a> · <a href="letras.html">Letras del día</a> · <a href="cifras.html">Cifras del día</a> · <a href="acerca.html">Acerca de</a></p>
+<p><a href="acerca.html">Acerca de</a></p>
 </div>
 <script>
 {

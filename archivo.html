@@ -66,12 +66,19 @@ a.wa:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 .cafe .txt{display:flex;flex-direction:column;gap:2px;min-width:0}
 .cafe b{font-size:1rem}
 .cafe small{font-size:.82rem;opacity:.85;line-height:1.35}
+
+/* Barra de juegos (igual que en los juegos) */
+.games{display:grid;grid-template-columns:1.35fr 1fr 1fr;gap:6px;margin:0 0 4px;padding:0;list-style:none}
+.games a{display:flex;align-items:center;justify-content:center;gap:5px;padding:7px 4px;border-radius:999px;border:1.5px solid var(--line,color-mix(in srgb,var(--ink) 28%,transparent));color:var(--ink);text-decoration:none;font-size:.82rem;font-weight:600;white-space:nowrap}
+.games a:hover{border-color:var(--signal)}
+.games a:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 </style>
 </head>
 <body>
 <div class="wrap">
+  <nav aria-label="Juegos"><ul class="games"><li><a href="./"><span aria-hidden="true">📍</span> ¿Dónde está?</a></li><li><a href="letras.html"><span aria-hidden="true">🔤</span> Letras</a></li><li><a href="cifras.html"><span aria-hidden="true">🔢</span> Cifras</a></li></ul></nav>
   <h1>Días<br><span>anteriores</span></h1>
-  <p class="how">¿Te perdiste algún día? Aquí están todos los retos pasados. Los que juegues aquí no cuentan para tus estadísticas ni para la liga. Volver al reto de hoy: <a href="./">¿Dónde está?</a> · <a href="letras.html">Letras del día</a> · <a href="cifras.html">Cifras del día</a></p>
+  <p class="how">¿Te perdiste algún día? Aquí están todos los retos pasados. Los que juegues aquí no cuentan para tus estadísticas ni para la liga.</p>
   <ol class="days" id="days"></ol>
   <div class="ad-slot"></div>
   <a class="cafe" href="https://ko-fi.com/pascualmunoz" target="_blank" rel="noopener"><span class="cup" aria-hidden="true">☕</span><span class="txt"><b>¿Te gustan los juegos? Invítame a un café</b><small>Los juegos son gratis. Con un café me ayudas a mantenerlos y a crear más.</small></span></a>
