@@ -98,7 +98,7 @@ def peu(actual):
     castella = {"xifres": "cifras.html", "lletres": "letras.html"}[actual]
     return ('<p class="osm">Més jocs: <a href="./">¿Dónde está?</a> · ' + altres +
             ' · <a href="archivo.html">Dies anteriors</a> · <a href="soluciones.html">Solucions</a> · <a href="https://ko-fi.com/pascualmunoz" target="_blank" rel="noopener">Convida\'m a un café</a>'
-            ' · <a href="sugerencias.html">Suggeriments</a> · <a href="logros.html">Assoliments</a> · <a href="acerca.html">Qui som</a> · <a href="privacidad.html">Privacitat</a>'
+            ' · <a href="sugerencias.html">Suggeriments</a> · <a href="ranking.html">Classificació</a> · <a href="logros.html">Assoliments</a> · <a href="acerca.html">Qui som</a> · <a href="privacidad.html">Privacitat</a>'
             f' · <a href="{castella}" lang="es" hreflang="es">En castellano</a></p>')
 
 def nav(actual):
@@ -110,7 +110,7 @@ def nav(actual):
 def scripts_va(html, fitxer):
     # Rutes des de l'arrel (amb <base href="/">) i scripts compartits traduïts
     html = html.replace('<meta charset="utf-8">', '<meta charset="utf-8">\n<base href="/">', 1)
-    for js in ["avisos.js", "imagen.js", "logros.js", "estadisticas.js", "clase.js"]:
+    for js in ["avisos.js", "imagen.js", "logros.js", "estadisticas.js", "ranking.js", "clase.js"]:
         tag = f'<script src="{js}"></script>'
         if tag not in html:
             raise Falta(f"{fitxer}: no trobe {tag}")
@@ -305,6 +305,19 @@ JS = {
         ('${archivo ? "jugaron" : "han jugado"} · media <b>', '${archivo ? "van jugar" : "han jugat"} · mitjana <b>'),
         ('` · has superado al <b>${pct} %</b>`', '` · has superat el <b>${pct} %</b>`'),
         ('aria-label="Cuántos jugadores sacaron cada puntuación"', 'aria-label="Quants jugadors van traure cada puntuació"'),
+        ('${archivo ? "Quedaste" : "Vas"} <b>${puesto}.º</b> de ', '${archivo ? "Vas quedar en la posició" : "Vas en la posició"} <b>${puesto}</b> de '),
+    ],
+    "ranking.js": [
+        ('Ver la clasificación de hoy</a>', 'Vore la classificació de hui (en castellà)</a>'),
+        ('apodo: "Ese apodo no vale. Usa entre 2 y 20 letras o números, sin palabras malsonantes."', 'apodo: "Eixe sobrenom no val. Usa entre 2 i 20 lletres o números, sense paraulotes."'),
+        ('ocupado: "Ese apodo ya lo ha usado alguien hoy. Prueba con otro."', 'ocupado: "Eixe sobrenom ja l\'ha usat algú hui. Prova\'n un altre."'),
+        ('fecha: "Este reto ya no admite resultados."', 'fecha: "Este repte ja no admet resultats."'),
+        ('error: "No se ha podido enviar. Inténtalo de nuevo."', 'error: "No s\'ha pogut enviar. Torna-ho a provar."'),
+        ('<h3>🏆 Clasificación pública</h3><p class="ok">Sales hoy como «${esc(hecho)}».</p>', '<h3>🏆 Classificació pública</h3><p class="ok">Hui ixes com a «${esc(hecho)}».</p>'),
+        ('<h3>🏆 ¿Sales en la clasificación de hoy?</h3>', '<h3>🏆 Vols eixir en la classificació de hui?</h3>'),
+        ('<p>Tu apodo y tu puntuación serán visibles para todo el mundo. No pongas tu nombre completo.</p>', '<p>El teu sobrenom i la teua puntuació seran visibles per a tothom. No poses el teu nom complet.</p>'),
+        ('>Apodo</label>', '>Sobrenom</label>'), ('placeholder="Tu apodo"', 'placeholder="El teu sobrenom"'),
+        ('<button type="submit">Salir en la clasificación</button>', '<button type="submit">Ix en la classificació</button>'),
     ],
     "logros.js": [
         ('${n.length > 1 ? `¡${n.length} logros nuevos!` : "¡Logro nuevo!"} ${n.map((l) => l.nombre).join(", ")}</b><small>Ver todos tus logros</small>',

@@ -8,6 +8,8 @@
 .global:empty{display:none}
 .global h3{margin:0;font-size:.95rem}
 .global .gl-line{margin:0;font-size:.88rem;color:var(--muted)}
+.global .gl-puesto{margin:0;font-family:var(--f-display,inherit);font-size:1.35rem;font-weight:800}
+.global .gl-puesto b{color:var(--signal)}
 .global .gl-line b{color:var(--ink)}
 .global .gl-bars{display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:6px;align-items:end;height:92px}
 .global .gl-bar{display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px;height:100%}
@@ -45,8 +47,9 @@
       return;
     }
     const pts = d.puntos || {};
-    let menos = 0;
-    for (const k in pts) if (+k < mis) menos += pts[k];
+    let menos = 0, mas = 0;
+    for (const k in pts) { if (+k < mis) menos += pts[k]; if (+k > mis) mas += pts[k]; }
+    const puesto = mas + 1;
     const pct = Math.round(100 * menos / total);
     const media = String(d.media).replace(".", ",");
     const T = tramos(max).map((t) => {
@@ -56,6 +59,7 @@
     });
     const top = Math.max(1, ...T.map((t) => t.n));
     el.innerHTML = `<h3>${archivo ? "Ese día" : "Hoy"}, entre todos</h3>
+      <p class="gl-puesto">${archivo ? "Quedaste" : "Vas"} <b>${puesto}.º</b> de ${total.toLocaleString("es-ES")}</p>
       <p class="gl-line"><b>${total.toLocaleString("es-ES")}</b> ${archivo ? "jugaron" : "han jugado"} · media <b>${esc(media)}</b> de ${max}${pct > 0 ? ` · has superado al <b>${pct} %</b>` : ""}</p>
       <div class="gl-bars" style="--n:${T.length}" role="img" aria-label="Cuántos jugadores sacaron cada puntuación">
         ${T.map((t) => `<div class="gl-bar${t.me ? " me" : ""}"><i style="height:${Math.round(70 * t.n / top)}px"></i><span>${t.label}</span></div>`).join("")}
