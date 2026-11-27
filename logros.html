@@ -66,6 +66,7 @@ a{color:var(--ink)}
   <p class="how">Se guardan en este navegador, sin cuenta. Si juegas en otro móvil u ordenador, allí llevarás otros. Volver a: <a href="./">¿Dónde está?</a> · <a href="letras.html">Letras</a> · <a href="cifras.html">Cifras</a></p>
   <div class="sum" id="sum"></div>
   <div class="list" id="list"></div>
+  <div class="ad-slot"></div>
   <p class="osm"><a href="archivo.html">Días anteriores</a> · <a href="acerca.html">Acerca de</a> · <a href="privacidad.html">Privacidad</a></p>
 </div>
 <script src="logros.js"></script>
@@ -78,6 +79,8 @@ const orden=[...logros.filter(l=>l.ok),...logros.filter(l=>!l.ok).sort((a,b)=>b.
 document.getElementById("list").innerHTML=orden.map(l=>`<div class="lg${l.ok?" ok":""}"><span class="ic" aria-hidden="true">${l.ic}</span><span class="txt"><b>${l.nombre}</b><small>${l.desc}</small>${!l.ok&&l.meta>1?`<span class="bar" role="img" aria-label="${l.v} de ${l.meta}"><i style="width:${Math.round(100*l.v/l.meta)}%"></i></span><small>${l.v} de ${l.meta}</small>`:""}</span>${l.ok?`<span class="tick">✓ Conseguido</span>`:""}</div>`).join("");
 }
 </script>
+<script src="ads.js"></script>
+<script>if(window.Ads)Ads.fill();</script>
 <script data-goatcounter="https://pmunyoz.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>

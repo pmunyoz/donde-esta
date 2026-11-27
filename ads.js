@@ -3,7 +3,7 @@
 //
 // Reglas para que no molesten al jugar:
 //  - El código de Google solo se carga al terminar la partida (pantalla final) o en las páginas
-//    de días anteriores y de clasificación. Durante el juego no hay nada de publicidad, ni siquiera cargada.
+//    de días anteriores, clasificación, soluciones y logros. Durante el juego no hay nada de publicidad, ni siquiera cargada.
 //  - Un único anuncio por pantalla, debajo de todo, con su hueco reservado para que nada salte.
 //  - Solo bloques manuales (SLOT). En el panel de AdSense, DESACTIVA los «Anuncios automáticos»
 //    (o al menos los formatos «Anclados» y «Viñeta»), porque son los que tapan la pantalla.
@@ -32,7 +32,7 @@
   }
 
   // Rellena los huecos <div class="ad-slot"></div> que aún estén vacíos.
-  // Solo se llama desde la pantalla final y desde las páginas de días anteriores y de clasificación.
+  // Solo se llama desde la pantalla final y desde las páginas de días anteriores, clasificación, soluciones y logros.
   function fill() {
     if (!CLIENT || !SLOT) return;
     const slots = document.querySelectorAll(".ad-slot:not([data-done])");
