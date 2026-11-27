@@ -84,9 +84,15 @@
     b.innerHTML = '<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="9" r="1.6"/><path d="M21 15l-5-5L5 21"/></svg> Compartir imagen';
     b.onclick = () => compartir(b);
     wa.after(b);
+    wa.parentElement.classList.add("share-row");
   }
   const css = document.createElement("style");
-  css.textContent = ".img-share{font:inherit;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:12px 18px;border-radius:10px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);flex:1 1 180px}.img-share:hover{border-color:var(--signal)}.img-share:focus-visible{outline:2px solid var(--ink);outline-offset:2px}.img-share:disabled{opacity:.6}";
+  css.textContent = ".img-share{font:inherit;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:12px 18px;border-radius:10px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);flex:1 1 180px}.img-share:hover{border-color:var(--signal)}.img-share:focus-visible{outline:2px solid var(--ink);outline-offset:2px}.img-share:disabled{opacity:.6}"
+    // WhatsApp e imagen: mismo ancho y alto (uno debajo del otro en móvil, lado a lado si cabe)
+    + ".share-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px;align-items:stretch}"
+    + ".share-row>#wa,.share-row>.img-share{width:100%;max-width:none;min-height:48px;box-sizing:border-box;margin:0;padding:10px 8px;border:1.5px solid transparent;font-size:.95rem;white-space:nowrap;line-height:1.2;text-align:center}"
+    + ".share-row>.img-share{border-color:var(--line)}"
+    + ".share-row>:not(#wa):not(.img-share){grid-column:1/-1}";
   document.head.appendChild(css);
   document.addEventListener("DOMContentLoaded", () => {
     const end = document.getElementById("end");

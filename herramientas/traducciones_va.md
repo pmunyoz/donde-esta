@@ -32,7 +32,7 @@ Para corregir algo, cambia la parte en valenciano en `herramientas/valenciano.py
 | <small>Media</small> | <small>Mitjana</small> |
 | <small>Mejor</small> | <small>Millor</small> |
 | <small>Racha</small> | <small>Ratxa</small> |
-| Compartir resultado por WhatsApp | Compartix el resultat per WhatsApp |
+| Compartir por WhatsApp | Compartix per WhatsApp |
 | `Siguiente en ${ | `El següent en ${ |
 | <b>¿Te ha gustado? Invítame a un café</b><small>Los juegos son gratis. Con un café me ayudas a mantenerlos y a crear más.</small> | <b>T'ha agradat? Convida'm a un café</b><small>Els jocs són gratuïts. Amb un café m'ajudes a mantindre'ls i a crear-ne més.</small> |
 | <h3>Más juegos</h3> | <h3>Més jocs</h3> |
@@ -140,7 +140,7 @@ Para corregir algo, cambia la parte en valenciano en `herramientas/valenciano.py
 | <small>Media</small> | <small>Mitjana</small> |
 | <small>Mejor</small> | <small>Millor</small> |
 | <small>Racha</small> | <small>Ratxa</small> |
-| Compartir resultado por WhatsApp | Compartix el resultat per WhatsApp |
+| Compartir por WhatsApp | Compartix per WhatsApp |
 | `Siguiente en ${ | `El següent en ${ |
 | <b>¿Te ha gustado? Invítame a un café</b><small>Los juegos son gratis. Con un café me ayudas a mantenerlos y a crear más.</small> | <b>T'ha agradat? Convida'm a un café</b><small>Els jocs són gratuïts. Amb un café m'ajudes a mantindre'ls i a crear-ne més.</small> |
 | <h3>Más juegos</h3> | <h3>Més jocs</h3> |
