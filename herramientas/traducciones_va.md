@@ -231,17 +231,21 @@ Para corregir algo, cambia la parte en valenciano en `herramientas/valenciano.py
 
 | Castellano | Valenciano |
 |---|---|
-| Ver la clasificación de hoy</a> | Vore la classificació de hui (en castellà)</a> |
+| titulo: "🏆 Clasificación de hoy" | titulo: "🏆 Classificació de hui" |
+| pregunta: "🏆 ¿Sales en la clasificación de hoy?" | pregunta: "🏆 Vols eixir en la classificació de hui?" |
+| aviso: "Tu apodo y tu puntuación serán visibles para todo el mundo. No pongas tu nombre completo." | aviso: "El teu sobrenom i la teua puntuació seran visibles per a tothom. No poses el teu nom complet." |
+| luego: "A partir de ahora saldrás automáticamente al terminar. Podrás cambiar el apodo o dejar de salir cuando quieras." | luego: "A partir d'ara eixiràs automàticament en acabar. Podràs canviar el sobrenom o deixar d'eixir quan vulgues." |
+| apodoLbl: "Apodo", apodoPh: "Tu apodo" | apodoLbl: "Sobrenom", apodoPh: "El teu sobrenom" |
+| salir: "Salir en la clasificación", guardar: "Guardar", cancelar: "Cancelar" | salir: "Ix en la classificació", guardar: "Guarda", cancelar: "Cancel·la" |
+| publicando: "Publicando tu resultado…" | publicando: "Publicant el teu resultat…" |
+| sales: "Sales como", cambiar: "Cambiar apodo", quitar: "Quitarme de hoy" | sales: "Ixes com a", cambiar: "Canvia el sobrenom", quitar: "Lleva'm de hui" |
+| auto: "Publicar automáticamente al terminar" | auto: "Publica automàticament en acabar" |
+| fuera: "Hoy no sales en la clasificación.", volver: "Volver a salir" | fuera: "Hui no ixes en la classificació.", volver: "Torna a eixir" |
+| ver: "Ver la clasificación de hoy" | ver: "Vore la classificació de hui (en castellà)" |
 | apodo: "Ese apodo no vale. Usa entre 2 y 20 letras o números, sin palabras malsonantes." | apodo: "Eixe sobrenom no val. Usa entre 2 i 20 lletres o números, sense paraulotes." |
 | ocupado: "Ese apodo ya lo ha usado alguien hoy. Prueba con otro." | ocupado: "Eixe sobrenom ja l'ha usat algú hui. Prova'n un altre." |
 | fecha: "Este reto ya no admite resultados." | fecha: "Este repte ja no admet resultats." |
 | error: "No se ha podido enviar. Inténtalo de nuevo." | error: "No s'ha pogut enviar. Torna-ho a provar." |
-| <h3>🏆 Clasificación pública</h3><p class="ok">Sales hoy como «${esc(hecho)}».</p> | <h3>🏆 Classificació pública</h3><p class="ok">Hui ixes com a «${esc(hecho)}».</p> |
-| <h3>🏆 ¿Sales en la clasificación de hoy?</h3> | <h3>🏆 Vols eixir en la classificació de hui?</h3> |
-| <p>Tu apodo y tu puntuación serán visibles para todo el mundo. No pongas tu nombre completo.</p> | <p>El teu sobrenom i la teua puntuació seran visibles per a tothom. No poses el teu nom complet.</p> |
-| >Apodo</label> | >Sobrenom</label> |
-| placeholder="Tu apodo" | placeholder="El teu sobrenom" |
-| <button type="submit">Salir en la clasificación</button> | <button type="submit">Ix en la classificació</button> |
 
 ## logros.js
 
