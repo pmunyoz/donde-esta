@@ -82,6 +82,16 @@ button,.btnlink{font:inherit;cursor:pointer;border:0;border-radius:10px;text-dec
 .sugg button{display:block;width:100%;text-align:left;background:transparent;color:var(--ink);padding:10px 14px;border-radius:0}
 .sugg button:hover,.sugg button.on{background:var(--sea)}
 .sugg small{color:var(--muted)}
+.ideas{border:1.5px dashed var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.ideas[hidden]{display:none}
+.ideas h3{margin:0;font-size:.9rem}
+.ideas .hint a{color:var(--ink);font-weight:600}
+.ideas ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.ideas li button{width:100%;justify-content:flex-start;text-align:left;gap:8px;background:var(--card);color:var(--ink);border:1.5px solid var(--line);padding:9px 12px;font-size:.88rem;line-height:1.35}
+.ideas li button b{color:var(--signal);flex:none}
+.ideas li button[disabled]{opacity:.45;cursor:default}
+.ideas .lvl{font-size:.72rem;color:var(--muted);font-weight:600;margin-left:auto;flex:none;padding-left:6px}
+.buscando{font-size:.82rem;color:var(--muted)}
 .chosen{font-size:.85rem;color:var(--hot);font-weight:600}
 .chosen:empty{display:none}
 .out{border-top:1px dashed var(--line);padding-top:14px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;align-items:start}
@@ -141,6 +151,12 @@ button,.btnlink{font:inherit;cursor:pointer;border:0;border-radius:10px;text-dec
       <div class="sugg" id="d-sugg" hidden></div>
       <span class="chosen" id="d-chosen"></span>
     </div>
+    <div class="ideas" id="d-ideas" hidden aria-live="polite">
+      <h3>💡 Pistas propuestas</h3>
+      <p class="hint" id="d-ideas-txt">Buscando ideas…</p>
+      <ul id="d-ideas-list"></ul>
+      <div class="row" id="d-ideas-act" hidden><button type="button" class="ghost" id="d-ideas-fill">Rellenar las 4 pistas con estas ideas</button></div>
+    </div>
     <div class="f"><label for="d-c1">Pista 1 <span class="hint">la ven desde el principio</span></label><input type="text" id="d-c1" maxlength="140" placeholder="Aquí termina el Camino de Santiago."></div>
     <div class="f"><label for="d-c2">Pista 2 <span class="hint">(opcional) tras el primer fallo</span></label><input type="text" id="d-c2" maxlength="140" placeholder="Su catedral tiene el Pórtico de la Gloria."></div>
     <div class="f"><label for="d-c3">Pista 3 <span class="hint">(opcional)</span></label><input type="text" id="d-c3" maxlength="140"></div>
@@ -191,7 +207,7 @@ button,.btnlink{font:inherit;cursor:pointer;border:0;border-radius:10px;text-dec
     <h2>Privacidad</h2>
     <p>El reto va dentro del enlace, con la respuesta cifrada para que no se vea a simple vista. Si activas la clasificación en directo, se guardan el nombre que escribe cada alumno y su resultado, solo los ve quien tenga el enlace del panel y se borran a los 7 días. Recomienda usar solo el nombre de pila o un apodo.</p>
   </section>
-  <p class="osm">Búsqueda de lugares: datos © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">colaboradores de OpenStreetMap</a>, vía Photon · <a href="https://ko-fi.com/pascualmunoz" target="_blank" rel="noopener">Invítame a un café</a></p>
+  <p class="osm">Búsqueda de lugares: datos © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">colaboradores de OpenStreetMap</a>, vía Photon. Ideas de pistas: Wikipedia y Wikidata · <a href="https://ko-fi.com/pascualmunoz" target="_blank" rel="noopener">Invítame a un café</a></p>
 </div>
 
 <script src="qr.js"></script>
@@ -242,13 +258,13 @@ async function geo(q){
   const u="https://photon.komoot.io/api/?limit=12&bbox=-9.6,35.8,4.6,44&q="+encodeURIComponent(q);
   const j=await (await fetch(u)).json();const seen=new Set();
   return j.features.filter(f=>f.properties&&f.properties.countrycode==="ES"&&f.properties.osm_key==="place"&&PLACES.includes(f.properties.osm_value)&&f.properties.name)
-    .map(f=>({n:f.properties.name,pr:f.properties.county||f.properties.state||"",la:+f.geometry.coordinates[1].toFixed(4),lo:+f.geometry.coordinates[0].toFixed(4)}))
+    .map(f=>({n:f.properties.name,pr:f.properties.county||f.properties.state||"",co:f.properties.state||"",la:+f.geometry.coordinates[1].toFixed(4),lo:+f.geometry.coordinates[0].toFixed(4)}))
     .filter(o=>{const k=o.n+"|"+o.pr;if(seen.has(k))return false;seen.add(k);return true}).slice(0,6)}
 const q=$("d-q"),sg=$("d-sugg");
 function drawSugg(){if(!list.length){sg.hidden=true;return}sel=-1;
   sg.innerHTML=list.map((o,k)=>`<button type="button" data-k="${k}">${esc(o.n)}${o.pr?` <small>· ${esc(o.pr)}</small>`:""}</button>`).join("");sg.hidden=false}
-q.addEventListener("input",()=>{place=null;$("d-chosen").textContent="";clearTimeout(tmr);const v=q.value.trim();if(v.length<2){sg.hidden=true;return}
-  const id=++req;tmr=setTimeout(async()=>{try{const r=await geo(v);if(id!==req)return;list=r;
+q.addEventListener("input",()=>{place=null;$("d-chosen").textContent="";$("d-ideas").hidden=true;clearTimeout(tmr);const v=q.value.trim();if(v.length<2){sg.hidden=true;return}
+  const id=++req;sg.innerHTML=`<p class="buscando" style="margin:0;padding:10px 14px">Buscando…</p>`;sg.hidden=false;tmr=setTimeout(async()=>{try{const r=await geo(v);if(id!==req)return;list=r;
     if(!r.length){sg.hidden=true;$("d-err").textContent=`No encuentro «${v}». Prueba con otro nombre o revisa cómo se escribe.`}else{$("d-err").textContent="";drawSugg()}}
     catch(e){$("d-err").textContent="No he podido buscar el lugar. Comprueba tu conexión y vuelve a intentarlo."}},300)});
 q.addEventListener("keydown",e=>{if(sg.hidden)return;const b=[...sg.querySelectorAll("button")];
@@ -256,7 +272,61 @@ q.addEventListener("keydown",e=>{if(sg.hidden)return;const b=[...sg.querySelecto
   else if(e.key==="Enter"&&sel>=0){e.preventDefault();choose(list[sel])}else if(e.key==="Escape")sg.hidden=true});
 sg.addEventListener("click",e=>{const b=e.target.closest("button");if(b)choose(list[+b.dataset.k])});
 document.addEventListener("click",e=>{if(!e.target.closest("#d-box"))sg.hidden=true});
-function choose(o){place=o;q.value=o.n;sg.hidden=true;$("d-err").textContent="";$("d-chosen").textContent=`✓ ${o.n}${o.pr?" ("+o.pr+")":""}`}
+function choose(o){place=o;q.value=o.n;sg.hidden=true;$("d-err").textContent="";$("d-chosen").textContent=`✓ ${o.n}${o.pr?" ("+o.pr+")":""}`;ideas(o)}
+// ---- Pistas propuestas: Wikipedia y Wikidata (las revisa el profe antes de usarlas) ----
+const WP="https://es.wikipedia.org/w/api.php?format=json&origin=*&";
+const sinTilde=t=>t.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
+async function wpJSON(qs){const r=await fetch(WP+qs);if(!r.ok)throw 0;return r.json()}
+async function articulo(o){
+  const base=sinTilde(o.n),vale=t=>{const x=sinTilde(t.replace(/\s*\(.*\)$/,""));return x===base};
+  const g=await wpJSON(`action=query&list=geosearch&gscoord=${o.la}|${o.lo}&gsradius=10000&gslimit=30`);
+  let t=(g.query&&g.query.geosearch||[]).map(x=>x.title).find(vale);
+  if(!t){const s=await wpJSON(`action=query&list=search&srlimit=8&srsearch=${encodeURIComponent(o.n+" "+(o.pr||""))}`);t=(s.query&&s.query.search||[]).map(x=>x.title).find(vale)}
+  if(!t)return null;
+  const e=await wpJSON(`action=query&redirects=1&prop=extracts|pageprops&exintro=1&explaintext=1&ppprop=wikibase_item&titles=${encodeURIComponent(t)}`);
+  const pg=Object.values(e.query.pages)[0];return pg&&pg.extract?{t:pg.title,txt:pg.extract,q:pg.pageprops&&pg.pageprops.wikibase_item}:null}
+async function datos(qid){
+  if(!qid)return{};
+  const r=await (await fetch(`https://www.wikidata.org/w/api.php?action=wbgetentities&props=claims&format=json&origin=*&ids=${qid}`)).json();
+  const c=(r.entities[qid]||{}).claims||{},val=p=>{const a=(c[p]||[]).filter(x=>x.mainsnak&&x.mainsnak.datavalue);if(!a.length)return null;
+    const best=a.find(x=>x.rank==="preferred")||a[a.length-1];return +best.mainsnak.datavalue.value.amount};
+  return{hab:val("P1082"),alt:val("P2044")}}
+function frases(txt,nombres){
+  const tapa=new RegExp(nombres.map(n=>sinTilde(n).replace(/[.*+?^${}()|[\]\\]/g,"\\$&")).join("|"),"g");
+  return txt.replace(/\s*\([^)]*\)/g,"").replace(/\s*\[[^\]]*\]/g,"").split(/(?<=[.!?])\s+(?=[A-ZÁÉÍÓÚÑ¿])/)
+    .map(f=>f.trim()).filter(f=>f.length>=35&&!/oficialmente|en valenciano|en catalán|en gallego|en euskera|en vasco|en asturiano|en aranés|coordenadas/i.test(f))
+    .map(f=>{const plano=sinTilde(f);let out="",i=0,m;tapa.lastIndex=0;
+      while((m=tapa.exec(plano))){out+=f.slice(i,m.index)+"este lugar";i=m.index+m[0].length}
+      out+=f.slice(i);return out.replace(/^este lugar/,"Este lugar").replace(/\s+/g," ")})
+    .map(f=>f.length>140?f.slice(0,f.lastIndexOf(" ",136))+"…":f)}
+const redondea=n=>n>=10000?Math.round(n/1000)*1000:n>=1000?Math.round(n/100)*100:Math.round(n/10)*10;
+let ideasReq=0;
+async function ideas(o){
+  const box=$("d-ideas"),ul=$("d-ideas-list"),txt=$("d-ideas-txt"),id=++ideasReq;
+  box.hidden=false;ul.innerHTML="";$("d-ideas-act").hidden=true;txt.textContent="Buscando ideas…";
+  let art=null,d={};
+  try{art=await articulo(o);if(art)d=await datos(art.q)}catch(e){}
+  if(id!==ideasReq)return;
+  const L=[]; // de más difícil a más fácil
+  if(art)frases(art.txt,[o.n,art.t.replace(/\s*\(.*\)$/,"")]).slice(1,4).forEach(f=>L.push([f,"difícil"]));
+  if(d.alt!=null&&d.alt>0)L.push([`Está a unos ${redondea(d.alt).toLocaleString("es-ES")} metros sobre el nivel del mar.`,"media"]);
+  if(d.hab)L.push([`Tiene unos ${redondea(d.hab).toLocaleString("es-ES")} habitantes.`,"media"]);
+  if(art){const f=frases(art.txt,[o.n,art.t.replace(/\s*\(.*\)$/,"")])[0];if(f)L.push([f,"fácil"])}
+  if(o.co)L.push([`Está en ${/^(Comunidad|Región|Principado|Islas|Illes|Comunitat)/i.test(o.co)?"la "+o.co:o.co}.`,"fácil"]);
+  const vistas=new Set(),lista=L.filter(([f])=>{const k=sinTilde(f);if(vistas.has(k)||sinTilde(f).includes(sinTilde(o.n)))return false;vistas.add(k);return true});
+  if(!lista.length){txt.textContent="No he encontrado ideas para este lugar. Escribe tus propias pistas.";return}
+  txt.innerHTML=`Toca una para ponerla en la siguiente pista libre y edítala si quieres. ${art?`Sacadas de <a href="https://es.wikipedia.org/wiki/${encodeURIComponent(art.t.replace(/ /g,"_"))}" target="_blank" rel="noopener">Wikipedia</a>: revísalas antes de crear el reto.`:""}`;
+  ul.innerHTML=lista.map(([f,l],k)=>`<li><button type="button" data-k="${k}"><b aria-hidden="true">＋</b><span>${esc(f)}</span><span class="lvl">${l}</span></button></li>`).join("");
+  $("d-ideas-act").hidden=lista.length<2;
+  const libre=()=>["d-c1","d-c2","d-c3","d-c4"].map($).find(i=>!i.value.trim());
+  ul.onclick=e=>{const b=e.target.closest("button");if(!b)return;const i=libre();
+    if(!i){txt.textContent="Las cuatro pistas ya están escritas. Borra una para poner esta idea.";return}
+    i.value=lista[+b.dataset.k][0];b.disabled=true;i.focus()};
+  $("d-ideas-fill").onclick=()=>{const ids=["d-c1","d-c2","d-c3","d-c4"],n=Math.min(4,lista.length);
+    // Elige 4 repartidas de más difícil a más fácil
+    const pick=n<4?lista.slice(0,n):[0,Math.floor(lista.length/3),Math.floor(2*lista.length/3),lista.length-1].map(k=>lista[k]);
+    ids.forEach((x,k)=>{$(x).value=pick[k]?pick[k][0]:""});ul.querySelectorAll("button").forEach((b,k)=>b.disabled=pick.includes(lista[k]))};
+}
 $("d-go").onclick=()=>{
   const err=$("d-err");err.textContent="";
   if(!place){err.textContent="Elige el lugar en la lista de sugerencias que aparece al escribir.";q.focus();return}
