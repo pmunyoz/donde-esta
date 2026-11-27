@@ -94,7 +94,7 @@ COMUNS = [
 PEU_ES = re.compile(r'<p class="osm">Más juegos:.*?</p>', re.S)
 def peu(actual):
     altres = {"xifres": '<a href="va/lletres.html">Lletres del dia</a>', "lletres": '<a href="va/xifres.html">Xifres del dia</a>'}[actual]
-    castella = {"xifres": "cifras.html", "lletres": "letras.html"}[actual]
+    castella = {"xifres": "/cifras.html", "lletres": "/letras.html"}[actual]  # amb barra inicial perquè no es canvie per va/…
     return ('<p class="osm">Més jocs: <a href="donde.html">¿Dónde está?</a> · ' + altres +
             ' · <a href="grupos.html">Grupos del día</a> · <a href="linea.html">Línea del tiempo</a> · <a href="archivo.html">Dies anteriors</a> · <a href="soluciones.html">Solucions</a> · <a href="https://ko-fi.com/pascualmunoz" target="_blank" rel="noopener">Convida\'m a un café</a>'
             ' · <a href="sugerencias.html">Suggeriments</a> · <a href="ranking.html">Classificació</a> · <a href="logros.html">Assoliments</a> · <a href="acerca.html">Qui som</a> · <a href="privacidad.html">Privacitat</a>'
@@ -137,9 +137,10 @@ def capcalera(html, fitxer, titol, desc, url, nom):
     return html
 
 def alternatives(html, es_url, va_url):
-    alt = f'<link rel="alternate" hreflang="es" href="{es_url}">\n<link rel="alternate" hreflang="ca-ES-valencia" href="{va_url}">\n'
+    # De moment la versió en valencià està amagada: no s'enllaça des de la web i els cercadors no la indexen.
+    # Quan es publique, torna a posar els enllaços alternate (es / ca-ES-valencia) i lleva el noindex.
     html = re.sub(r'<link rel="alternate" hreflang="[^"]*" href="[^"]*">\n', "", html)
-    return html.replace("<link rel=\"canonical\"", alt + "<link rel=\"canonical\"", 1)
+    return html.replace("<link rel=\"canonical\"", '<meta name="robots" content="noindex">\n<link rel="canonical"', 1)
 
 # ---------------------------------------------------------------- Xifres del dia
 def xifres():
