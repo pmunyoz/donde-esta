@@ -1,16 +1,16 @@
 // Logros de Piensa un rato. Se calculan con las partidas guardadas en este navegador
-// (dd-AAAA-MM-DD, lt-… y cf-…), así que no hace falta cuenta ni servidor.
+// (dd-AAAA-MM-DD, lt-…, cf-… y gr-…), así que no hace falta cuenta ni servidor.
 (function () {
   const VISTOS = "logros-vistos";
   const ymd = (t) => { const d = new Date(t); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; };
   const get = (k) => { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } };
 
   function datos() {
-    const D = { donde: [], letras: [], cifras: [], jugados: new Set(), porFecha: {} };
+    const D = { donde: [], letras: [], cifras: [], grupos: [], jugados: new Set(), porFecha: {} };
     let keys = [];
     try { keys = Object.keys(localStorage); } catch (e) {}
     for (const k of keys) {
-      const m = k.match(/^(dd|lt|ll|cf)-(\d{4}-\d{2}-\d{2})$/);  // ll = Lletres del dia (valencià)
+      const m = k.match(/^(dd|lt|ll|cf|gr)-(\d{4}-\d{2}-\d{2})$/);  // ll = Lletres del dia (valencià)
       if (!m) continue;
       const s = get(k);
       if (!s || !s.done) continue;
@@ -19,6 +19,7 @@
       (D.porFecha[fecha] = D.porFecha[fecha] || new Set()).add(m[1] === "ll" ? "lt" : m[1]);
       if (m[1] === "dd") D.donde.push({ fecha, archivo, won: !!s.won, n: (s.guesses || []).length });
       else if (m[1] === "lt" || m[1] === "ll") { const r = s.res || []; D.letras.push({ fecha, archivo, pts: r.reduce((a, x) => a + (x.pts || 0), 0), ok: r.filter((x) => x.ok).length, rapida: Math.min(99, ...r.filter((x) => x.ok).map((x) => x.s ?? 99)) }); }
+      else if (m[1] === "gr") D.grupos.push({ fecha, archivo, pts: (s.found || []).length * 5, won: !!s.won, mist: s.mist || 0 });
       else { const r = s.res || []; D.cifras.push({ fecha, archivo, pts: r.reduce((a, x) => a + (x.pts || 0), 0), exactas: r.filter((x) => x.d === 0).length }); }
     }
     // Racha conjunta: días seguidos (por día de juego) con al menos un reto terminado
@@ -32,9 +33,10 @@
     const hoy = ymd(Date.now()), ayer = ymd(Date.now() - 864e5);
     D.rachaActual = D.jugados.has(hoy) || D.jugados.has(ayer) ? cur : 0;
     D.rachaMax = max;
-    D.trios = Object.values(D.porFecha).filter((s) => s.size === 3).length;
-    D.archivo = [...D.donde, ...D.letras, ...D.cifras].filter((x) => x.archivo).length;
-    D.total = D.donde.length + D.letras.length + D.cifras.length;
+    D.trios = Object.values(D.porFecha).filter((s) => s.size >= 3).length;
+    D.pokers = Object.values(D.porFecha).filter((s) => s.size >= 4).length;
+    D.archivo = [...D.donde, ...D.letras, ...D.cifras, ...D.grupos].filter((x) => x.archivo).length;
+    D.total = D.donde.length + D.letras.length + D.cifras.length + D.grupos.length;
     // Aciertos seguidos en ¿Dónde está? (por fecha del reto diario)
     let seg = 0, segMax = 0, p = null;
     for (const r of D.donde.filter((x) => !x.archivo).sort((a, b) => a.fecha < b.fecha ? -1 : 1)) {
@@ -50,7 +52,8 @@
   // [id, icono, nombre, descripción, función que devuelve [valor, meta]]
   const LISTA = [
     ["primero", "🌱", "Primer paso", "Termina tu primer reto.", (D) => [D.total, 1]],
-    ["trio", "🎯", "Trío del día", "Juega los tres juegos el mismo día.", (D) => [D.trios, 1]],
+    ["trio", "🎯", "Trío del día", "Juega tres juegos distintos el mismo día.", (D) => [D.trios, 1]],
+    ["poker", "🃏", "Póker del día", "Juega los cuatro juegos el mismo día.", (D) => [D.pokers, 1]],
     ["trio7", "🏆", "Semana completa", "Haz el trío del día en 7 días distintos.", (D) => [D.trios, 7]],
     ["racha3", "🔥", "Calentando", "Juega 3 días seguidos.", (D) => [D.rachaMax, 3]],
     ["racha7", "📆", "Una semana sin fallar", "Juega 7 días seguidos.", (D) => [D.rachaMax, 7]],
@@ -65,7 +68,10 @@
     ["letrasrayo", "⚡", "Rayo", "Ordena una palabra en 5 segundos o menos.", (D) => [D.letras.some((x) => x.rapida <= 5) ? 1 : 0, 1]],
     ["cifras1", "✔️", "¡Exacto!", "Llega exacto a una cifra.", (D) => [sum(D.cifras, (x) => x.exactas) > 0 ? 1 : 0, 1]],
     ["cifras3", "🧮", "Pleno de cifras", "Llega exacto en las tres rondas de un día.", (D) => [D.cifras.some((x) => x.exactas >= 3) ? 1 : 0, 1]],
-    ["cifras25", "🤖", "Calculadora humana", "Llega exacto 25 veces en Cifras.", (D) => [sum(D.cifras, (x) => x.exactas), 25]]
+    ["cifras25", "🤖", "Calculadora humana", "Llega exacto 25 veces en Cifras.", (D) => [sum(D.cifras, (x) => x.exactas), 25]],
+    ["grupos1", "🧩", "Todo encaja", "Descubre los cuatro grupos de Grupos del día.", (D) => [D.grupos.some((x) => x.won) ? 1 : 0, 1]],
+    ["grupos0", "🌈", "Sin un fallo", "Descubre los cuatro grupos sin fallar ni una vez.", (D) => [D.grupos.some((x) => x.won && x.mist === 0) ? 1 : 0, 1]],
+    ["grupos10", "🗂️", "Gran clasificador", "Descubre los cuatro grupos en 10 retos.", (D) => [D.grupos.filter((x) => x.won).length, 10]]
   ];
 
   function estado() {

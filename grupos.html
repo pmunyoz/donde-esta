@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="google-adsense-account" content="ca-pub-8361369070531250">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="application-name" content="Piensa un rato">
+<meta name="apple-mobile-web-app-title" content="Piensa un rato">
+<title>Grupos del día · Juego diario de palabras para agrupar</title>
+<meta name="description" content="Cada día, dieciséis palabras escondidas en cuatro grupos de cuatro. Descubre qué tienen en común. Gratis, en español y sin registro.">
+<link rel="canonical" href="https://piensaunrato.es/grupos.html">
+<link rel="icon" href="icon-grupos.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-grupos-180.png">
+<meta name="theme-color" content="#1B2F45">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_ES">
+<meta property="og:site_name" content="Piensa un rato">
+<meta property="og:title" content="Grupos del día · Juego diario de palabras para agrupar">
+<meta property="og:description" content="Cada día, dieciséis palabras escondidas en cuatro grupos de cuatro. Descubre qué tienen en común. Gratis, en español y sin registro.">
+<meta property="og:url" content="https://piensaunrato.es/grupos.html">
+<meta property="og:image" content="https://piensaunrato.es/og-grupos.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Grupos del día · Juego diario de palabras para agrupar">
+<meta name="twitter:description" content="Cada día, dieciséis palabras escondidas en cuatro grupos de cuatro. Descubre qué tienen en común. Gratis, en español y sin registro.">
+<meta name="twitter:image" content="https://piensaunrato.es/og-grupos.png">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Grupos del día", "url": "https://piensaunrato.es/grupos.html", "description": "Cada día, dieciséis palabras escondidas en cuatro grupos de cuatro. Descubre qué tienen en común. Gratis, en español y sin registro.", "applicationCategory": "GameApplication", "operatingSystem": "Cualquiera (navegador web)", "inLanguage": "es", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"}, "author": {"@type": "Person", "name": "Pascual Muñoz"}}</script>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Archivo:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: una columna estrecha como los otros juegos; la cuadrícula de 4×4 es la pieza central */
+:root{
+  --sea:#D7E3EA; --land:#FFFFFF; --ink:#1B2F45; --muted:#5F7286; --line:#B9C9D4;
+  --signal:#E3A21A; --signal-ink:#3A2600; --bg:#EEF3F6; --card:#FFFFFF;
+  --hot:#2E8B57; --warm:#D4A017; --cold:#9AAAB8; --bad:#C2453B; --on-sem:#FFFFFF;
+  --f-display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --f-body:"Archivo",ui-sans-serif,system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --sea:#13212F; --land:#22364A; --ink:#E6EEF4; --muted:#93A6B8; --line:#35506A;
+  --signal:#F0B43A; --signal-ink:#2A1B00; --bg:#0D1823; --card:#172636;
+  --hot:#4CC18A; --warm:#E8BE45; --cold:#5E7489; --bad:#E06A5F; --on-sem:#0D1823; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --sea:#13212F; --land:#22364A; --ink:#E6EEF4; --muted:#93A6B8; --line:#35506A;
+  --signal:#F0B43A; --signal-ink:#2A1B00; --bg:#0D1823; --card:#172636;
+  --hot:#4CC18A; --warm:#E8BE45; --cold:#5E7489; --bad:#E06A5F; --on-sem:#0D1823; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 40px}
+.wrap{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+header{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+h1{font-family:var(--f-display);font-weight:800;font-size:2.1rem;line-height:1;margin:0;letter-spacing:-.02em}
+h1 span{color:var(--signal)}
+.num{font-family:var(--f-mono);font-size:.8rem;color:var(--muted);text-align:right}
+.how{font-size:.85rem;color:var(--muted);margin:0}
+.how a,.osm a{color:var(--ink);font-weight:600}
+button{font:inherit;cursor:pointer;border:0;border-radius:10px}
+.btn{background:var(--signal);color:var(--signal-ink);font-weight:600;padding:12px 18px}
+a.wa{background:#25D366;color:#073B1C;font-weight:600;padding:12px 18px;border-radius:10px;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+a.wa:hover{background:#20BD5A}
+.recom{display:flex;justify-content:center}
+.recom a.wa{width:100%;max-width:360px;justify-content:center}
+a.wa:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line);padding:10px 14px;font-weight:500}
+.btn:focus-visible,.ghost:focus-visible,.tile:focus-visible,.slot:focus-visible,.kofi:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+button:disabled{opacity:.45;cursor:default}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+
+
+/* Tablero */
+.board{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:12px}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+@media (max-width:359px){.grid{gap:4px}}
+.tile{min-height:64px;padding:4px 1px;display:grid;place-items:center;text-align:center;background:var(--bg);color:var(--ink);border:1.5px solid var(--line);border-bottom-width:4px;container-type:inline-size;
+  font-family:var(--f-body);font-weight:700;line-height:1.1;transition:transform .08s,background .1s}
+/* La letra se ajusta al largo de la palabra; las muy largas se parten en dos líneas con guion */
+.tile span{display:block;max-width:100%;font-size:max(.6rem,min(1rem,calc(100cqw / (var(--n) * .76))));hyphens:auto;-webkit-hyphens:auto;overflow-wrap:anywhere}
+@media (min-width:420px){.tile{min-height:72px}.tile span{font-size:max(.7rem,min(1.1rem,calc(100cqw / (var(--n) * .78))))}}
+.tile:active{transform:translateY(2px)}
+.tile.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.grid.shake{animation:shake .35s}
+@keyframes shake{20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+.bands{display:flex;flex-direction:column;gap:6px}
+.band{border-radius:10px;padding:10px 12px;text-align:center;color:#14212E;display:flex;flex-direction:column;gap:1px}
+.band b{font-size:.92rem;text-transform:uppercase;letter-spacing:.04em}
+.band span{font-size:.84rem}
+.band.g1{background:#F2C94C}.band.g2{background:#7FCB8A}.band.g3{background:#86BDEB}.band.g4{background:#BEA2EC}
+.band.miss{opacity:.6}
+.vidas{display:flex;align-items:center;justify-content:center;gap:6px;font-size:.82rem;color:var(--muted)}
+.vidas i{width:12px;height:12px;border-radius:50%;background:var(--ink)}
+.vidas i.off{background:transparent;border:1.5px solid var(--line)}
+.actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.msg{min-height:1.3em;margin:0;text-align:center;font-size:.88rem;color:var(--muted)}
+.msg.bad{color:var(--bad)}.msg.good{color:var(--hot);font-weight:600}
+.hint{font-size:.82rem;color:var(--muted);margin:0}
+@media (prefers-reduced-motion:reduce){.grid.shake{animation:none}.tile{transition:none}}
+
+/* Final */
+.end{background:var(--card);border:2px solid var(--ink);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.end h2{font-family:var(--f-display);font-weight:800;font-size:1.6rem;margin:0;line-height:1.1;text-wrap:balance}
+.end h2 span{color:var(--signal)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center}
+.stats b{display:block;font-family:var(--f-display);font-size:1.5rem;font-variant-numeric:tabular-nums}
+.stats small{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.next{font-family:var(--f-mono);font-size:.85rem;color:var(--muted)}
+a.next{color:var(--ink);font-weight:600}
+pre.share{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font-family:var(--f-mono);font-size:.8rem;background:var(--sea);padding:10px;border-radius:8px}
+.kofi,.also{display:flex;align-items:center;justify-content:center;gap:8px;padding:11px 14px;border-radius:10px;border:1.5px dashed var(--line);color:var(--ink);text-decoration:none;font-weight:500;font-size:.92rem;text-align:center}
+.kofi:hover,.also:hover{border-color:var(--signal);border-style:solid}
+.osm{font-size:.72rem;color:var(--muted);text-align:center;margin:0}
+
+/* Liga */
+.liga{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.liga h3{font-family:var(--f-display);font-weight:800;font-size:1.25rem;margin:0}
+.liga h4{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:6px 0 0;font-weight:500}
+.liga p{margin:0}
+.liga input{font:inherit;font-size:16px;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);flex:1;min-width:0}
+.lbl{font-size:.8rem;color:var(--muted)}
+.lhead{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.code{font-family:var(--f-mono);letter-spacing:.08em;color:var(--ink);background:var(--sea);padding:1px 6px;border-radius:5px}
+.lmsg{font-size:.85rem;color:var(--bad)}
+.lmsg:empty{display:none}
+.hint{font-size:.82rem;color:var(--muted)}
+.tbl{overflow-x:auto}
+.liga table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:.92rem}
+.liga th{text-align:left;font-weight:500;font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;padding:4px 6px;border-bottom:1px solid var(--line)}
+.liga td{padding:7px 6px;border-bottom:1px solid var(--line)}
+.liga td:first-child,.liga th:first-child{width:2em;color:var(--muted)}
+.liga tr.me td{font-weight:600;background:var(--sea)}
+.retobox{background:var(--card);border:2px solid var(--signal);border-radius:12px;padding:10px 14px;display:flex;flex-direction:column;gap:2px;font-size:.88rem}
+.retobox b{font-family:var(--f-display);font-weight:800;font-size:1.05rem}
+.retobox a{color:var(--ink);font-weight:600}
+.retobox.err{border-color:var(--bad)}
+.about{border-top:1px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:6px;font-size:.86rem;color:var(--muted)}
+.about h2{font-family:var(--f-display);font-weight:800;font-size:1.05rem;color:var(--ink);margin:6px 0 0}
+.about p{margin:0;max-width:65ch}
+.about a{color:var(--ink);font-weight:600}
+
+
+.cafe{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:12px;background:var(--signal);color:var(--signal-ink);text-decoration:none;box-shadow:0 3px 0 rgb(0 0 0 / .18)}
+.cafe:hover{filter:brightness(1.05)}
+.cafe:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.cafe .cup{font-size:1.9rem;line-height:1;flex:none}
+.cafe .txt{display:flex;flex-direction:column;gap:2px;min-width:0}
+.cafe b{font-size:1rem}
+.cafe small{font-size:.82rem;opacity:.85;line-height:1.35}
+#wa{flex:1 1 220px;justify-content:center}
+
+.go-list{display:flex;flex-direction:column;gap:8px}
+.go-list h3{margin:6px 0 0;font-size:.8rem;font-weight:600;color:var(--muted);text-transform:none}
+.go-card{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;background:var(--card);border:1.5px solid var(--line);color:var(--ink);text-decoration:none}
+.go-card:hover{border-color:var(--signal)}
+.go-card:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.go-card .ic{display:grid;place-items:center;width:40px;height:40px;border-radius:10px;background:var(--sea);font-size:1.3rem;flex:none}
+.go-card .txt{display:flex;flex-direction:column;gap:1px;min-width:0;flex:1}
+.go-card b{font-size:.98rem}
+.go-card small{font-size:.8rem;color:var(--muted);line-height:1.35}
+.go-card .arr{font-size:1.5rem;color:var(--muted);line-height:1}
+</style>
+<link rel="stylesheet" href="barra.css">
+</head>
+<body>
+<div class="wrap">
+  <nav aria-label="Juegos"><ul class="games"><li><a href="./"><span aria-hidden="true">📍</span> ¿Dónde está?</a></li><li><a href="letras.html"><span aria-hidden="true">🔤</span> Letras</a></li><li><a href="cifras.html"><span aria-hidden="true">🔢</span> Cifras</a></li><li><a href="grupos.html" aria-current="page"><span aria-hidden="true">🧩</span> Grupos</a></li></ul></nav>
+  <header>
+    <h1>Grupos<br><span>del día</span></h1>
+    <div class="num" id="num"></div>
+  </header>
+  <div class="retobox" id="retobox" hidden></div>
+  <p class="how" id="how">Dieciséis palabras escondidas en cuatro grupos de cuatro. Elige cuatro que tengan algo en común y comprueba. Puedes fallar cuatro veces.</p>
+  <section id="play"></section>
+  <div id="end"></div>
+  <section class="liga" id="liga" hidden></section>
+  <p class="recom"><a class="wa" href="https://wa.me/?text=Te%20recomiendo%20Grupos%20del%20d%C3%ADa%3A%20diecis%C3%A9is%20palabras%20y%20cuatro%20grupos%20escondidos.%20Gratis%20y%20sin%20registro%20%F0%9F%91%89%20https%3A//piensaunrato.es/grupos.html" target="_blank" rel="noopener"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.3-.4.8-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s1 2.6 1.1 2.7c.1.2 1.9 2.9 4.6 4.1 1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.8-1.2.2-.6.2-1.1.1-1.2-.1-.1-.2-.2-.4-.3z"/></svg> Recomienda Grupos del día por WhatsApp</a></p>
+  <p class="osm">Más juegos: <a href="./">¿Dónde está?</a> · <a href="letras.html">Letras del día</a> · <a href="cifras.html">Cifras del día</a> · <a href="archivo.html">Días anteriores</a> · <a href="soluciones.html">Soluciones</a> · <a href="https://ko-fi.com/pascualmunoz" target="_blank" rel="noopener">Invítame a un café</a> · <a href="sugerencias.html?juego=grupos">Sugerencias</a> · <a href="ranking.html?juego=grupos">Clasificación</a> · <a href="logros.html">Logros</a> · <a href="acerca.html">Acerca de</a> · <a href="privacidad.html">Privacidad</a></p>
+  <section class="about">
+    <h2>Cómo se juega a Grupos del día</h2>
+    <p>Cada día hay dieciséis palabras nuevas, iguales para todos. Esconden cuatro grupos de cuatro palabras con algo en común: animales, ríos, sinónimos, cosas que tienen dientes… Toca cuatro palabras y pulsa «Comprobar». Si aciertas, el grupo se descubre con su color: amarillo es el más fácil y morado el más difícil. Puedes fallar cuatro veces.</p>
+    <p>Cada grupo acertado vale 5 puntos, y si los descubres todos sumas hasta 5 más según los fallos: 5 sin fallos, 3 con uno y 1 con dos. Máximo, 25 puntos.</p>
+    <h2>Para profesores</h2>
+    <p>Crea tus propios grupos con el vocabulario de clase (por ejemplo, vertebrados e invertebrados, o tipos de palabras) y compártelos con tus alumnos con un enlace o un código QR. <a href="profes.html#grupos">Crear un reto para clase</a></p>
+  </section>
+</div>
+
+<script src="reto.js"></script>
+<script src="avisos.js"></script>
+<script src="imagen.js"></script>
+<script src="ads.js"></script>
+<script src="logros.js"></script>
+<script src="contador.js"></script>
+<script src="estadisticas.js"></script>
+<script src="grupos-datos.js"></script>
+<script>
+// Reto personalizado (enlace de un profesor) o reto del día
+const RETO=window.Reto?Reto.read("g"):null;
+const CUSTOM=RETO&&!RETO.error&&Array.isArray(RETO.g)&&RETO.g.length>=2&&RETO.g.every(g=>g&&Array.isArray(g.w)&&g.w.length===4)?RETO:null;
+const START=new Date(2026,10,27,12); // primer Grupos del día (nº 1)
+function mulberry(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function shuffled(arr,seed){const r=mulberry(seed),o=arr.slice();for(let i=o.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[o[i],o[j]]=[o[j],o[i]]}return o}
+const ARCH=(()=>{const p=new URLSearchParams(location.search).get("dia");if(CUSTOM||!p||!/^\d{4}-\d{2}-\d{2}$/.test(p))return null;const[y,m,d]=p.split("-").map(Number);const t=new Date(y,m-1,d,12),h=new Date();h.setHours(0,0,0,0);return t.getDate()===d&&t>=START&&t<h?t:null})();
+const now=ARCH||new Date();
+const dkey=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+const key=dkey(now);
+const DAY=Math.round((Date.UTC(now.getFullYear(),now.getMonth(),now.getDate())-Date.UTC(2026,10,14))/864e5);
+const NUM=Math.round((Date.UTC(now.getFullYear(),now.getMonth(),now.getDate())-Date.UTC(2026,10,27))/864e5)+1;
+const escH=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const cap=s=>String(s).trim().toUpperCase().slice(0,24);
+// Grupos del reto: [{l: nivel 1-4, n: nombre, w: [4 palabras]}], del más fácil al más difícil
+const GRUPOS=CUSTOM?CUSTOM.g.slice(0,4).map((g,i)=>({l:i+1,n:String(g.n||`Grupo ${i+1}`).slice(0,60),w:g.w.map(cap)})):gruposDelDia(DAY);
+const NG=GRUPOS.length,MAXP=NG*5+5,VIDAS=4,SEED=CUSTOM?parseInt(CUSTOM.id,36)%100000:DAY*53+11;
+const TILES=shuffled(GRUPOS.flatMap((g,gi)=>g.w.map(w=>({w,g:gi}))),SEED);
+const SHARE_URL=CUSTOM?location.href:location.origin+location.pathname+(ARCH?"?dia="+key:"");
+document.getElementById("num").innerHTML=CUSTOM?`Reto para clase${CUSTOM.au?`<br>de ${escH(CUSTOM.au)}`:""}`:`Reto nº ${NUM}<br>${now.toLocaleDateString("es-ES",{day:"numeric",month:"long"})}`;
+{const rb=document.getElementById("retobox");
+ if(CUSTOM){rb.hidden=false;rb.innerHTML=`<b>${escH(CUSTOM.ti||"Reto personalizado")}</b><span>${CUSTOM.au?`Creado por ${escH(CUSTOM.au)}. `:""}${NG*4} palabras en ${NG} grupos. <a href="grupos.html">Ir al reto del día</a></span>`;
+   document.getElementById("how").textContent=`${NG*4} palabras escondidas en ${NG} grupos de cuatro. Elige cuatro que tengan algo en común y comprueba. Puedes fallar cuatro veces.`}
+ else if(ARCH){rb.hidden=false;rb.innerHTML=`<b>Reto de un día anterior</b><span>No cuenta para tus estadísticas ni para la liga. <a href="archivo.html">Ver todos los días</a> · <a href="grupos.html">Ir al reto de hoy</a></span>`}
+ else if(RETO&&RETO.error){rb.hidden=false;rb.classList.add("err");rb.innerHTML="<b>Este enlace de reto no funciona</b><span>Puede que se haya copiado incompleto. Mientras tanto, aquí tienes el reto del día.</span>"}}
+
+// Estado guardado
+const SK=CUSTOM?"gr-r-"+CUSTOM.id:"gr-"+key;
+let st={found:[],tries:[],mist:0,done:false,won:false,t0:0,t1:0,sent:""};
+let stats={played:0,total:0,best:0,wins:0,streak:0,maxStreak:0,last:null};
+try{const s=JSON.parse(localStorage.getItem(SK));if(s)st=s}catch(e){}
+try{const s=JSON.parse(localStorage.getItem("gr-stats"));if(s)stats=s}catch(e){}
+const save=()=>{try{localStorage.setItem(SK,JSON.stringify(st));localStorage.setItem("gr-stats",JSON.stringify(stats))}catch(e){}};
+let sel=[],order=TILES.map((_,i)=>i),msgText="",msgCls="",busy=false;
+const BONO=[5,3,1,0];
+const score=()=>st.found.length*5+(st.won?BONO[Math.min(st.mist,3)]:0);
+const usedSecs=()=>st.t0?Math.round(((st.t1||Date.now())-st.t0)/1000):null;
+const mmss=s=>s==null?"–":`${Math.floor(s/60)}:${String(Math.round(s)%60).padStart(2,"0")}`;
+
+function bandas(lista){return lista.map(gi=>{const g=GRUPOS[gi];return`<div class="band g${g.l}"><b>${escH(g.n)}</b><span>${g.w.map(escH).join(", ")}</span></div>`}).join("")}
+function drawPlay(){
+  const el=document.getElementById("play");
+  if(st.done){el.innerHTML="";return}
+  const quedan=order.filter(i=>!st.found.includes(TILES[i].g));
+  el.innerHTML=`<div class="board">
+    ${st.found.length?`<div class="bands">${bandas(st.found)}</div>`:""}
+    <div class="grid" id="grid">${quedan.map(i=>`<button class="tile${sel.includes(i)?" on":""}" data-i="${i}" aria-pressed="${sel.includes(i)}" style="--n:${Math.max(4,TILES[i].w.length)}"><span>${escH(TILES[i].w)}</span></button>`).join("")}</div>
+    <div class="vidas" aria-label="Fallos que te quedan: ${VIDAS-st.mist}">Fallos que te quedan: ${Array.from({length:VIDAS},(_,k)=>`<i class="${k<VIDAS-st.mist?"":"off"}"></i>`).join("")}</div>
+    <div class="actions"><button class="ghost" id="mix">Mezclar</button><button class="ghost" id="none"${sel.length?"":" disabled"}>Quitar selección</button><button class="btn" id="check"${sel.length===4?"":" disabled"}>Comprobar</button></div>
+    <p class="msg ${msgCls}" id="msg" role="status">${msgText}</p></div>`;
+  document.getElementById("grid").onclick=e=>{const b=e.target.closest("[data-i]");if(!b||busy)return;const i=+b.dataset.i;
+    if(!st.t0){st.t0=Date.now();save()}
+    if(sel.includes(i))sel.splice(sel.indexOf(i),1);else if(sel.length<4)sel.push(i);else return;
+    msgText="";msgCls="";drawPlay()};
+  document.getElementById("mix").onclick=()=>{order=shuffled(order,Date.now()%1e9);drawPlay()};
+  document.getElementById("none").onclick=()=>{sel=[];msgText="";drawPlay()};
+  document.getElementById("check").onclick=comprobar}
+function setMsg(t,c){msgText=t;msgCls=c||"";const m=document.getElementById("msg");if(m){m.textContent=t;m.className="msg "+msgCls}}
+function comprobar(){
+  if(sel.length!==4||busy||st.done)return;
+  const gs=sel.map(i=>TILES[i].g),firma=sel.map(i=>TILES[i].w).sort().join("|");
+  if(st.tries.some(t=>t.f===firma)){setMsg("Ya has probado esas cuatro.","bad");return}
+  st.tries.push({f:firma,l:gs.map(g=>GRUPOS[g].l)});
+  const cuenta={};gs.forEach(g=>cuenta[g]=(cuenta[g]||0)+1);const max=Math.max(...Object.values(cuenta));
+  if(max===4){st.found.push(gs[0]);sel=[];
+    if(st.found.length===NG){st.won=true;terminar();return}
+    msgText=["¡Bien!","¡Eso es!","¡Muy bien!"][st.found.length%3];msgCls="good";save();drawPlay();return}
+  st.mist++;
+  if(st.mist>=VIDAS){sel=[];st.won=false;
+    // Se descubren los grupos que faltaban
+    GRUPOS.forEach((_,gi)=>{if(!st.found.includes(gi))(st.rev=st.rev||[]).push(gi)});terminar();return}
+  save();drawPlay();setMsg(max===3?"¡Casi! Te falta una.":"No es un grupo.","bad");
+  const g=document.getElementById("grid");g.classList.remove("shake");void g.offsetWidth;g.classList.add("shake")}
+function terminar(){st.done=true;st.t1=Date.now();endStats();save();render();sendResult()}
+function endStats(){if(window.contarPartida)contarPartida("grupos",CUSTOM?"reto":ARCH?"archivo":"diario",key,score());if(CUSTOM||ARCH)return;const y=new Date(now);y.setDate(y.getDate()-1);
+  stats.played++;stats.total+=score();stats.best=Math.max(stats.best,score());if(st.won)stats.wins=(stats.wins||0)+1;
+  stats.streak=stats.last===dkey(y)?stats.streak+1:1;stats.maxStreak=Math.max(stats.maxStreak||0,stats.streak);stats.last=key}
+
+// Final
+const EMO=["","🟨","🟩","🟦","🟪"];
+function shareText(){const head=CUSTOM?`Grupos · ${CUSTOM.ti||"Reto para clase"}`:`Grupos del día nº ${NUM}`;
+  return`${head} — ${score()}/${MAXP}\n${st.tries.map(t=>t.l.map(l=>EMO[l]).join("")).join("\n")}\n${SHARE_URL}`}
+function verdict(){if(st.won&&st.mist===0)return"Perfecto";if(st.won&&st.mist===1)return"Muy bien";if(st.won)return"¡Lo has sacado!";
+  return st.found.length>=2?"Por poco":CUSTOM||ARCH?"Otra vez será":"Mañana más"}
+function drawEnd(){const e=document.getElementById("end");if(!st.done){e.innerHTML="";return}
+  const avg=stats.played?(stats.total/stats.played).toFixed(1).replace(".",","):"0";
+  const orden=[...st.found,...(st.rev||[])];
+  e.innerHTML=`<div class="end"><h2><span>${score()}</span> de ${MAXP} puntos. ${verdict()}.</h2>
+  <div class="bands">${orden.map(gi=>{const g=GRUPOS[gi],ok=st.found.includes(gi);return`<div class="band g${g.l}${ok?"":" miss"}"><b>${ok?"":"✕ "}${escH(g.n)}</b><span>${g.w.map(escH).join(", ")}</span></div>`}).join("")}</div>
+  <p class="hint">${st.found.length} de ${NG} grupos · ${st.mist} fallo${st.mist===1?"":"s"}${usedSecs()!=null?` · ${mmss(usedSecs())}`:""}</p>
+  ${CUSTOM||ARCH?"":`<div class="stats"><div><b>${stats.played}</b><small>Jugados</small></div><div><b>${avg}</b><small>Media</small></div><div><b>${stats.best}</b><small>Mejor</small></div><div><b>${stats.streak}</b><small>Racha</small></div></div>`}
+  ${CUSTOM?"":`<div class="global" id="global"></div>`}
+  <pre class="share" id="sharetxt">${shareText()}</pre>
+  <div class="row"><a class="wa" id="wa" href="https://wa.me/?text=${encodeURIComponent(shareText())}" target="_blank" rel="noopener"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.3-.4.8-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s1 2.6 1.1 2.7c.1.2 1.9 2.9 4.6 4.1 1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.8-1.2.2-.6.2-1.1.1-1.2-.1-.1-.2-.2-.4-.3z"/></svg> Compartir por WhatsApp</a>${CUSTOM?"":ARCH?`<a class="next" href="grupos.html">Ir al reto de hoy</a>`:`<span class="next" id="next"></span>`}</div>
+  <a class="cafe" href="https://ko-fi.com/pascualmunoz" target="_blank" rel="noopener"><span class="cup" aria-hidden="true">☕</span><span class="txt"><b>¿Te ha gustado? Invítame a un café</b><small>Los juegos son gratis. Con un café me ayudas a mantenerlos y a crear más.</small></span></a>
+  <div class="go-list"><h3>Más juegos</h3>
+  <div class="go-mini"><a href="./"><span aria-hidden="true">📍</span>¿Dónde está?</a><a href="letras.html"><span aria-hidden="true">🔤</span>Letras</a><a href="cifras.html"><span aria-hidden="true">🔢</span>Cifras</a></div>
+  <h3>Y además</h3>
+  <a class="go-card" href="archivo.html"><span class="ic" aria-hidden="true">📅</span><span class="txt"><b>Juega los días anteriores</b><small>¿Te perdiste algún reto? Todavía puedes jugarlo.</small></span><span class="arr" aria-hidden="true">›</span></a>
+  <a class="go-card" href="profes.html"><span class="ic" aria-hidden="true">🍎</span><span class="txt"><b>¿Eres profe?</b><small>Crea tu propio reto y compártelo con tu clase.</small></span><span class="arr" aria-hidden="true">›</span></a>
+  </div>
+  <div class="ad-slot"></div></div>`;
+  if(window.Logros&&!CUSTOM)Logros.avisar(document.querySelector("#end .end"));
+  if(window.Ads)Ads.fill();
+  if(window.Estadisticas&&!CUSTOM)Estadisticas.mostrar(document.getElementById("global"),"grupos",key,score(),MAXP,!!ARCH);
+  next()}
+function next(){const el=document.getElementById("next");if(!el)return;const n=new Date(),m=new Date(n);m.setHours(24,0,0,0);const s=Math.max(0,Math.floor((m-n)/1000));
+  el.textContent=`Siguiente en ${String(Math.floor(s/3600)).padStart(2,"0")}:${String(Math.floor(s/60)%60).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`}
+setInterval(next,1000);
+
+function render(){drawPlay();drawEnd();drawLiga(false)}
+
+// ===== Liga de amigos (Supabase), la misma de los otros juegos =====
+const SUPA={url:"https://lnqigozwqraprajvaoiv.supabase.co",key:"sb_publishable_T2XYHn31Yyt5cwPQ_q_JNQ_7ZgMXqPN"};
+const MODE="grupos";
+let liga={code:"",nick:""},rows=[],ligaErr="";
+try{const l=JSON.parse(localStorage.getItem("liga"));if(l&&l.code)liga=l}catch(e){}
+const urlLiga=(new URLSearchParams(location.search).get("liga")||"").toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,12);
+const saveLiga=()=>{try{localStorage.setItem("liga",JSON.stringify(liga))}catch(e){}};
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const invite=()=>location.origin+location.pathname+"?liga="+liga.code;
+const invText=()=>`Únete a mi liga de Grupos del día (código ${liga.code}): ${invite()}`;
+async function api(path,opt={}){
+  const h={apikey:SUPA.key,"Content-Type":"application/json",...(opt.headers||{})};
+  if(SUPA.key.startsWith("eyJ"))h.Authorization="Bearer "+SUPA.key;
+  const r=await fetch(SUPA.url.replace(/\/$/,"")+"/rest/v1/"+path,{...opt,headers:h});
+  if(r.status===409)return null;if(!r.ok)throw new Error("HTTP "+r.status);
+  const t=await r.text();return t?JSON.parse(t):null}
+async function sendResult(){
+  if(CUSTOM||ARCH||!SUPA.url||!liga.code||!st.done||st.sent===liga.code)return;
+  try{await api("resultados",{method:"POST",headers:{Prefer:"return=minimal"},body:JSON.stringify({liga:liga.code,apodo:liga.nick,modo:MODE,fecha:key,intentos:null,ganado:!!st.won,segundos:usedSecs(),puntos:score(),aciertos:st.found.length})});
+    st.sent=liga.code;save();ligaErr=""}
+  catch(e){ligaErr="No se pudo enviar tu resultado. Se reintentará al volver a abrir la página."}
+  loadRank()}
+async function loadRank(){
+  if(CUSTOM||ARCH||!SUPA.url||!liga.code)return;const f=new Date(now);f.setDate(f.getDate()-6);
+  try{rows=await api(`resultados?liga=eq.${liga.code}&modo=eq.${MODE}&fecha=gte.${dkey(f)}&select=apodo,fecha,puntos,aciertos,segundos`)||[];ligaErr=ligaErr.startsWith("No se pudo cargar")?"":ligaErr}
+  catch(e){ligaErr="No se pudo cargar la clasificación."}
+  drawLiga(true)}
+function drawLiga(force){
+  const el=document.getElementById("liga");if(!SUPA.url||CUSTOM||ARCH){el.hidden=true;return}el.hidden=false;
+  if(!liga.code){if(el.dataset.v==="form"&&!force)return;el.dataset.v="form";
+    el.innerHTML=`<h3>Liga de amigos</h3>
+    ${urlLiga?`<p>Te han invitado a la liga <b class="code">${esc(urlLiga)}</b>. Elige un apodo para entrar.</p>`:`<p>Compite con tus amigos: crea una liga y pásales el enlace, o únete con su código. Es la misma liga que en ¿Dónde está?.</p>`}
+    <label class="lbl" for="nick">Tu apodo</label>
+    <input id="nick" maxlength="20" placeholder="Por ejemplo, Paco" value="${esc(liga.nick||"")}">
+    ${urlLiga?`<div class="row"><button class="btn" data-act="join" data-code="${esc(urlLiga)}">Entrar en la liga</button></div>`:
+    `<div class="row"><button class="btn" data-act="create">Crear liga</button></div>
+     <label class="lbl" for="code">¿Ya tienes un código?</label>
+     <div class="row"><input id="code" maxlength="12" placeholder="Código" autocapitalize="characters"><button class="ghost" data-act="join">Unirme</button></div>`}
+    <p class="lmsg" id="lmsg">${esc(ligaErr)}</p>`;return}
+  el.dataset.v="liga";
+  const today=rows.filter(r=>r.fecha===key).sort((a,b)=>((b.puntos||0)-(a.puntos||0))||((a.segundos??1e9)-(b.segundos??1e9)));
+  const week={};rows.forEach(r=>{const w=week[r.apodo]||(week[r.apodo]={a:r.apodo,p:0,d:0});w.p+=r.puntos||0;w.d++});
+  const wk=Object.values(week).sort((a,b)=>b.p-a.p||a.d-b.d);
+  const me=a=>a===liga.nick?' class="me"':"";
+  el.innerHTML=`<div class="lhead"><h3>Liga <span class="code">${esc(liga.code)}</span></h3><span class="who">Juegas como <b>${esc(liga.nick)}</b></span></div>
+  <div class="row"><button class="ghost" data-act="invite">Copiar invitación</button><a class="wa" href="https://wa.me/?text=${encodeURIComponent(invText())}" target="_blank" rel="noopener"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.3-.4.8-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s1 2.6 1.1 2.7c.1.2 1.9 2.9 4.6 4.1 1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.8-1.2.2-.6.2-1.1.1-1.2-.1-.1-.2-.2-.4-.3z"/></svg> Invitar por WhatsApp</a><button class="ghost" data-act="refresh">Actualizar</button><button class="ghost" data-act="leave">Salir</button></div>
+  <p class="lmsg" id="lmsg">${esc(ligaErr)}</p>
+  <h4>Hoy</h4>
+  ${!st.done?`<p class="hint">Termina el reto para ver cómo han quedado los demás.</p>`:
+    today.length?`<div class="tbl"><table><thead><tr><th>#</th><th>Apodo</th><th>Puntos</th><th>Grupos</th><th>Tiempo</th></tr></thead><tbody>${today.map((r,i)=>`<tr${me(r.apodo)}><td>${i+1}</td><td>${esc(r.apodo)}</td><td>${r.puntos??0}</td><td>${r.aciertos??0}/4</td><td>${mmss(r.segundos)}</td></tr>`).join("")}</tbody></table></div>`:`<p class="hint">Aún no hay resultados de hoy.</p>`}
+  <h4>Últimos 7 días</h4>
+  ${wk.length?`<div class="tbl"><table><thead><tr><th>#</th><th>Apodo</th><th>Puntos</th><th>Días</th></tr></thead><tbody>${wk.map((w,i)=>`<tr${me(w.a)}><td>${i+1}</td><td>${esc(w.a)}</td><td>${w.p}</td><td>${w.d}</td></tr>`).join("")}</tbody></table></div>
+  <p class="hint">Se suman los puntos de cada día (máximo 25 por día). Si hay empate hoy, gana quien haya tardado menos.</p>`:`<p class="hint">Todavía nadie ha jugado esta semana.</p>`}`}
+document.getElementById("liga").addEventListener("click",async e=>{
+  const b=e.target.closest("[data-act]");if(!b)return;const act=b.dataset.act,m=document.getElementById("lmsg");
+  if(act==="create"||act==="join"){
+    const nick=(document.getElementById("nick").value||"").trim().slice(0,20);
+    if(!nick){m.textContent="Escribe un apodo para que tus amigos te reconozcan.";return}
+    const code=act==="create"?Array.from({length:6},()=>"ABCDEFGHJKLMNPQRSTUVWXYZ23456789"[Math.floor(Math.random()*32)]).join(""):
+      (b.dataset.code||(document.getElementById("code").value||"")).toUpperCase().replace(/[^A-Z0-9]/g,"");
+    if(code.length<4){m.textContent="El código de liga tiene al menos 4 letras o números.";return}
+    liga={code,nick};saveLiga();ligaErr="";drawLiga(true);
+    if(st.done)sendResult();else loadRank()}
+  else if(act==="invite"){const t=invText();
+    try{await navigator.clipboard.writeText(t);b.textContent="Enlace copiado"}catch(_){m.textContent=t;b.textContent="Copia el enlace de arriba"}}
+  else if(act==="refresh"){b.textContent="Actualizando…";await loadRank()}
+  else if(act==="leave"){liga={code:"",nick:liga.nick};saveLiga();rows=[];drawLiga(true)}});
+
+render();
+if(st.done)sendResult();else loadRank();
+</script>
+<script data-goatcounter="https://pmunyoz.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+<script src="ranking.js"></script>
+<script src="clase.js"></script>
+</body>
+</html>

@@ -1,9 +1,11 @@
-"""Comprueba los retos diarios de los próximos días en los tres juegos.
+"""Comprueba los retos diarios de los próximos días en los cuatro juegos.
 
 Abre cada juego en un Chrome sin interfaz con la fecha simulada y revisa:
 - ¿Dónde está?: el lugar tiene nombre, provincia y dos pistas, y ninguna pista contiene el nombre.
 - Letras del día: cinco palabras de 5, 6, 7, 8 y 10 letras, solo letras, sin repetir y bien desordenadas.
 - Cifras del día: tres rondas con solución exacta, y la solución mostrada llega de verdad al objetivo.
+- Grupos del día: cuatro grupos (niveles 1 a 4) de cuatro palabras distintas, y ninguna palabra está en la lista
+  de otra categoría del mismo día (si no, habría dos respuestas posibles).
 Además avisa si un lugar o una palabra se repite dentro del periodo.
 
 Uso: python tests/comprobar_retos.py [días]   (por defecto 30, empezando hoy)
@@ -106,6 +108,20 @@ def main():
                 for r in rounds:
                     for e in comprobar_cifras(r):
                         errores.append(f"{etiqueta} Cifras ({r['name']}, {r['target']} con {r['n']}): {e}")
+            # Grupos del día
+            pg.goto(base + "grupos.html"); pg.wait_for_timeout(150)
+            g = pg.evaluate("typeof GRUPOS!=='undefined'?{g:GRUPOS,c:CATS}:null")
+            if not g or len(g["g"]) != 4:
+                errores.append(f"{etiqueta} Grupos: no hay cuatro grupos")
+            else:
+                listas = {c[1]: c[2] for c in g["c"]}
+                if [x["l"] for x in g["g"]] != [1, 2, 3, 4]: errores.append(f"{etiqueta} Grupos: niveles {[x['l'] for x in g['g']]}")
+                todas = [w for x in g["g"] for w in x["w"]]
+                if len(todas) != 16 or len(set(todas)) != 16: errores.append(f"{etiqueta} Grupos: palabras repetidas o que faltan")
+                for x in g["g"]:
+                    for w in x["w"]:
+                        otras = [y["n"] for y in g["g"] if y is not x and w in listas.get(y["n"], [])]
+                        if otras: errores.append(f"{etiqueta} Grupos: {w} ({x['n']}) también encaja en {', '.join(otras)}")
             for e in fallos_js:
                 errores.append(f"{etiqueta}: error de JavaScript: {e}")
             fallos_js.clear()

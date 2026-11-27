@@ -39,7 +39,6 @@ Para corregir algo, cambia la parte en valenciano en `herramientas/valenciano.py
 | <h3>Y además</h3> | <h3>I a més</h3> |
 | <b>Juega los días anteriores</b><small>¿Te perdiste algún reto? Todavía puedes jugarlo.</small> | <b>Juga els dies anteriors</b><small>T'has perdut algun repte? Encara pots jugar-lo. (En castellà.)</small> |
 | <b>¿Eres profe?</b><small>Crea tu propio reto y compártelo con tu clase.</small> | <b>Eres profe?</b><small>Crea el teu propi repte i compartix-lo amb la classe. (En castellà.)</small> |
-| <b>¿Dónde está?</b><small>Adivina el pueblo o la ciudad de España del día.</small> | <b>¿Dónde está?</b><small>Endevina el poble o la ciutat d'Espanya del dia. (En castellà.)</small> |
 | <h3>Liga de amigos</h3> | <h3>Lliga d'amics</h3> |
 | <p>Te han invitado a la liga <b class="code">${esc(urlLiga)}</b>. Elige un apodo para entrar.</p> | <p>T'han convidat a la lliga <b class="code">${esc(urlLiga)}</b>. Tria un sobrenom per a entrar.</p> |
 | <label class="lbl" for="nick">Tu apodo</label> | <label class="lbl" for="nick">El teu sobrenom</label> |
@@ -106,7 +105,7 @@ Para corregir algo, cambia la parte en valenciano en `herramientas/valenciano.py
 | `Cifras · ${CUSTOM.ti\|\|"Reto para clase"}`:`Cifras del día nº ${NUM}`} — ${score()}/${MAXP} puntos | `Xifres · ${CUSTOM.ti\|\|"Repte per a classe"}`:`Xifres del dia núm. ${NUM}`} — ${score()}/${MAXP} punts |
 | (r.d===0?" exacto": | (r.d===0?" exacte": |
 | <small> · tú ${r.v} | <small> · tu ${r.v} |
-| <b>Letras del día</b><small>Cinco palabras con las letras mezcladas.</small> | <b>Lletres del dia</b><small>Cinc paraules amb les lletres mesclades.</small> |
+| <span aria-hidden="true">🔤</span>Letras</a> | <span aria-hidden="true">🔤</span>Lletres</a> |
 | <th>Exactos</th> | <th>Exactes</th> |
 | Se suman los puntos de cada día (máximo ${MAXP} por día). Si hay empate hoy, gana quien haya tardado menos. | Se sumen els punts de cada dia (màxim ${MAXP} per dia). Si hi ha empat hui, guanya qui haja tardat menys. |
 | Compite con tus amigos: crea una liga y pásales el enlace, o únete con su código. Es la misma liga que en ¿Dónde está? y Letras del día. | Competix amb els teus amics: crea una lliga i passa'ls l'enllaç, o uneix-te amb el seu codi. És la mateixa lliga que a ¿Dónde está? i Lletres del dia. |
@@ -147,7 +146,6 @@ Para corregir algo, cambia la parte en valenciano en `herramientas/valenciano.py
 | <h3>Y además</h3> | <h3>I a més</h3> |
 | <b>Juega los días anteriores</b><small>¿Te perdiste algún reto? Todavía puedes jugarlo.</small> | <b>Juga els dies anteriors</b><small>T'has perdut algun repte? Encara pots jugar-lo. (En castellà.)</small> |
 | <b>¿Eres profe?</b><small>Crea tu propio reto y compártelo con tu clase.</small> | <b>Eres profe?</b><small>Crea el teu propi repte i compartix-lo amb la classe. (En castellà.)</small> |
-| <b>¿Dónde está?</b><small>Adivina el pueblo o la ciudad de España del día.</small> | <b>¿Dónde está?</b><small>Endevina el poble o la ciutat d'Espanya del dia. (En castellà.)</small> |
 | <h3>Liga de amigos</h3> | <h3>Lliga d'amics</h3> |
 | <p>Te han invitado a la liga <b class="code">${esc(urlLiga)}</b>. Elige un apodo para entrar.</p> | <p>T'han convidat a la lliga <b class="code">${esc(urlLiga)}</b>. Tria un sobrenom per a entrar.</p> |
 | <label class="lbl" for="nick">Tu apodo</label> | <label class="lbl" for="nick">El teu sobrenom</label> |
@@ -211,7 +209,7 @@ Para corregir algo, cambia la parte en valenciano en `herramientas/valenciano.py
 | w.textContent=`Vale ${v} punto${v>1?"s":""}` | w.textContent=`Val ${v} punt${v>1?"s":""}` |
 | `No queda ninguna ${L}.` | `No en queda cap, de ${L}.` |
 | `Letras · ${CUSTOM.ti\|\|"Reto para clase"}`:`Letras del día nº ${NUM}` | `Lletres · ${CUSTOM.ti\|\|"Repte per a classe"}`:`Lletres del dia núm. ${NUM}` |
-| <b>Cifras del día</b><small>Seis números y una cifra objetivo.</small> | <b>Xifres del dia</b><small>Sis números i una xifra objectiu.</small> |
+| <span aria-hidden="true">🔢</span>Cifras</a> | <span aria-hidden="true">🔢</span>Xifres</a> |
 | <th>Aciertos</th> | <th>Encerts</th> |
 | Se suman los puntos de cada día (máximo 25 por día). Si hay empate hoy, gana quien haya tardado menos. | Se sumen els punts de cada dia (màxim 25 per dia). Si hi ha empat hui, guanya qui haja tardat menys. |
 | Compite con tus amigos: crea una liga y pásales el enlace, o únete con su código. Es la misma liga que en ¿Dónde está?. | Competix amb els teus amics: crea una lliga i passa'ls l'enllaç, o uneix-te amb el seu codi. Esta lliga té la seua pròpia classificació de Lletres. |
@@ -251,7 +249,11 @@ Para corregir algo, cambia la parte en valenciano en `herramientas/valenciano.py
 |---|---|
 | ${n.length > 1 ? `¡${n.length} logros nuevos!` : "¡Logro nuevo!"} ${n.map((l) => l.nombre).join(", ")}</b><small>Ver todos tus logros</small> | ${n.length > 1 ? `${n.length} assoliments nous!` : "Assoliment nou!"} ${n.map((l) => l.nombre).join(", ")}</b><small>Vore tots els teus assoliments (en castellà)</small> |
 | "Primer paso", "Termina tu primer reto." | "Primer pas", "Acaba el teu primer repte." |
-| "Trío del día", "Juega los tres juegos el mismo día." | "Trio del dia", "Juga els tres jocs el mateix dia." |
+| "Trío del día", "Juega tres juegos distintos el mismo día." | "Trio del dia", "Juga tres jocs diferents el mateix dia." |
+| "Póker del día", "Juega los cuatro juegos el mismo día." | "Pòquer del dia", "Juga els quatre jocs el mateix dia." |
+| "Todo encaja", "Descubre los cuatro grupos de Grupos del día." | "Tot encaixa", "Descobrix els quatre grups de Grupos del día." |
+| "Sin un fallo", "Descubre los cuatro grupos sin fallar ni una vez." | "Sense cap error", "Descobrix els quatre grups sense fallar ni una vegada." |
+| "Gran clasificador", "Descubre los cuatro grupos en 10 retos." | "Gran classificador", "Descobrix els quatre grups en 10 reptes." |
 | "Semana completa", "Haz el trío del día en 7 días distintos." | "Setmana completa", "Fes el trio del dia 7 dies diferents." |
 | "Calentando", "Juega 3 días seguidos." | "Escalfant", "Juga 3 dies seguits." |
 | "Una semana sin fallar", "Juega 7 días seguidos." | "Una setmana sense fallar", "Juga 7 dies seguits." |
@@ -272,8 +274,8 @@ Para corregir algo, cambia la parte en valenciano en `herramientas/valenciano.py
 
 | Castellano | Valenciano |
 |---|---|
-| const JUEGO = /letras/.test(location.pathname) ? "letras" : /cifras/.test(location.pathname) ? "cifras" : "donde"; | const JUEGO = /lletres/.test(location.pathname) ? "letras" : /xifres/.test(location.pathname) ? "cifras" : "donde"; |
-| { donde: "¿Dónde está?", letras: "Letras del día", cifras: "Cifras del día" } | { donde: "¿Dónde está?", letras: "Lletres del dia", cifras: "Xifres del dia" } |
+| const JUEGO = /grupos/.test(location.pathname) ? "grupos" : /letras/.test(location.pathname) ? "letras" : /cifras/.test(location.pathname) ? "cifras" : "donde"; | const JUEGO = /lletres/.test(location.pathname) ? "letras" : /xifres/.test(location.pathname) ? "cifras" : "donde"; |
+| { donde: "¿Dónde está?", letras: "Letras del día", cifras: "Cifras del día", grupos: "Grupos del día" } | { donde: "¿Dónde está?", letras: "Lletres del dia", cifras: "Xifres del dia", grupos: "Grups del dia" } |
 | const inv = "¿Te atreves? Juega gratis en"; | const inv = "T'atrevixes? Juga gratis a"; |
 | text: `Juega en piensaunrato.es` | text: `Juga a piensaunrato.es` |
 | "Preparando…" | "Preparant…" |
@@ -299,7 +301,7 @@ Para corregir algo, cambia la parte en valenciano en `herramientas/valenciano.py
 
 | Castellano | Valenciano |
 |---|---|
-| const JUEGO = /letras/.test(location.pathname) ? "letras" : /cifras/.test(location.pathname) ? "cifras" : "donde"; | const JUEGO = /lletres/.test(location.pathname) ? "letras" : /xifres/.test(location.pathname) ? "cifras" : "donde"; |
+| const JUEGO = /grupos/.test(location.pathname) ? "grupos" : /letras/.test(location.pathname) ? "letras" : /cifras/.test(location.pathname) ? "cifras" : "donde"; | const JUEGO = /lletres/.test(location.pathname) ? "letras" : /xifres/.test(location.pathname) ? "cifras" : "donde"; |
 | `<h3>Resultado enviado</h3><p class="ok">✓ Tu profe ya tiene tu resultado como «${esc(enviado.nombre)}».</p>` | `<h3>Resultat enviat</h3><p class="ok">✓ El teu profe ja té el teu resultat com a «${esc(enviado.nombre)}».</p>` |
 | <h3>Envía tu resultado a tu profe</h3> | <h3>Envia el teu resultat al teu profe</h3> |
 | <p>Escribe tu nombre (o el que te diga tu profe) para salir en la clasificación de la clase.</p> | <p>Escriu el teu nom (o el que et diga el teu profe) per a eixir en la classificació de la classe.</p> |

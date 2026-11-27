@@ -62,7 +62,7 @@ a{color:var(--ink)}
 </head>
 <body>
 <div class="wrap">
-  <nav aria-label="Juegos"><ul class="games"><li><a href="./"><span aria-hidden="true">📍</span> ¿Dónde está?</a></li><li><a href="letras.html"><span aria-hidden="true">🔤</span> Letras</a></li><li><a href="cifras.html"><span aria-hidden="true">🔢</span> Cifras</a></li></ul></nav>
+  <nav aria-label="Juegos"><ul class="games"><li><a href="./"><span aria-hidden="true">📍</span> ¿Dónde está?</a></li><li><a href="letras.html"><span aria-hidden="true">🔤</span> Letras</a></li><li><a href="cifras.html"><span aria-hidden="true">🔢</span> Cifras</a></li><li><a href="grupos.html"><span aria-hidden="true">🧩</span> Grupos</a></li></ul></nav>
   <h1>Clasificación</h1>
   <p class="how">Solo aparece quien lo pide al terminar el reto del día, con el apodo que elige. Para jugar con tus amigos sin salir aquí, usa la liga de amigos de cada juego.</p>
   <div class="filtros">
@@ -76,7 +76,7 @@ a{color:var(--ink)}
 </div>
 <script>
 {
-const J=[["donde","¿Dónde está?",10],["letras","Letras",25],["cifras","Cifras",30],["lletres","Lletres",25]];
+const J=[["donde","¿Dónde?",10],["letras","Letras",25],["cifras","Cifras",30],["grupos","Grupos",25],["lletres","Lletres",25]];
 const q=new URLSearchParams(location.search);let juego=J.some(j=>j[0]===q.get("juego"))?q.get("juego"):"donde",semana=false;
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const mmss=s=>s==null?"":`${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`;

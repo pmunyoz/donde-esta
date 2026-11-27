@@ -17,6 +17,7 @@
   "shortcuts": [
     { "name": "¿Dónde está?", "url": "/", "icons": [{ "src": "/icon-donde-180.png", "sizes": "180x180", "type": "image/png" }] },
     { "name": "Letras del día", "url": "/letras.html", "icons": [{ "src": "/icon-letras-180.png", "sizes": "180x180", "type": "image/png" }] },
-    { "name": "Cifras del día", "url": "/cifras.html", "icons": [{ "src": "/icon-cifras-180.png", "sizes": "180x180", "type": "image/png" }] }
+    { "name": "Cifras del día", "url": "/cifras.html", "icons": [{ "src": "/icon-cifras-180.png", "sizes": "180x180", "type": "image/png" }] },
+    { "name": "Grupos del día", "url": "/grupos.html", "icons": [{ "src": "/icon-grupos-180.png", "sizes": "180x180", "type": "image/png" }] }
   ]
 }
