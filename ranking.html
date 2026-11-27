@@ -64,6 +64,7 @@ a{color:var(--ink)}
   <div class="tabs" role="group" aria-label="Juego" id="juegos"></div>
   <div class="tabs" role="group" aria-label="Periodo" id="periodo"><button data-p="0" aria-pressed="true">Hoy</button><button data-p="1" aria-pressed="false">Últimos 7 días</button></div>
   <ol class="rank" id="rank" aria-live="polite"></ol>
+  <div class="ad-slot"></div>
   <p class="osm">Las entradas se borran a los 60 días. Si ves un apodo inapropiado, avísanos en <a href="sugerencias.html">sugerencias</a>. · <a href="acerca.html">Acerca de</a> · <a href="privacidad.html">Privacidad</a></p>
 </div>
 <script>
@@ -87,6 +88,8 @@ document.getElementById("periodo").onclick=e=>{const b=e.target.closest("[data-p
 cargar();
 }
 </script>
+<script src="ads.js"></script>
+<script>if(window.Ads)Ads.fill();</script>
 <script data-goatcounter="https://pmunyoz.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>

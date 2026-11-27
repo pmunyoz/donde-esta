@@ -73,6 +73,7 @@ summary:focus-visible{outline:2px solid var(--ink);outline-offset:2px;border-rad
   <p class="how">Aquí tienes las soluciones de los retos de días anteriores: el lugar de <a href="./">¿Dónde está?</a>, las cinco palabras de <a href="letras.html">Letras del día</a> y una forma de llegar a cada cifra en <a href="cifras.html">Cifras del día</a>. La solución de hoy aparece mañana, para no estropearle el reto a nadie.</p>
   <div id="days"></div>
   <button class="more" id="more" hidden>Ver días anteriores</button>
+  <div class="ad-slot"></div>
   <p class="osm"><a href="archivo.html">Jugar días anteriores</a> · <a href="sugerencias.html">Sugerencias</a> · <a href="acerca.html">Acerca de</a> · <a href="privacidad.html">Privacidad</a></p>
 </div>
 <script>
@@ -109,6 +110,8 @@ more.onclick=()=>next(3);
 next(1);
 }
 </script>
+<script src="ads.js"></script>
+<script>if(window.Ads)Ads.fill();</script>
 <script data-goatcounter="https://pmunyoz.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>
