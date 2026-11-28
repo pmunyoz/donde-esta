@@ -36,7 +36,7 @@ Propietario: Pascual Muñoz (pmunyoz). Escribe siempre en español de España.
   - `ranking.js` — clasificación pública: la primera vez pide apodo; luego publica solo al terminar.
     Se puede cambiar el apodo, quitarse del día o desactivar la publicación automática.
   - `estadisticas.js` («Hoy, entre todos» y tu puesto), `logros.js`, `imagen.js` (imagen para compartir),
-    `avisos.js` (aviso diario push), `contador.js` (cuenta partidas), `ads.js`, `qr.js`.
+    `avisos.js` (aviso diario push, probado en móvil real), `contador.js` (cuenta partidas), `ads.js`, `qr.js`.
 - Otras páginas: `profes.html` (Retos para clase, con pistas propuestas de Wikipedia en ¿Dónde está?), `clase.html`,
   `ranking.html`, `archivo.html`, `soluciones.html`, `logros.html`, `sugerencias.html`, `acerca.html`, `privacidad.html`.
 - App instalable: `manifest.webmanifest` (nombre «Piensa un rato», accesos directos) y `sw.js`.
@@ -80,7 +80,6 @@ Las páginas `va/` no se enlazan y llevan `noindex`. Ejecuta el generador despu�
 
 ## Pendientes
 
-- Probar el aviso diario push en un móvil real.
 - Revisar sucesos de `linea-datos.js` y categorías de `grupos-datos.js`.
 - Traducir toda la web al valenciano (fase 2) y volver a enlazarla.
 - Posible publicación en Google Play (Trusted Web Activity; necesita cuenta de desarrollador y 12 testers 14 días).
